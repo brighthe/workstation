@@ -1,0 +1,5 @@
+# never commit chat data or local backups
+projects/
+*.bak
+*.manualbak
+.DS_Store
