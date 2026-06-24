@@ -129,6 +129,21 @@ Get-ChildItem "$env:USERPROFILE\.claude\projects" -Directory | Select-Object Nam
 
 向用户说明：若用户名/项目路径与原机不一致，要么改成一致，要么按上面手动重命名。
 
+## 步骤 8 — 部署用户级全局 CLAUDE.md（个人上下文，所有会话加载）
+
+把本仓库的版本化模板部署到 `~\.claude\CLAUDE.md`。若新机已有该文件（可能由 iCloud 同步带来），
+先备份再覆盖，以仓库模板为准：
+
+```powershell
+$dst = "$env:USERPROFILE\.claude\CLAUDE.md"
+if (Test-Path $dst) { Copy-Item $dst "$dst.bak" -Force }
+Copy-Item ".\claude-code\templates\CLAUDE.md" $dst -Force
+Test-Path $dst   # 应为 True
+```
+
+说明给用户：此文件是**全局**个人上下文（身份 + 工作仓库地图），与各仓库自带的项目级 `CLAUDE.md`
+互不影响；以后内容变更在仓库 `templates/CLAUDE.md` 改、再跑本步重新部署。
+
 ---
 
 ## 汇报清单（执行完逐项回报）
@@ -139,4 +154,5 @@ Get-ChildItem "$env:USERPROFILE\.claude\projects" -Directory | Select-Object Nam
 - [ ] `pull` 完成，projects 合并
 - [ ] `settings.json` 已合并（钩子 + cleanupPeriodDays，保留个性化字段）
 - [ ] 定时任务 `LastTaskResult=0`
+- [ ] 全局 `~\.claude\CLAUDE.md` 已从 `templates/CLAUDE.md` 部署
 - [ ] 提醒用户手动设 iCloud「始终保留在本设备」与 `/resume` 验证

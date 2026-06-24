@@ -23,6 +23,7 @@ Claude Code 写本机 ~/.claude/projects/
 - `scripts/claude-code-sync.ps1` —— Windows 同步脚本（纯 ASCII，避免 PS 5.1 编码坑）
 - `scripts/claude-code-sync.sh` —— WSL2 / Linux / Git Bash 同步脚本（自动探测 iCloud 路径）
 - `templates/settings.json` —— `SessionEnd` 钩子 + 关闭自动清理 的配置模板
+- `templates/CLAUDE.md` —— **用户级全局 `~/.claude/CLAUDE.md` 的版本化模板**（个人身份 + 工作仓库地图，所有会话加载）
 - `AGENT-RUNBOOK.md` —— 让 Claude Code 在新机自助安装的指令
 
 ## 同步语义（重要，决定会不会丢数据）
@@ -31,6 +32,8 @@ Claude Code 写本机 ~/.claude/projects/
 |---|---|
 | `projects/`（会话本体） | **并集合并**：两边都保留，同名文件谁新留谁（`robocopy /XO` / `rsync --update`），**从不删除** |
 | `history.jsonl` / `settings.json` / `CLAUDE.md` | **整文件覆盖**，不合并。`pull` 时本地旧版先备份成 `*.bak` 再被覆盖 |
+
+> 用户级全局 `~/.claude/CLAUDE.md` 有两条恢复途径：iCloud 同步会随上表整文件携带；**本仓库 `templates/CLAUDE.md` 是它的版本化主本**——以仓库为准，改这里再重新部署（见 AGENT-RUNBOOK 步骤 8）。
 
 - 会话文件按 UUID 命名，不同机器几乎不会撞名 → 正常串行使用就是干净的并集。
 - 唯一会丢东西：同一 UUID 会话在两台机器都改过 → 只保留较新的整份文件（非按行合并）。
