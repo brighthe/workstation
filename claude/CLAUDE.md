@@ -1,24 +1,31 @@
 # Global instructions for Claude Code
 
-## 语言 / Language
-- 默认用简体中文交流；专有名词、方法名、变量、命令、配置键、产品名保留英文。
+## Language
+- Reply to me in Chinese (简体中文) by default. Keep technical terms, method
+  names, variables, commands, config keys, and product names in English.
 
-## 关于用户 / About me
-- **Liang He（何亮）**，GitHub `brighthe`，邮箱 brighthe98@gmail.com。
-- **学术身份**：2026 年 6 月从湘潭大学（数学与计算科学学院）博士毕业；之后赴**大连理工大学**做博士后，加入**郭旭院士团队**（工业装备结构分析国家重点实验室）。
-- **研究方向**：拓扑优化（Topology Optimization）、有限元方法（FEM）、**PIML（Problem-Independent Machine Learning，问题无关机器学习）**。博士后课题细节以 `C:\workspace\dut-postdoc` 仓库为准。
+## About me
+- Liang He (何亮). GitHub `brighthe`, email brighthe98@gmail.com.
+- Academic: earned my PhD from Xiangtan University (School of Mathematics and
+  Computational Science) in June 2026; now a postdoc at Dalian University of
+  Technology, in Academician Guo Xu's group (State Key Laboratory of Structural
+  Analysis for Industrial Equipment).
+- Research: topology optimization, finite element method (FEM), and PIML
+  (Problem-Independent Machine Learning). Postdoc project details live in the
+  `C:\workspace\dut-postdoc` repo.
 
-## 工作仓库地图（`C:\workspace`）
-均属本人，多为个人知识库/工作流而非传统代码项目；进入某仓库后以其 `CLAUDE.md`/`README.md` 为准。
+## My work repos (`C:\workspace`)
+All mine, mostly personal knowledge bases / workflows rather than traditional
+code projects. Once inside a repo, defer to its own `CLAUDE.md` / `README.md`.
 
-| 仓库 | 用途 | GitHub |
+| Repo | Purpose | GitHub |
 | --- | --- | --- |
-| `dut-postdoc` | 大连理工博后研究知识库，按 Karpathy「LLM-Wiki」模式运转的 Markdown wiki（拓扑优化/有限元/PIML） | brighthe/dut-postdoc |
-| `heliangos` | 个人中枢：身份档案 + 微信沟通与回复协助 | brighthe/heliangos |
-| `hlthesis` | 湘潭大学博士学位论文及相关材料 | brighthe/hlthesis |
-| `structural-dynamics-software` | 结构动力学软件项目：招标/采购文档 + 后续源码 | brighthe/structural-dynamics-software |
-| `faculty-interview-slides` | 高校教职面试幻灯片（科研汇报 + 教学试讲） | brighthe/faculty-interview-slides |
-| `workstation` | 软件/工具配置与跨设备迁移中枢 | brighthe/workstation |
+| `dut-postdoc` | DUT postdoc research knowledge base; a Markdown wiki run in Karpathy's "LLM-Wiki" style (topology optimization / FEM / PIML) | brighthe/dut-postdoc |
+| `heliangos` | Personal hub: identity profile + WeChat communication/reply assistance | brighthe/heliangos |
+| `hlthesis` | Xiangtan University PhD dissertation and related materials | brighthe/hlthesis |
+| `structural-dynamics-software` | Structural-dynamics software project: tender/procurement docs + later source code | brighthe/structural-dynamics-software |
+| `faculty-interview-slides` | Faculty job-interview slides (research talk + teaching demo) | brighthe/faculty-interview-slides |
+| `workstation` | Config & tooling hub for cross-device migration | brighthe/workstation |
 
 ## Claude Code questions → consult the official docs first
 When I ask anything about Claude Code (features, config, hooks, MCP, skills,
