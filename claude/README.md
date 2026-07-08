@@ -9,7 +9,7 @@
 
 一句话：**CLAUDE.md 管我定的规则，自动记忆管 Claude 学到的经验。**
 
-> 与 Codex 的对应关系：`CLAUDE.md` ≈ Codex 的 `AGENTS.md`；Claude「自动记忆」≈ Codex「Memories」，但自动记忆由 Claude 自己积累，而 Codex Memories 由我手写。
+> 与 Codex 的对应关系：`CLAUDE.md` ≈ Codex 的 `AGENTS.md`（都由我维护）；Claude「自动记忆」≈ Codex「Memories」（都由工具自动积累）。
 
 ## 实际文件链接
 
@@ -52,6 +52,7 @@
 - 单个 CLAUDE.md 目标 **200 行以内**，越短遵守度越高。
 - 块级 HTML 注释 `<!-- ... -->` 在注入上下文前会被剥离，可用来留给人看的维护笔记而不耗 token。
 - Windows 上建符号链接需管理员权限或开发者模式；否则可用 `@AGENTS.md` / `@path` 导入语法。
+- `~/.claude/rules/*.md` 也是**用户级（全局）**规则，适用于每个项目；规则变多时可拆到这里，或用 `paths` frontmatter 把某条规则限定到特定文件类型/目录。
 
 ## CLAUDE.md 内容
 
