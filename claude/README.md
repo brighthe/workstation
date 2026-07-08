@@ -13,21 +13,23 @@
 
 ## 实际文件链接
 
-下面是这台 Windows 电脑上的实际位置，方便需要时直接打开查看。
+路径分层写：仓库内用相对路径（跨设备通用），通用位置用 `~/`，本机绝对路径用机器名标注（每台设备的克隆路径/用户名可能不同）。
 
-- [Claude 用户级全局指令](file:///C:/Users/Lenovo/.claude/CLAUDE.md)
-  路径：`C:\Users\Lenovo\.claude\CLAUDE.md`
-  当前状态：符号链接，指向本仓库的 `claude/CLAUDE.md`。
+- [workstation 中同步的 CLAUDE.md](CLAUDE.md)
+  仓库内路径：`claude/CLAUDE.md`（真正维护的文件，随本仓库跨设备同步）
+  LAPTOP-A51RSRUJ：`C:\workspace\workstation\claude\CLAUDE.md`
 
-- [本仓库中的 CLAUDE.md 源文件](file:///C:/workspace/workstation/claude/CLAUDE.md)
-  路径：`C:\workspace\workstation\claude\CLAUDE.md`
-  这是真正维护的文件；跨设备通过本仓库同步。
+- Claude 用户级全局指令
+  通用位置：`~/.claude/CLAUDE.md`
+  Windows 通用示例：`C:\Users\<用户名>\.claude\CLAUDE.md`
+  LAPTOP-A51RSRUJ：`C:\Users\Lenovo\.claude\CLAUDE.md`
+  当前状态：符号链接，指向本设备克隆位置下的 `claude/CLAUDE.md`。
 
-- [Claude 自动记忆目录](file:///C:/Users/Lenovo/.claude/projects/)
-  路径：`C:\Users\Lenovo\.claude\projects\<project>\memory\`
+- Claude 自动记忆目录
+  通用位置：`~/.claude/projects/<project>/memory/`
+  Windows 通用示例：`C:\Users\<用户名>\.claude\projects\<project>\memory\`
+  LAPTOP-A51RSRUJ：`C:\Users\Lenovo\.claude\projects\<project>\memory\`
   说明：`<project>` 由 git 仓库路径决定；同一仓库的所有 worktree 共享。**机器本地，不跨设备。**
-
-> 说明：如果上面的本地链接暂时打不开，通常是因为对应文件或目录还没有创建。创建后再点击即可。
 
 ## 官方文档链接
 
@@ -110,7 +112,7 @@ WebFetch 对每个 URL 缓存约 15 分钟。拿不准是哪一页时，先抓 l
 
 - 这个 README 只做中文说明和链接导航。
 - 真正的全局规则维护在本仓库 `claude/CLAUDE.md`，通过符号链接映射到 `~/.claude/CLAUDE.md`。
-- 换设备：`git clone` 本仓库后，用管理员 PowerShell 建符号链接：
-  `New-Item -ItemType SymbolicLink -Path "$HOME\.claude\CLAUDE.md" -Target "C:\workspace\workstation\claude\CLAUDE.md"`
+- 换设备：`git clone` 本仓库后，用管理员 PowerShell 把 `~/.claude/CLAUDE.md` 符号链接到本设备克隆位置下的 `claude/CLAUDE.md`（把 `-Target` 换成本机实际克隆路径；本机 LAPTOP-A51RSRUJ 为 `C:\workspace\workstation`）：
+  `New-Item -ItemType SymbolicLink -Path "$HOME\.claude\CLAUDE.md" -Target "<克隆路径>\claude\CLAUDE.md"`
 - 自动记忆交给 Claude 自行管理；需要审计时用 `/memory`。
 - 某个流程很长（如 MCP 配置、Git/SSH 排障）时，可单独写成文档，再从这里链接过去。
