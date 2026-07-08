@@ -53,14 +53,44 @@
 
 ## CLAUDE.md 内容
 
-点开即是本体：[`claude/CLAUDE.md`](CLAUDE.md)（已由符号链接映射到 `~/.claude/CLAUDE.md`）。**正文统一用英文写**（全局指令一贯约定；回答仍用中文），故这里用中文列它包含什么：
+点开即是英文本体：[`claude/CLAUDE.md`](CLAUDE.md)（已由符号链接映射到 `~/.claude/CLAUDE.md`）。**正文统一用英文写**（全局指令一贯约定；回答仍用中文）。下面是对应的完整中文翻译，方便阅读——**正文以英文文件为准，改动请只改 `claude/CLAUDE.md`，本译文仅供参考**：
 
-- **语言**：默认简体中文；专有名词、方法名、变量、命令、配置键、产品名保留英文。
-- **关于用户**：身份、学术背景、研究方向（拓扑优化 / FEM / PIML）。
-- **工作仓库地图**：`C:\workspace` 下 6 个仓库的用途与 GitHub 地址。
-- **Claude Code 问题先查官方文档**：抓英文 `/en/` 原版、用中文回答。
+```md
+# Claude Code 全局指令
 
-> 只在 `claude/CLAUDE.md` 一处维护正文，避免 README 抄一份后两边漂移。
+## 语言
+- 默认用简体中文回答。专有名词、方法名、变量、命令、配置键、产品名保留英文。
+
+## 关于用户
+- Liang He（何亮）。GitHub `brighthe`，邮箱 brighthe98@gmail.com。
+- 学术：2026 年 6 月从湘潭大学（数学与计算科学学院）博士毕业；现于大连理工大学做博士后，隶属郭旭院士团队（工业装备结构分析国家重点实验室）。
+- 研究：拓扑优化、有限元方法（FEM）、PIML（Problem-Independent Machine Learning，问题无关机器学习）。博士后课题细节见 `C:\workspace\dut-postdoc` 仓库。
+
+## 我的工作仓库（`C:\workspace`）
+均属本人，多为个人知识库/工作流，而非传统代码项目。进入某仓库后，以其自带的 `CLAUDE.md` / `README.md` 为准。
+
+| 仓库 | 用途 | GitHub |
+| --- | --- | --- |
+| `dut-postdoc` | 大连理工博后研究知识库；按 Karpathy「LLM-Wiki」模式运转的 Markdown wiki（拓扑优化 / FEM / PIML） | brighthe/dut-postdoc |
+| `heliangos` | 个人中枢：身份档案 + 微信沟通/回复协助 | brighthe/heliangos |
+| `hlthesis` | 湘潭大学博士学位论文及相关材料 | brighthe/hlthesis |
+| `structural-dynamics-software` | 结构动力学软件项目：招标/采购文档 + 后续源码 | brighthe/structural-dynamics-software |
+| `faculty-interview-slides` | 高校教职面试幻灯片（科研汇报 + 教学试讲） | brighthe/faculty-interview-slides |
+| `workstation` | 跨设备迁移的配置与工具中枢 | brighthe/workstation |
+
+## Claude Code 问题 → 先查官方文档
+当我询问任何关于 Claude Code 的问题（功能、配置、hooks、MCP、skills、子代理、CLI、权限、部署、成本等）时，抓取对应的官方文档页并据此回答，而不是凭训练记忆。这样答案更准确、更新。
+
+- 抓取英文 `/en/` 页面：它是权威原版、更新最快；`/zh-CN/` 译文可能滞后或有翻译偏差。读英文，但回答用中文。
+- 总览 / 入口页：https://code.claude.com/docs/en/overview
+- 完整页面索引（抓它可发现所有页面/slug）：https://code.claude.com/docs/llms.txt
+- 任意子页面遵循规律 `https://code.claude.com/docs/en/<slug>`。
+  常用 slug：hooks-guide、hooks、mcp、mcp-quickstart、settings、skills、sub-agents、cli-reference、permissions、memory、costs、github-actions。
+
+WebFetch 对每个 URL 缓存约 15 分钟。拿不准是哪一页时，先抓 llms.txt 找到 slug。
+```
+
+> 只在 `claude/CLAUDE.md` 一处维护英文正文；改了正文记得同步这段中文译文，避免两边漂移。
 
 ## 自动记忆（Auto Memory）说明
 
