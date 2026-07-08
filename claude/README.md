@@ -17,7 +17,7 @@
 
 - [Claude 用户级全局指令](file:///C:/Users/Lenovo/.claude/CLAUDE.md)
   路径：`C:\Users\Lenovo\.claude\CLAUDE.md`
-  当前状态：符号链接，指向本仓库的 `claude/CLAUDE.md`（见下方“定稿：CLAUDE.md”）。
+  当前状态：符号链接，指向本仓库的 `claude/CLAUDE.md`。
 
 - [本仓库中的 CLAUDE.md 源文件](file:///C:/workspace/workstation/claude/CLAUDE.md)
   路径：`C:\workspace\workstation\claude\CLAUDE.md`
@@ -36,13 +36,12 @@
 - [记忆与 CLAUDE.md 说明](https://code.claude.com/docs/zh-CN/memory)
 - [Hooks 指南](https://code.claude.com/docs/zh-CN/hooks-guide) ｜ [Skills](https://code.claude.com/docs/zh-CN/skills) ｜ [子代理](https://code.claude.com/docs/zh-CN/sub-agents) ｜ [MCP](https://code.claude.com/docs/zh-CN/mcp) ｜ [Settings](https://code.claude.com/docs/zh-CN/settings) ｜ [CLI 参考](https://code.claude.com/docs/zh-CN/cli-reference)
 
-> 子页面通用规律：`https://code.claude.com/docs/zh-CN/<slug>`，把 `/zh-CN/` 换成 `/en/` 即英文版。
+> 上面是中文页，便于你直接阅读；**Claude 查询时以英文 `/en/` 原版为准**（更新最快、无翻译偏差）。子页面通用规律：`https://code.claude.com/docs/en/<slug>`，把 `/en/` 换成 `/zh-CN/` 即中文版。
 
 ## CLAUDE.md 的存放位置（按加载顺序，范围从宽到窄）
 
 | 范围 | 位置 | 用途 |
 | :--- | :--- | :--- |
-| 托管策略 | `C:\Program Files\ClaudeCode\CLAUDE.md` | 组织级，个人无法覆盖 |
 | **用户指令** | `~/.claude/CLAUDE.md` | **所有项目的个人偏好（当前用的就是这一层）** |
 | 项目指令 | `./CLAUDE.md` 或 `./.claude/CLAUDE.md` | 随仓库共享给团队 |
 | 本地指令 | `./CLAUDE.local.md` | 个人、项目内、加入 .gitignore |
@@ -52,54 +51,16 @@
 - 块级 HTML 注释 `<!-- ... -->` 在注入上下文前会被剥离，可用来留给人看的维护笔记而不耗 token。
 - Windows 上建符号链接需管理员权限或开发者模式；否则可用 `@AGENTS.md` / `@path` 导入语法。
 
-## 定稿：CLAUDE.md 英文原稿
+## CLAUDE.md 内容
 
-```md
-# Global instructions for Claude Code
+点开即是本体：[`claude/CLAUDE.md`](CLAUDE.md)（已由符号链接映射到 `~/.claude/CLAUDE.md`）。合并 `claude-code` 的个人上下文后，文件为**中英混排、大部分已是中文**，故这里不再抄全文，只列它包含什么：
 
-## Language
-- Reply to me in Chinese (简体中文) by default, unless I ask otherwise.
+- **语言**：默认简体中文；专有名词、方法名、变量、命令、配置键、产品名保留英文。
+- **关于用户**：身份、学术背景、研究方向（拓扑优化 / FEM / PIML）。
+- **工作仓库地图**：`C:\workspace` 下 6 个仓库的用途与 GitHub 地址。
+- **Claude Code 问题先查官方文档**：抓英文 `/en/` 原版、用中文回答。
 
-## Claude Code questions → consult the official docs first
-When I ask anything about Claude Code (features, config, hooks, MCP, skills,
-subagents, CLI, permissions, deployment, costs, etc.), fetch the relevant
-official documentation page and answer from it instead of relying on training
-memory. This keeps answers accurate and current.
-
-- Chinese overview / entry page: https://code.claude.com/docs/zh-CN/overview
-- Full page index (fetch to discover every page/slug): https://code.claude.com/docs/llms.txt
-- Any sub-page follows the pattern `https://code.claude.com/docs/zh-CN/<slug>`
-  (swap `/zh-CN/` ↔ `/en/` for Chinese/English).
-  Common slugs: hooks-guide, hooks, mcp, mcp-quickstart, settings, skills,
-  sub-agents, cli-reference, permissions, memory, costs, github-actions.
-
-Prefer the `/zh-CN/` (Chinese) pages. WebFetch caches each URL for ~15 min.
-If unsure which page covers the question, fetch llms.txt first to find the slug.
-```
-
-## 定稿：CLAUDE.md 中文翻译
-
-```md
-# Claude Code 全局指令
-
-## 语言
-- 默认用中文（简体）回答，除非我另有要求。
-
-## Claude Code 问题 → 先查官方文档
-当我询问任何关于 Claude Code 的问题（功能、配置、hooks、MCP、skills、
-子代理、CLI、权限、部署、成本等）时，抓取对应的官方文档页并据此回答，
-而不是凭训练记忆。这样答案更准确、更新。
-
-- 中文总览 / 入口页：https://code.claude.com/docs/zh-CN/overview
-- 完整页面索引（抓它可发现所有页面/slug）：https://code.claude.com/docs/llms.txt
-- 任意子页面遵循规律 `https://code.claude.com/docs/zh-CN/<slug>`
-  （把 `/zh-CN/` 换成 `/en/` 即中英切换）。
-  常用 slug：hooks-guide、hooks、mcp、mcp-quickstart、settings、skills、
-  sub-agents、cli-reference、permissions、memory、costs、github-actions。
-
-优先用 `/zh-CN/`（中文）页面。WebFetch 对每个 URL 缓存约 15 分钟。
-拿不准是哪一页时，先抓 llms.txt 找到 slug。
-```
+> 只在 `claude/CLAUDE.md` 一处维护正文，避免 README 抄一份后两边漂移。
 
 ## 自动记忆（Auto Memory）说明
 
@@ -118,10 +79,9 @@ If unsure which page covers the question, fetch llms.txt first to find the slug.
 
 ## 推荐维护方式
 
-- 这个 README 只做中文说明、链接导航和当前定稿记录。
+- 这个 README 只做中文说明和链接导航。
 - 真正的全局规则维护在本仓库 `claude/CLAUDE.md`，通过符号链接映射到 `~/.claude/CLAUDE.md`。
 - 换设备：`git clone` 本仓库后，用管理员 PowerShell 建符号链接：
   `New-Item -ItemType SymbolicLink -Path "$HOME\.claude\CLAUDE.md" -Target "C:\workspace\workstation\claude\CLAUDE.md"`
 - 自动记忆交给 Claude 自行管理；需要审计时用 `/memory`。
 - 某个流程很长（如 MCP 配置、Git/SSH 排障）时，可单独写成文档，再从这里链接过去。
-```
