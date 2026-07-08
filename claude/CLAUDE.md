@@ -6,13 +6,8 @@
 
 ## About me
 - Liang He (何亮). GitHub `brighthe`, email brighthe98@gmail.com.
-- Academic: earned my PhD from Xiangtan University (School of Mathematics and
-  Computational Science) in June 2026; now a postdoc at Dalian University of
-  Technology, in Academician Guo Xu's group (State Key Laboratory of Structural
-  Analysis for Industrial Equipment).
-- Research: topology optimization, finite element method (FEM), and PIML
-  (Problem-Independent Machine Learning). Postdoc project details live in the
-  `C:\workspace\dut-postdoc` repo.
+- Postdoc at Dalian University of Technology; research in topology optimization,
+  FEM, and PIML (Problem-Independent Machine Learning).
 
 ## My work repos (`C:\workspace`)
 All mine, mostly personal knowledge bases / workflows rather than traditional

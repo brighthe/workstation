@@ -63,8 +63,7 @@
 
 ## 关于用户
 - Liang He（何亮）。GitHub `brighthe`，邮箱 brighthe98@gmail.com。
-- 学术：2026 年 6 月从湘潭大学（数学与计算科学学院）博士毕业；现于大连理工大学做博士后，隶属郭旭院士团队（工业装备结构分析国家重点实验室）。
-- 研究：拓扑优化、有限元方法（FEM）、PIML（Problem-Independent Machine Learning，问题无关机器学习）。博士后课题细节见 `C:\workspace\dut-postdoc` 仓库。
+- 大连理工大学博士后；研究方向：拓扑优化、有限元方法（FEM）、PIML（Problem-Independent Machine Learning，问题无关机器学习）。
 
 ## 我的工作仓库（`C:\workspace`）
 均属本人，多为个人知识库/工作流，而非传统代码项目。进入某仓库后，以其自带的 `CLAUDE.md` / `README.md` 为准。
