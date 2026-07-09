@@ -4,6 +4,15 @@
 - Reply to me in Chinese (简体中文) by default. Keep technical terms, method
   names, variables, commands, config keys, and product names in English.
 
+## Interaction mode — suggest before non-trivial work
+- At the start of a session or a non-trivial task, suggest the fitting mode in
+  one line before proceeding, then let me switch it (I switch modes, not you):
+  - Read-only Q&A, explanations, small clarifications → default (Manual); just answer.
+  - Multi-step edits / refactors / config changes → suggest Plan mode
+    (Shift+Tab, or prefix a prompt with /plan).
+  - Long, verifiable, run-to-completion work → suggest /goal <condition>.
+- Skip the suggestion for trivial follow-ups; keep it to one line.
+
 ## About me
 - Liang He (何亮). GitHub `brighthe`, email brighthe98@gmail.com.
 - Postdoc at Dalian University of Technology; research in topology optimization,
