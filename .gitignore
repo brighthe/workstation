@@ -3,3 +3,6 @@ projects/
 *.bak
 *.manualbak
 .DS_Store
+
+# Obsidian auto-generated editor state
+.obsidian/
