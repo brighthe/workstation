@@ -19,7 +19,7 @@
 
 ## Interaction mode
 
-- At the start of a new conversation or a new non-trivial task, briefly recommend whether to use normal mode, plan mode, or a goal.
+- At the start of a new non-trivial conversation or task, briefly recommend whether to use normal mode, plan mode, or a goal.
 - If the recommended mode requires a UI switch that I cannot perform directly, ask me to switch it before continuing.
 - Use normal mode for questions, explanations, read-only checks, and small clarifications.
 - Recommend plan mode before file edits, configuration changes, installs, commits, pushes, or multi-step troubleshooting.

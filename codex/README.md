@@ -9,18 +9,27 @@
 
 一句话：**AGENTS.md 主动维护，Memories 自动沉淀。**
 
+> 与 Claude Code 的对应关系：Codex 的 `AGENTS.md` 约等于 Claude 的 `CLAUDE.md`；Codex 的 `Memories` 约等于 Claude 的 `Auto Memory`。两者概念相近，但加载范围、维护方式和具体行为不完全相同；涉及 Codex 时以 OpenAI Codex 官方文档为准。
+
 ## 实际文件链接
 
 - [workstation 中同步的 AGENTS.md](AGENTS.md)
-  路径：`C:\workspace\workstation\codex\AGENTS.md`
+  仓库内路径：`codex/AGENTS.md`
+  LAPTOP-A51RSRUJ：`C:\workspace\workstation\codex\AGENTS.md`
 
-- [Codex 全局指令文件](file:///C:/Users/Lenovo/.codex/AGENTS.md)
-  路径：`C:\Users\Lenovo\.codex\AGENTS.md`
-  当前状态：已通过符号链接指向 `C:\workspace\workstation\codex\AGENTS.md`。符号链接绑定路径，适合 Git 跨设备同步；不要使用硬链接，避免 Git 更新或编辑器原子保存导致链接静默失效。
+- Codex 全局指令文件
+  通用位置：`~/.codex/AGENTS.md`
+  Windows 通用示例：`C:\Users\<用户名>\.codex\AGENTS.md`
+  LAPTOP-A51RSRUJ：`C:\Users\Lenovo\.codex\AGENTS.md`
+  当前状态：符号链接，指向本仓库的 `C:\workspace\workstation\codex\AGENTS.md`。
 
-- [Codex Memories 目录](file:///C:/Users/Lenovo/.codex/memories/)
-  路径：`C:\Users\Lenovo\.codex\memories`
+- Codex Memories 目录
+  通用位置：`~/.codex/memories/`
+  Windows 通用示例：`C:\Users\<用户名>\.codex\memories\`
+  LAPTOP-A51RSRUJ：`C:\Users\Lenovo\.codex\memories\`
 
+> 推荐做法：在每台设备上，把 `~/.codex/AGENTS.md` 设置为指向本设备 `workstation/codex/AGENTS.md` 的符号链接。符号链接绑定路径，适合 Git 跨设备同步；不要使用硬链接，避免 Git 更新或编辑器原子保存导致链接静默失效。
+>
 > 注意：官方文档说明，`~/.codex/memories/` 是 Codex 生成和维护的记忆文件目录。可以检查它，但不建议把手动编辑这里作为主要控制方式，也不建议把它链接到 Git 仓库做跨设备同步。
 
 ## 官方文档链接
@@ -28,9 +37,31 @@
 - [OpenAI Codex 官方文档](https://developers.openai.com/codex)
 - [AGENTS.md 官方说明](https://developers.openai.com/codex/guides/agents-md)
 - [Memories 官方说明](https://developers.openai.com/codex/memories)
+- [Skills](https://developers.openai.com/codex/skills)
+- [Plugins](https://developers.openai.com/codex/plugins)
+- [MCP](https://developers.openai.com/codex/mcp)
+- [config.toml / 配置参考](https://developers.openai.com/codex/config-reference)
+- [Hooks / 高级配置](https://developers.openai.com/codex/config-advanced#hooks)
 - [Windows sandbox 官方说明](https://developers.openai.com/codex/windows)
 
+## AGENTS.md 的存放位置与适用范围
+
+| 范围 | 位置 | 用途 |
+| :--- | :--- | :--- |
+| 用户级全局指令 | `~/.codex/AGENTS.md` | 所有 Codex 会话都应遵守的个人偏好和通用约束；当前用的就是这一层 |
+| 仓库级指令 | `./AGENTS.md` | 某个仓库长期稳定的项目背景、文档风格、常用命令和协作约定 |
+| 子目录级指令 | `./path/to/AGENTS.md` | 只对该子目录及其下文件成立的更具体规则 |
+
+要点：
+
+- 全局 `AGENTS.md` 只放跨仓库都成立的个人规则。
+- 仓库特有流程应放在对应仓库的 `AGENTS.md`，例如 `C:\workspace\dut-postdoc\AGENTS.md`。
+- 子目录规则适合 `docs/`、`src/`、`examples/` 这类职责差异明显的目录。
+- 如果规则需要机械、确定地强制执行，优先考虑 hooks、config 或权限设置，而不是只写进自然语言指令。
+
 ## 当前 AGENTS.md 内容中文说明
+
+点开即是当前维护的英文本体：[`codex/AGENTS.md`](AGENTS.md)（已由符号链接映射到 `~/.codex/AGENTS.md`）。下面是对应的中文说明，方便阅读；真正生效和维护的正文以 `codex/AGENTS.md` 为准，改动后记得同步这段说明，避免两边漂移。
 
 ```md
 # Codex 全局指令
@@ -54,7 +85,7 @@
 
 ## 交互模式
 
-- 在新会话或新的非简单任务开始时，先简短建议使用普通模式、计划模式或目标。
+- 在新的非简单会话或任务开始时，先简短建议使用普通模式、计划模式或目标。
 - 如果推荐的模式需要 UI 切换，而我不能直接替你切换，就请你先切换后再继续。
 - 问答、解释、只读检查和小澄清使用普通模式。
 - 涉及文件编辑、配置修改、安装、commit、push 或多步骤排障时，建议使用计划模式。
@@ -79,6 +110,7 @@
 - 一次性命令输出
 - 只对某个项目成立的规则
 - 需要放在项目级 `AGENTS.md` 的仓库特有流程
+- 需要确定性强制的规则；这类约束应考虑 hooks、config 或权限机制
 
 ## 推荐维护方式
 
