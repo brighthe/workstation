@@ -76,14 +76,24 @@
 - 大连理工大学博士后；研究方向：拓扑优化、有限元方法（FEM）、PIML（Problem-Independent Machine Learning，问题无关机器学习）。
 
 ## 我的工作仓库（`C:\workspace`）
-均属本人，多为个人知识库/工作流，而非传统代码项目。进入某仓库后，以其自带的 `CLAUDE.md` / `README.md` 为准。
+本节只作为仓库的高层地图。进入某仓库后，以其自带的 `CLAUDE.md` / `README.md` 为准。个人仓库多为知识库/工作流，而非传统代码项目。
 
-| 仓库 | 用途 | GitHub |
-| --- | --- | --- |
-| `dut-postdoc` | 大连理工博后研究知识库；按 Karpathy「LLM-Wiki」模式运转的 Markdown wiki（拓扑优化 / FEM / PIML） | brighthe/dut-postdoc |
-| `dut-institute-work` | 大连工业软件研究院的工作管理（任务、阶段计划、进度日志、会议记录）；公开仓库，严格执行脱敏纪律 | brighthe/dut-institute-work |
-| `heliangos` | 个人中枢：身份档案 + 微信沟通/回复协助 | brighthe/heliangos |
-| `workstation` | 跨设备迁移的配置与工具中枢 | brighthe/workstation |
+| 仓库 | 类型 | 用途 | GitHub |
+| --- | --- | --- | --- |
+| `dut-postdoc` | 个人 | 大连理工博后研究知识库；按 Karpathy「LLM-Wiki」模式运转的 Markdown wiki（拓扑优化 / FEM / PIML） | brighthe/dut-postdoc |
+| `dut-institute-work` | 个人 | 大连工业软件研究院的工作管理（任务、阶段计划、进度日志、会议记录）；公开仓库，严格执行脱敏纪律 | brighthe/dut-institute-work |
+| `heliangos` | 个人 | 个人中枢：身份档案 + 微信沟通/回复协助 | brighthe/heliangos |
+| `workstation` | 个人 | 跨设备迁移的配置与工具中枢 | brighthe/workstation |
+| `mfleo` | 企业 | 面向 CPU/GPU 平台的 Matrix-Free 线弹性算子中间件；企业交付仓库 | suanhaitech/mfleo |
+| `xihe` | 企业 | 内部长期光学成像 CAX 平台：超构透镜设计、仿真与制造 | suanhaitech/xihe |
+
+将 `suanhaitech` 下的仓库视为企业所有的工作：绝不把企业代码、数据、凭据或内部文档复制到个人仓库；commit 或 push 前核对所配置的 `origin`。
+
+每当有 git 仓库被 clone 或以其他方式直接加入 `C:\workspace` 下时，在同一任务中更新本表：类型（Type）依据 GitHub 所有者判断，用途（Purpose）依据该仓库的 `README.md` 提炼；任一项无法可靠判断时，询问我而不要猜测。绝不让 `C:\workspace` 的直接子仓库处于未列出状态。
+
+## 指令文件边界
+- 你（Claude Code）只维护 Claude 相关的指令文件：各处 `CLAUDE.md`、`~/.claude/`、项目内 `.claude/` 目录。
+- 不要编辑其他 AI 助手的指令文件（如 Codex 的 `AGENTS.md`、`~/.codex/`），除非我在该会话中明确要求；每个工具的指令由该工具自己管理。
 
 ## Claude Code 问题 → 先查官方文档
 当我询问任何关于 Claude Code 的问题（功能、配置、hooks、MCP、skills、子代理、CLI、权限、部署、成本等）时，抓取对应的官方文档页并据此回答，而不是凭训练记忆。这样答案更准确、更新。
@@ -94,10 +104,19 @@
 - 任意子页面遵循规律 `https://code.claude.com/docs/en/<slug>`。
   常用 slug：hooks-guide、hooks、mcp、mcp-quickstart、settings、skills、sub-agents、cli-reference、permissions、memory、costs、github-actions。
 
-WebFetch 对每个 URL 缓存约 15 分钟。拿不准是哪一页时，先抓 llms.txt 找到 slug。
+拿不准是哪一页时，先抓 llms.txt 找到 slug。
 ```
 
 > 只在 `claude/CLAUDE.md` 一处维护英文正文；改了正文记得同步这段中文译文，避免两边漂移。已配置确定性提醒：本仓库 [`.claude/settings.json`](../.claude/settings.json) 的 PostToolUse hook 会在 `claude/CLAUDE.md` 被修改后，自动提醒同步本节译文。
+
+## 确定性 hook：git origin 核对
+
+CLAUDE.md 中"commit/push 前核对 `origin`"是建议性指令；官方文档明确 CLAUDE.md 只是 context，需要确定性保障时应使用 hook。为此配置了一个 PreToolUse hook：
+
+- **脚本本体**：[`claude/hooks/git-origin-context.ps1`](hooks/git-origin-context.ps1)，随本仓库跨设备同步。
+- **行为**：当 Bash 或 PowerShell 工具将要执行含 `commit`/`push` 的 git 命令时，把该仓库（支持 `git -C <path>` 写法）配置的 `origin` URL 注入 Claude 的上下文，提示核对 brighthe（个人）/ suanhaitech（企业）。只注入信息，从不拦截命令。
+- **挂载位置**：本机 `~/.claude/settings.json`（用户级、机器本地，不做 Git 同步）中的 `hooks.PreToolUse`，通过 `-File` 绝对路径引用本仓库中的脚本。
+- **换设备**：clone 本仓库后，把该 hooks 配置块复制进新机器的 `~/.claude/settings.json`，并把 `-File` 路径改为本机克隆路径；改完后重启会话或运行 `/hooks` 使其生效。
 
 ## 自动记忆（Auto Memory）说明
 
@@ -116,7 +135,7 @@ WebFetch 对每个 URL 缓存约 15 分钟。拿不准是哪一页时，先抓 l
 
 ## 推荐维护方式
 
-- 本目录三个文件的分工：`CLAUDE.md` 是被符号链接的指令本体；本 README 只做指令与记忆的管理说明和链接导航；[capabilities.md](capabilities.md) 负责官方能力与最新教程的导读。
+- 本目录的分工：`CLAUDE.md` 是被符号链接的指令本体；本 README 只做指令与记忆的管理说明和链接导航；[capabilities.md](capabilities.md) 负责官方能力与最新教程的导读；`hooks/` 存放随仓库同步的确定性 hook 脚本。
 - 真正的全局规则维护在本仓库 `claude/CLAUDE.md`，通过符号链接映射到 `~/.claude/CLAUDE.md`。
 - 换设备：`git clone` 本仓库后，用管理员 PowerShell 把 `~/.claude/CLAUDE.md` 符号链接到本设备克隆位置下的 `claude/CLAUDE.md`（把 `-Target` 换成本机实际克隆路径；本机 LAPTOP-A51RSRUJ 为 `C:\workspace\workstation`）：
   `New-Item -ItemType SymbolicLink -Path "$HOME\.claude\CLAUDE.md" -Target "<克隆路径>\claude\CLAUDE.md"`

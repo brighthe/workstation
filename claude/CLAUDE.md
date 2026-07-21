@@ -20,15 +20,35 @@
   FEM, and PIML (Problem-Independent Machine Learning).
 
 ## My work repos (`C:\workspace`)
-All mine, mostly personal knowledge bases / workflows rather than traditional
-code projects. Once inside a repo, defer to its own `CLAUDE.md` / `README.md`.
+High-level repository map only. Once inside a repo, defer to its own
+`CLAUDE.md` / `README.md`. Personal repos are mostly knowledge bases /
+workflows rather than traditional code projects.
 
-| Repo | Purpose | GitHub |
-| --- | --- | --- |
-| `dut-postdoc` | DUT postdoc research knowledge base; a Markdown wiki run in Karpathy's "LLM-Wiki" style (topology optimization / FEM / PIML) | brighthe/dut-postdoc |
-| `dut-institute-work` | Work management for the Dalian industrial-software institute (tasks, stage plans, progress logs, meeting notes); public repo, strict redaction discipline | brighthe/dut-institute-work |
-| `heliangos` | Personal hub: identity profile + WeChat communication/reply assistance | brighthe/heliangos |
-| `workstation` | Config & tooling hub for cross-device migration | brighthe/workstation |
+| Repo | Type | Purpose | GitHub |
+| --- | --- | --- | --- |
+| `dut-postdoc` | Personal | DUT postdoc research knowledge base; a Markdown wiki run in Karpathy's "LLM-Wiki" style (topology optimization / FEM / PIML) | brighthe/dut-postdoc |
+| `dut-institute-work` | Personal | Work management for the Dalian industrial-software institute (tasks, stage plans, progress logs, meeting notes); public repo, strict redaction discipline | brighthe/dut-institute-work |
+| `heliangos` | Personal | Personal hub: identity profile + WeChat communication/reply assistance | brighthe/heliangos |
+| `workstation` | Personal | Config & tooling hub for cross-device migration | brighthe/workstation |
+| `mfleo` | Company | Matrix-free linear-elasticity operator middleware for CPU/GPU platforms; enterprise delivery repo | suanhaitech/mfleo |
+| `xihe` | Company | Internal long-term optical-imaging CAX platform: metasurface-lens design, simulation, and manufacturing | suanhaitech/xihe |
+
+Treat `suanhaitech` repos as company-owned work: never copy company code,
+data, credentials, or internal docs into personal repos, and verify the
+configured `origin` before commit or push.
+
+Whenever a git repo is cloned or otherwise added directly under
+`C:\workspace`, update this table in the same task: derive Type from the
+GitHub owner and Purpose from the repo's `README.md`; if either cannot be
+determined reliably, ask instead of guessing. Never leave a direct child
+repo of `C:\workspace` unlisted.
+
+## Instruction-file scope
+- You (Claude Code) maintain only Claude-related instruction files:
+  `CLAUDE.md` files, `~/.claude/`, and project `.claude/` directories.
+- Do not edit other AI assistants' instruction files (e.g., Codex's
+  `AGENTS.md`, `~/.codex/`) unless I explicitly ask in that conversation;
+  each tool's instructions are managed by that tool.
 
 ## Claude Code questions → consult the official docs first
 When I ask anything about Claude Code (features, config, hooks, MCP, skills,
@@ -45,5 +65,4 @@ memory. This keeps answers accurate and current.
   Common slugs: hooks-guide, hooks, mcp, mcp-quickstart, settings, skills,
   sub-agents, cli-reference, permissions, memory, costs, github-actions.
 
-WebFetch caches each URL for ~15 min. If unsure which page covers the question,
-fetch llms.txt first to find the slug.
+If unsure which page covers the question, fetch llms.txt first to find the slug.

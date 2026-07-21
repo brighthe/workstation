@@ -87,6 +87,30 @@
 - 涉及文件编辑、配置修改、安装、commit、push 或多步骤排障时，建议使用计划模式。
 - 只有长期持续推进、需要跨多轮或多会话追踪的事情，才建议使用目标。
 
+## 工作区仓库（`C:\workspace`）
+
+本节只作为仓库的高层地图。进入某个仓库后，以该仓库自己的 `AGENTS.md` 和 `README.md` 为准。
+
+| 仓库 | 类型 | 用途 | GitHub |
+| --- | --- | --- | --- |
+| `dut-postdoc` | 个人 | 大连理工大学博士后研究知识库，涵盖拓扑优化、FEM 和 PIML | `brighthe/dut-postdoc` |
+| `dut-institute-work` | 个人 | 大连工业软件研究院的工作管理；公开仓库，要求严格脱敏 | `brighthe/dut-institute-work` |
+| `heliangos` | 个人 | 个人中心，用于身份资料和微信沟通辅助 | `brighthe/heliangos` |
+| `workstation` | 个人 | 用于跨设备迁移的配置与工具中心 | `brighthe/workstation` |
+| `mfleo` | 企业 | 面向 CPU/GPU 平台的 Matrix-Free 线弹性算子工程中间件 | `suanhaitech/mfleo` |
+| `xihe` | 企业 | 覆盖超构透镜设计、仿真和制造的内部长期光学成像 CAX 平台 | `suanhaitech/xihe` |
+
+将 `suanhaitech` 下的仓库视为企业所有的工作。不要把企业代码、数据、凭据或内部文档复制到个人仓库中。
+
+commit 或 push 前，验证仓库所配置的 `origin`。仓库特有的架构、命令、测试和工作流应放在该仓库自己的 `AGENTS.md` 或 `README.md` 中。
+
+每当有 Git 仓库被克隆或以其他方式直接添加到 `C:\workspace` 下时，必须在同一任务中更新此表。根据 GitHub owner 判断其类型，并根据仓库的 `README.md` 提炼用途。如果无法可靠判断其归属、类型或用途，应先询问，不得猜测。不得遗漏 `C:\workspace` 下的任何直属 Git 仓库。
+
+## AI 指令文件边界
+
+- 维护 Codex 或 `AGENTS.md` 指令时，只修改 `AGENTS.md` 及保持其一致性所必需的 Codex 专属说明或配置。
+- 不要把修改联动到其他 AI 工具的指令文件，包括 `CLAUDE.md` 和 `GEMINI.md`；只有我明确点名这些文件或明确将其纳入任务范围时，才允许修改。
+
 ## Git 工作流卫生
 
 - 提交前先检查工作区，只暂存与当前任务相关的文件。

@@ -25,6 +25,30 @@
 - Recommend plan mode before file edits, configuration changes, installs, commits, pushes, or multi-step troubleshooting.
 - Recommend a goal only for long-running work that should persist across multiple turns or sessions.
 
+## Workspace repositories (`C:\workspace`)
+
+Use this section only as a high-level repository map. Once inside a repository, defer to its own `AGENTS.md` and `README.md`.
+
+| Repo | Type | Purpose | GitHub |
+| --- | --- | --- | --- |
+| `dut-postdoc` | Personal | DUT postdoc research knowledge base covering topology optimization, FEM, and PIML | `brighthe/dut-postdoc` |
+| `dut-institute-work` | Personal | Work management for the Dalian industrial-software institute; public repository requiring strict redaction | `brighthe/dut-institute-work` |
+| `heliangos` | Personal | Personal hub for identity profile and WeChat communication assistance | `brighthe/heliangos` |
+| `workstation` | Personal | Configuration and tooling hub for cross-device migration | `brighthe/workstation` |
+| `mfleo` | Company | Engineering middleware for Matrix-Free linear-elasticity operators on CPU/GPU platforms | `suanhaitech/mfleo` |
+| `xihe` | Company | Internal long-term optical-imaging CAX platform covering metasurface-lens design, simulation, and manufacturing | `suanhaitech/xihe` |
+
+Treat repositories under `suanhaitech` as company-owned work. Do not copy company code, data, credentials, or internal documentation into personal repositories.
+
+Before committing or pushing, verify the repository's configured `origin`. Keep repository-specific architecture, commands, tests, and workflows in that repository's own `AGENTS.md` or `README.md`.
+
+Whenever a Git repository is cloned or otherwise added directly under `C:\workspace`, update this table in the same task. Determine its type from the GitHub owner and derive its purpose from the repository's `README.md`. If its ownership, type, or purpose cannot be determined reliably, ask instead of guessing. Never leave a direct child Git repository under `C:\workspace` unlisted.
+
+## AI instruction file boundaries
+
+- When maintaining Codex or `AGENTS.md` instructions, modify only `AGENTS.md` and the Codex-specific documentation or configuration required to keep it consistent.
+- Do not propagate changes to instruction files for other AI tools, including `CLAUDE.md` and `GEMINI.md`, unless I explicitly name those files or clearly include them in the task scope.
+
 ## Git workflow hygiene
 
 - Before committing, inspect the working tree and stage only files related to the current task.
