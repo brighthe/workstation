@@ -1,0 +1,19 @@
+{
+  "description": "Remind Codex to keep instruction translations synchronized.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -Command \"& (Join-Path (git rev-parse --show-toplevel) 'scripts/hooks/remind-instruction-translation-sync.ps1')\"",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& (Join-Path (git rev-parse --show-toplevel) 'scripts\\hooks\\remind-instruction-translation-sync.ps1')\"",
+            "timeout": 15,
+            "statusMessage": "检查指令译文是否需同步"
+          }
+        ]
+      }
+    ]
+  }
+}

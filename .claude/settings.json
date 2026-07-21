@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/scripts/hooks/remind-instruction-translation-sync.ps1\"",
+            "timeout": 15,
+            "statusMessage": "检查指令译文是否需同步"
+          }
+        ]
+      }
+    ]
+  }
+}
