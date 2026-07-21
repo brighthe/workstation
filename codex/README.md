@@ -9,8 +9,6 @@
 
 一句话：**AGENTS.md 主动维护，Memories 自动沉淀。**
 
-> 与 Claude Code 的对应关系：Codex 的 `AGENTS.md` 约等于 Claude 的 `CLAUDE.md`；Codex 的 `Memories` 约等于 Claude 的 `Auto Memory`。两者概念相近，但加载范围、维护方式和具体行为不完全相同；涉及 Codex 时以 OpenAI Codex 官方文档为准。
-
 ## 实际文件链接
 
 - [workstation 中同步的 AGENTS.md](AGENTS.md)
@@ -37,12 +35,10 @@
 - [OpenAI Codex 官方文档](https://developers.openai.com/codex)
 - [AGENTS.md 官方说明](https://developers.openai.com/codex/guides/agents-md)
 - [Memories 官方说明](https://developers.openai.com/codex/memories)
-- [Skills](https://developers.openai.com/codex/skills)
-- [Plugins](https://developers.openai.com/codex/plugins)
-- [MCP](https://developers.openai.com/codex/mcp)
 - [config.toml / 配置参考](https://developers.openai.com/codex/config-reference)
 - [Hooks / 高级配置](https://developers.openai.com/codex/config-advanced#hooks)
-- [Windows sandbox 官方说明](https://developers.openai.com/codex/windows)
+
+> 本 README 只管"指令与记忆"。Skills、Plugins、MCP、Windows sandbox 等**能力类**入口、ChatGPT 与 Codex 的使用边界，以及官方最新动态的跟进，统一放在 [capabilities.md](capabilities.md)。
 
 ## AGENTS.md 的存放位置与适用范围
 
@@ -61,7 +57,7 @@
 
 ## 当前 AGENTS.md 内容中文说明
 
-点开即是当前维护的英文本体：[`codex/AGENTS.md`](AGENTS.md)（已由符号链接映射到 `~/.codex/AGENTS.md`）。下面是对应的中文说明，方便阅读；真正生效和维护的正文以 `codex/AGENTS.md` 为准，改动后记得同步这段说明，避免两边漂移。
+点开即是当前维护的英文本体：[`codex/AGENTS.md`](AGENTS.md)（已由符号链接映射到 `~/.codex/AGENTS.md`）。下面是按标题、条目和顺序完整对应的中文翻译，方便阅读。英文正文只在 `codex/AGENTS.md` 中维护；本译文不独立增加、删减或调整规则，正文改动后必须在同一轮同步。
 
 ```md
 # Codex 全局指令
@@ -98,6 +94,8 @@
 - 除非我明确要求，不要 commit 或 push。
 ```
 
+> 已配置确定性提醒：[`.codex/hooks.json`](../.codex/hooks.json) 的 `PostToolUse` hook 会在英文本体被修改后提醒同步本节。hook 负责防止遗漏，最终仍需在同一轮逐项核对译文。
+
 ## 不应放入全局记忆的内容
 
 不要把下面内容放入 `AGENTS.md`、Memories 或本仓库：
@@ -116,5 +114,5 @@
 
 - `AGENTS.md` 放在 workstation 仓库中同步，并由本机 Codex 全局指令文件链接过去。
 - Memories 保持由 Codex 自动生成和维护，不做 Git 同步，不做符号链接。
-- 这个 README 只做中文说明、链接导航和当前定稿记录。
+- 本目录三个文件的分工：`AGENTS.md` 是被符号链接的指令本体；本 README 只做指令与记忆的管理说明和链接导航；[capabilities.md](capabilities.md) 负责官方能力与最新教程的导读。
 - 如果某个流程很长，例如 Git/SSH 排障，可以单独写成文档，再从这里链接过去。
