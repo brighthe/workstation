@@ -9,8 +9,6 @@
 
 一句话：**CLAUDE.md 管我定的规则，自动记忆管 Claude 学到的经验。**
 
-> 与 Codex 的对应关系：`CLAUDE.md` ≈ Codex 的 `AGENTS.md`（都由我维护）；Claude「自动记忆」≈ Codex「Memories」（都由工具自动积累）。
-
 ## 实际文件链接
 
 路径分层写：仓库内用相对路径（跨设备通用），通用位置用 `~/`，本机绝对路径用机器名标注（每台设备的克隆路径/用户名可能不同）。
@@ -36,7 +34,9 @@
 - [Claude Code 官方文档（中文总览）](https://code.claude.com/docs/zh-CN/overview)
 - [完整文档索引 llms.txt](https://code.claude.com/docs/llms.txt)（抓这个可发现所有页面/slug）
 - [记忆与 CLAUDE.md 说明](https://code.claude.com/docs/zh-CN/memory)
-- [Hooks 指南](https://code.claude.com/docs/zh-CN/hooks-guide) ｜ [Skills](https://code.claude.com/docs/zh-CN/skills) ｜ [子代理](https://code.claude.com/docs/zh-CN/sub-agents) ｜ [MCP](https://code.claude.com/docs/zh-CN/mcp) ｜ [Settings](https://code.claude.com/docs/zh-CN/settings) ｜ [CLI 参考](https://code.claude.com/docs/zh-CN/cli-reference)
+- [Hooks 指南](https://code.claude.com/docs/zh-CN/hooks-guide) ｜ [Settings](https://code.claude.com/docs/zh-CN/settings) ｜ [CLI 参考](https://code.claude.com/docs/zh-CN/cli-reference)
+
+> 本 README 只管"指令与记忆"。Skills、子代理、MCP 等**能力类**入口和官方最新动态的跟进，统一放在 [capabilities.md](capabilities.md)。
 
 > 上面是中文页，便于你直接阅读；**Claude 查询时以英文 `/en/` 原版为准**（更新最快、无翻译偏差）。子页面通用规律：`https://code.claude.com/docs/en/<slug>`，把 `/en/` 换成 `/zh-CN/` 即中文版。
 
@@ -81,10 +81,8 @@
 | 仓库 | 用途 | GitHub |
 | --- | --- | --- |
 | `dut-postdoc` | 大连理工博后研究知识库；按 Karpathy「LLM-Wiki」模式运转的 Markdown wiki（拓扑优化 / FEM / PIML） | brighthe/dut-postdoc |
+| `dut-institute-work` | 大连工业软件研究院的工作管理（任务、阶段计划、进度日志、会议记录）；公开仓库，严格执行脱敏纪律 | brighthe/dut-institute-work |
 | `heliangos` | 个人中枢：身份档案 + 微信沟通/回复协助 | brighthe/heliangos |
-| `hlthesis` | 湘潭大学博士学位论文及相关材料 | brighthe/hlthesis |
-| `structural-dynamics-software` | 结构动力学软件项目：招标/采购文档 + 后续源码 | brighthe/structural-dynamics-software |
-| `faculty-interview-slides` | 高校教职面试幻灯片（科研汇报 + 教学试讲） | brighthe/faculty-interview-slides |
 | `workstation` | 跨设备迁移的配置与工具中枢 | brighthe/workstation |
 
 ## Claude Code 问题 → 先查官方文档
@@ -99,7 +97,7 @@
 WebFetch 对每个 URL 缓存约 15 分钟。拿不准是哪一页时，先抓 llms.txt 找到 slug。
 ```
 
-> 只在 `claude/CLAUDE.md` 一处维护英文正文；改了正文记得同步这段中文译文，避免两边漂移。
+> 只在 `claude/CLAUDE.md` 一处维护英文正文；改了正文记得同步这段中文译文，避免两边漂移。已配置确定性提醒：本仓库 [`.claude/settings.json`](../.claude/settings.json) 的 PostToolUse hook 会在 `claude/CLAUDE.md` 被修改后，自动提醒同步本节译文。
 
 ## 自动记忆（Auto Memory）说明
 
@@ -118,7 +116,7 @@ WebFetch 对每个 URL 缓存约 15 分钟。拿不准是哪一页时，先抓 l
 
 ## 推荐维护方式
 
-- 这个 README 只做中文说明和链接导航。
+- 本目录三个文件的分工：`CLAUDE.md` 是被符号链接的指令本体；本 README 只做指令与记忆的管理说明和链接导航；[capabilities.md](capabilities.md) 负责官方能力与最新教程的导读。
 - 真正的全局规则维护在本仓库 `claude/CLAUDE.md`，通过符号链接映射到 `~/.claude/CLAUDE.md`。
 - 换设备：`git clone` 本仓库后，用管理员 PowerShell 把 `~/.claude/CLAUDE.md` 符号链接到本设备克隆位置下的 `claude/CLAUDE.md`（把 `-Target` 换成本机实际克隆路径；本机 LAPTOP-A51RSRUJ 为 `C:\workspace\workstation`）：
   `New-Item -ItemType SymbolicLink -Path "$HOME\.claude\CLAUDE.md" -Target "<克隆路径>\claude\CLAUDE.md"`

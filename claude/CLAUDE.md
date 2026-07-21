@@ -1,5 +1,6 @@
 # Global instructions for Claude Code
 
+
 ## Language
 - Reply to me in Chinese (简体中文) by default. Keep technical terms, method
   names, variables, commands, config keys, and product names in English.
@@ -25,10 +26,8 @@ code projects. Once inside a repo, defer to its own `CLAUDE.md` / `README.md`.
 | Repo | Purpose | GitHub |
 | --- | --- | --- |
 | `dut-postdoc` | DUT postdoc research knowledge base; a Markdown wiki run in Karpathy's "LLM-Wiki" style (topology optimization / FEM / PIML) | brighthe/dut-postdoc |
+| `dut-institute-work` | Work management for the Dalian industrial-software institute (tasks, stage plans, progress logs, meeting notes); public repo, strict redaction discipline | brighthe/dut-institute-work |
 | `heliangos` | Personal hub: identity profile + WeChat communication/reply assistance | brighthe/heliangos |
-| `hlthesis` | Xiangtan University PhD dissertation and related materials | brighthe/hlthesis |
-| `structural-dynamics-software` | Structural-dynamics software project: tender/procurement docs + later source code | brighthe/structural-dynamics-software |
-| `faculty-interview-slides` | Faculty job-interview slides (research talk + teaching demo) | brighthe/faculty-interview-slides |
 | `workstation` | Config & tooling hub for cross-device migration | brighthe/workstation |
 
 ## Claude Code questions → consult the official docs first
