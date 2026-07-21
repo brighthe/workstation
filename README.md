@@ -29,10 +29,14 @@ workstation/
 git clone git@github.com:brighthe/workstation.git C:\workspace\workstation
 ```
 
-3. 对想恢复的模块，读它的 `README.md` 并执行。例如恢复 Claude Code 全局指令：
+3. 运行共享初始化脚本，为 Codex 和 Claude Code 建立指向本仓库的全局指令符号链接：
 
-> 读 `claude/README.md`，用管理员 PowerShell 把 `~/.claude/CLAUDE.md` 符号链接到本仓库
-> `claude/CLAUDE.md`，即全局生效。
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File .\scripts\setup-global-instruction-links.ps1
+```
+
+脚本会根据自身位置自动识别仓库根目录，并在链接已经正确时保持不变。如果目标位置已有普通文件或指向其他位置的链接，脚本会在不修改任何内容的情况下停止；请先检查并手动备份。完成后可继续阅读各模块的 `README.md` 了解具体管理方式。Windows 创建符号链接需要启用 Developer Mode 或使用管理员 PowerShell；Codex hook 信任仍需在每台设备上单独确认。
 
 ## 模块清单
 
