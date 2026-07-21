@@ -12,6 +12,7 @@
 ```
 workstation/
 ├── README.md      # 本文件：总览 + 新机迁移入口
+├── git/           # 模块：Git / SSH 环境跨设备迁移（原生 git、SSH over 443、新机一次性配置）
 ├── claude/        # 模块：Claude Code 全局指令（CLAUDE.md）与记忆管理说明
 └── codex/         # 模块：Codex 全局指令（AGENTS.md）与记忆管理说明
 ```
@@ -21,11 +22,14 @@ workstation/
 
 ## 新机器快速开始
 
-```bash
-gh repo clone brighthe/workstation
+1. **先配 git / SSH 环境**（第 0 步，其余一切的前提）：照 [git/README.md](git/README.md) 走 §0 启动语；新机器上还没有本仓库时，让 agent 直接读它的 raw 版 `https://raw.githubusercontent.com/brighthe/workstation/main/git/README.md`（本仓库 Public、匿名可读）。
+2. 克隆本仓库（SSH over 443 已在上一步配好；沙箱环境无 `gh`，统一用 git）：
+
+```powershell
+git clone git@github.com:brighthe/workstation.git C:\workspace\workstation
 ```
 
-然后对想恢复的模块，读它的 `README.md` 并执行。例如恢复 Claude Code 全局指令：
+3. 对想恢复的模块，读它的 `README.md` 并执行。例如恢复 Claude Code 全局指令：
 
 > 读 `claude/README.md`，用管理员 PowerShell 把 `~/.claude/CLAUDE.md` 符号链接到本仓库
 > `claude/CLAUDE.md`，即全局生效。
@@ -34,5 +38,6 @@ gh repo clone brighthe/workstation
 
 | 模块 | 说明 | 跨设备方式 |
 |---|---|---|
+| [git](git/README.md) | Git / SSH 环境：原生 git、SSH over 443、新机一次性配置、各机现状与排错 | 本仓库（git），纯文档；新机经 raw URL 引导 |
 | [claude](claude/README.md) | Claude Code 全局指令（CLAUDE.md）与记忆管理 | 本仓库（git）+ 符号链接到 `~/.claude/CLAUDE.md` |
 | [codex](codex/README.md) | Codex 全局指令（AGENTS.md）与记忆管理 | 本仓库（git）+ 链接到 `~/.codex/AGENTS.md` |
