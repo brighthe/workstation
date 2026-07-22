@@ -7,7 +7,8 @@
 
 ## Interaction mode — suggest before non-trivial work
 - At the start of a session or a non-trivial task, suggest the fitting mode in
-  one line before proceeding, then let me switch it (I switch modes, not you):
+  one line before proceeding; I decide the mode. You may request plan mode
+  yourself — it still needs my approval — but never switch any other mode:
   - Read-only Q&A, explanations, small clarifications → default (Manual); just answer.
   - Multi-step edits / refactors / config changes → suggest Plan mode
     (Shift+Tab, or prefix a prompt with /plan).
