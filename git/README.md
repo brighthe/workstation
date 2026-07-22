@@ -2,13 +2,13 @@
 
 任何新机器照本文件配置**一次**，即可对 brighthe 名下所有 GitHub 仓库 clone / commit / push——密钥与 SSH 配置都是**账户级、机器级**的，与具体仓库无关。
 
-> 各仓库自己的提交纪律（脱敏要求、分支约定、add 范围等）**不在本文件**，见各仓库内的工作流文档（如 heliangos 的 `ai/git-workflow.md`）。
+> 各仓库自己的提交纪律（脱敏要求、分支约定、add 范围等）**不在本文件**，见各仓库内的工作流文档（如 heliangos 的 `ai/git-workflow.md`）。但所有仓库共同遵守一条基本规则：**每次 push 前必须先按 §4 同步并整合远程最新提交**。
 
 ## §0 新机器启动语（复制即用）
 
 **推荐做法：把本文件发给新机器上的 agent，附这句话**（把 `<仓库名>` 换成要克隆的仓库，如 `workstation`、`heliangos`）：
 
-> 照这份 README（重点 §1、§3）把这台 Windows 电脑的 git 环境配好，用 PowerShell 原生 git（别用 cygwin/MSYS）。配到需要加公钥那步，把 id_ed25519.pub 打印给我、停下等我加到 GitHub。加好后把 git@github.com:brighthe/<仓库名>.git（SSH）clone 到 C:\workspace，并 ls-remote 验证鉴权。
+> 照这份 README（重点 §1、§3、§4）把这台 Windows 电脑的 git 环境配好，用 PowerShell 原生 git（别用 cygwin/MSYS）。配到需要加公钥那步，把 id_ed25519.pub 打印给我、停下等我加到 GitHub。加好后把 git@github.com:brighthe/<仓库名>.git（SSH）clone 到 C:\workspace，并 ls-remote 验证鉴权。以后每次 push 前，都先按 §4 同步并整合远程最新提交。
 
 - 手上没有本文件、但有网时，可改让 agent 先读它的 raw 版：`https://raw.githubusercontent.com/brighthe/workstation/main/git/README.md`。本仓库 Public、匿名可读，**不依赖 SSH 已配好**——这正是新机器第一步能启动的前提。
 - §1/§3 是**账户级、每台机器配一次即终身通用**；之后在这台机上再拉你名下别的仓库，只需把仓库名一换。
@@ -48,7 +48,19 @@ git/ssh 操作要用**操作系统原生 git**——它的 ssh 会去读 `~/.ssh
 5. **配置提交身份**（账户级，一次即所有仓库通用；缺这步 commit 会报 `Author identity unknown`）：
    `git config --global user.name "brighthe"`、`git config --global user.email "brighthe98@gmail.com"`。
 
-## §4 各机器现状（参考）
+## §4 日常同步与推送（每次 push 前必做）
+
+一次同步只能确保本次推送基于同步时的远程最新状态，不能阻止其他协作者随后继续更新远程。因此，**每次 `git push` 前都必须先整合远程最新提交**：
+
+1. 运行 `git status --short --branch`，确认本地修改已提交、工作区适合 rebase，且没有未解决的冲突。
+2. 运行 `git pull --rebase`，把本地提交重放到远程最新提交之上。
+3. 如有冲突，解决冲突并 `git add <文件>`，然后运行 `git rebase --continue`；不要绕过冲突直接 push。如需放弃本次整合，运行 `git rebase --abort`。
+4. 按仓库自己的工作流完成必要检查，再运行 `git push`。
+5. 如果同步后远程再次前进、导致 push 被拒绝，重新执行上述同步流程后再推送。
+
+**不要用普通 `git push --force` 绕过远程更新或冲突。** 如确需改写远程历史，必须遵守对应仓库的专门规则。
+
+## §5 各机器现状（参考）
 
 ### heliang-windows-laptop
 
@@ -58,7 +70,7 @@ git/ssh 操作要用**操作系统原生 git**——它的 ssh 会去读 `~/.ssh
 
 > 新增设备后，在此追加一小节记录该机现状（密钥位置、公钥标题、特殊之处）。
 
-## §5 排错速查
+## §6 排错速查
 
 - `could not read Username for 'https://github.com'` → 远程是 HTTPS；`git remote set-url origin git@github.com:brighthe/<仓库名>.git`。
 - `Connection closed by ... port 22` → 没走 443；检查 `~/.ssh/config` 的 443 段（§3）。
