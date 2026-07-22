@@ -32,7 +32,7 @@ if ($pathText -match '(?i)claude[\\/]CLAUDE\.md$') {
 }
 if ($pathText -match '(?i)codex[\\/]AGENTS\.md$') {
     $targets += [pscustomobject]@{
-        File = 'codex/AGENTS.md'; Readme = 'codex/README.md'; Block = '当前 AGENTS.md 内容中文说明'
+        File = 'codex/AGENTS.md'; Readme = 'codex/README.md'; Block = 'AGENTS.md 内容'
     }
 }
 

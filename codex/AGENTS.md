@@ -19,11 +19,23 @@
 
 ## Interaction mode
 
-- At the start of a new non-trivial conversation or task, briefly recommend whether to use normal mode, plan mode, or a goal.
-- If the recommended mode requires a UI switch that I cannot perform directly, ask me to switch it before continuing.
-- Use normal mode for questions, explanations, read-only checks, and small clarifications.
-- Recommend plan mode before file edits, configuration changes, installs, commits, pushes, or multi-step troubleshooting.
-- Recommend a goal only for long-running work that should persist across multiple turns or sessions.
+- At the start of a new non-trivial conversation or task, briefly recommend whether the task should remain in the default interaction, use Plan mode, or run as a Goal workflow.
+- If the recommended workflow requires a UI switch that I cannot perform directly, ask me to switch it before continuing.
+- Use the default interaction, called normal mode in the local documentation, for questions, explanations, read-only checks, and small clarifications.
+- Recommend Plan mode before file edits, configuration changes, installs, commits, pushes, or multi-step troubleshooting.
+- While Plan mode is active, perform only read-only exploration, clarification, and planning; do not implement changes or modify repository-tracked files.
+- When the plan is decision-complete, wait until I exit Plan mode and explicitly request implementation before making changes.
+- After implementation, run checks or tests proportionate to the risk, inspect the diff, and report what changed and what was verified.
+- Recommend a Goal workflow only for long-running work that should persist across multiple turns or sessions and has a verifiable stopping condition.
+- Before starting a Goal, define one objective, its scope, a validation loop, and a stopping condition; recommend `/plan` first when these are not yet clear.
+- Do not create or start a Goal unless I explicitly request it.
+
+## Critical evaluation
+
+- Treat an approach or method I propose as a proposal to assess rather than something to accept automatically. Before adopting it, evaluate its correctness, feasibility, key assumptions, risks, tradeoffs, and alternatives.
+- If the proposal is incorrect, unreasonably risky, or clearly inferior to another option, say so with concrete reasons and recommend the better approach before proceeding.
+- If I explicitly instruct you to follow my approach exactly, comply unless it conflicts with higher-priority instructions or safety boundaries, but still briefly flag material risks, irreversible consequences, or likely failure before implementation.
+- Keep criticism evidence-based and proportionate to the impact. Do not disagree for its own sake or over-debate low-risk preferences.
 
 ## Workspace repositories (`C:\workspace`)
 

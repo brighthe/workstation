@@ -1,6 +1,6 @@
 # Codex 能力与官方教程导读
 
-这个文档是给我自己看的，用来帮助我理解 Codex 官方推出的能力和最新教程。文档结构：模式选择 → 能力清单 → 跟进机制。
+这个文档是给我自己看的，用来帮助我理解 Codex 官方推出的能力和最新教程。文档结构：产品入口选择 → 任务执行方式 → 执行环境 → 能力清单 → 跟进机制。
 
 定位（与本目录另外两个文件的分工）：
 
@@ -10,11 +10,11 @@
 
 维护原则：不做官方文档的镜像；只放"筛选 + 一句话说明 + 入口链接 + 我的使用状态"。
 
-## 1. Chat、Work 与 Codex：什么时候使用？
+## 1. 产品入口：Chat、Work 与 Codex
 
 一句话：**需要答案时用 Chat，需要交付物时用 Work，需要改变项目状态时用 Codex。**
 
-| 模式 | 什么时候使用 | 主要结果 |
+| 入口 | 什么时候使用 | 主要结果 |
 | :--- | :--- | :--- |
 | **Chat** | 提问、学习、讨论、比较方案、头脑风暴，主要需要即时回答 | 答案、解释、建议、草稿 |
 | **Work** | 已有目标、文件或资料，希望完成研究、分析和内容制作 | 报告、文档、表格、演示文稿、Sites |
@@ -43,7 +43,31 @@
 
 产品界面、平台支持和具体能力可能随版本调整，涉及当前行为时以 OpenAI 官方最新文档为准。
 
-## 2. 能力清单（带个人状态）
+## 2. Codex 任务执行方式：普通对话、Plan mode 与 Goal
+
+一句话：**普通对话用于直接协作，Plan mode 用于先规划多步骤工作，Goal 用于围绕可验证的停止条件持续推进。**
+
+| 执行方式 | 什么时候使用 | 如何进入与退出 | 官方入口 |
+| :--- | :--- | :--- | :--- |
+| **普通对话**（本仓库简称“普通模式”） | 问答、解释、只读检查、小澄清和范围明确的短任务 | 默认状态，不需要专门命令 | “普通模式”不是官方正式命令名称 |
+| **Plan mode** | 需要先研究现状、澄清取舍并形成多步骤实施方案 | 可在会话中途使用 `/plan` 开启；再次使用 `/plan` 可退出 | [Slash commands](https://learn.chatgpt.com/docs/reference/slash-commands) |
+| **Goal** | 目标明确、耗时较长，并且具有验证循环和停止条件的持续工作 | 可在会话中途使用 `/goal <目标>` 创建；使用 `/goal` 查看，使用 `/goal pause`、`/goal resume` 或 `/goal clear` 控制生命周期 | [Follow a goal](https://learn.chatgpt.com/use-cases/follow-goals) |
+
+普通对话和 Plan mode 描述当前的协作方式；Goal 则为任务增加持续目标及其生命周期，因此不是与 Plan mode 完全同类的开关。Plan mode 与 Goal 均不要求在会话开始时指定。官方建议先用 `/plan` 塑造清晰的 Goal，但这不是创建 Goal 的必需步骤。完整命令列表参见 [Slash commands](https://learn.chatgpt.com/docs/reference/slash-commands)。
+
+## 3. Codex 执行环境：Local、Worktree 与 Cloud
+
+一句话：**Local 直接使用当前项目，Worktree 隔离本地改动，Cloud 在已配置的远程环境中运行。**
+
+| 环境 | 运行位置与隔离方式 | 什么时候使用 |
+| :--- | :--- | :--- |
+| **Local** | 在当前项目目录中直接工作 | 希望立即使用当前工作区及其未提交状态 |
+| **Worktree** | 在本机创建独立的 Git worktree | 希望隔离改动，或并行处理不会相互干扰的任务 |
+| **Cloud** | 在已配置的云端环境中远程运行 | 需要远程执行，或不希望占用当前本地工作区 |
+
+Local 和 Worktree 都在本机运行；环境选项是否可用取决于当前界面和配置。参见官方 [Codex environments](https://learn.chatgpt.com/docs/environments/modes)。
+
+## 4. 能力清单（带个人状态）
 
 状态取值：**在用** / 试过 / 想试 / 暂不需要 / 待标注。
 
@@ -58,7 +82,7 @@
 | Hooks | 事件钩子（高级配置） | [config-advanced#hooks](https://developers.openai.com/codex/config-advanced#hooks) | 待标注 |
 | Windows sandbox | Windows 下的沙箱行为 | [windows](https://developers.openai.com/codex/windows) | 待标注 |
 
-## 3. 跟进机制（官方最新动态从哪看）
+## 5. 跟进机制（官方最新动态从哪看）
 
 ### 最新一期官方周报
 
