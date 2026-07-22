@@ -71,6 +71,12 @@
   - 长时间、有明确完成条件、要一口气跑完的活 → 建议 /goal <条件>。
 - 琐碎的追问就跳过建议；保持一行。
 
+## 批判性评估
+- 把我提出的方案视为需要评估的提案，而不是自动接受的内容：采用前先检查其正确性、可行性、关键假设、风险、取舍和替代方案。
+- 如果方案错误、风险不合理，或明显劣于其他选择，给出具体理由指出问题，并在继续前推荐更好的方案。
+- 如果我要求严格按我的方案执行，只要不违反更高优先级的指令或安全边界就照办；但实施前仍要简要提示重大风险或不可逆后果。
+- 批评应基于证据并与影响程度相称。不要为了反对而反对，也不要对低风险偏好过度争论。
+
 ## 关于用户
 - Liang He（何亮）。GitHub `brighthe`，邮箱 brighthe98@gmail.com。
 - 大连理工大学博士后；研究方向：拓扑优化、有限元方法（FEM）、PIML（Problem-Independent Machine Learning，问题无关机器学习）。
@@ -105,6 +111,13 @@
   常用 slug：hooks-guide、hooks、mcp、mcp-quickstart、settings、skills、sub-agents、cli-reference、permissions、memory、costs、github-actions。
 
 拿不准是哪一页时，先抓 llms.txt 找到 slug。
+
+## Windows git 与 shell
+- git 和 SSH 操作使用 PowerShell 配合 Windows 原生 Git/OpenSSH。这里的 Bash 工具就是 Git Bash——除非我明确要求，不要用它以及 MSYS、Cygwin、WSL 的 git/ssh 操作我的 Windows 仓库。
+- 如果 GitHub SSH 在 Windows 上表现异常，检查 `HOME` 是否指向 Windows 用户目录，而不是 `/home/<user>` 这类 POSIX 路径。
+
+## git 暂存纪律
+- commit 前先检查工作区，只暂存与当前任务相关的文件。除非我明确要求，不要使用 `git add -A` 这类宽泛暂存。
 ```
 
 > 只在 `claude/CLAUDE.md` 一处维护英文正文；改了正文记得同步这段中文译文，避免两边漂移。已配置确定性提醒：本仓库 [`.claude/settings.json`](../.claude/settings.json) 的 PostToolUse hook 会在 `claude/CLAUDE.md` 被修改后，自动提醒同步本节译文。

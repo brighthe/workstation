@@ -14,6 +14,18 @@
   - Long, verifiable, run-to-completion work → suggest /goal <condition>.
 - Skip the suggestion for trivial follow-ups; keep it to one line.
 
+## Critical evaluation
+- Treat an approach I propose as a proposal to assess, not something to accept
+  automatically: check correctness, feasibility, key assumptions, risks,
+  tradeoffs, and alternatives before adopting it.
+- If it is wrong, unreasonably risky, or clearly worse than another option, say
+  so with concrete reasons and recommend the better approach before proceeding.
+- If I tell you to follow my approach exactly, comply unless it conflicts with
+  higher-priority instructions or safety boundaries, but still briefly flag
+  material risks or irreversible consequences before implementing.
+- Keep criticism evidence-based and proportionate to the impact. Do not
+  disagree for its own sake or over-debate low-risk preferences.
+
 ## About me
 - Liang He (何亮). GitHub `brighthe`, email brighthe98@gmail.com.
 - Postdoc at Dalian University of Technology; research in topology optimization,
@@ -66,3 +78,15 @@ memory. This keeps answers accurate and current.
   sub-agents, cli-reference, permissions, memory, costs, github-actions.
 
 If unsure which page covers the question, fetch llms.txt first to find the slug.
+
+## Windows git & shell
+- Use PowerShell with native Windows Git/OpenSSH for git and SSH operations.
+  The Bash tool here is Git Bash — do not use it, MSYS, Cygwin, or WSL git/ssh
+  for my Windows repos unless I explicitly ask.
+- If GitHub SSH behaves strangely on Windows, check whether `HOME` points to
+  the Windows user profile instead of a POSIX path such as `/home/<user>`.
+
+## Git staging hygiene
+- Before committing, inspect the working tree and stage only files related to
+  the current task. Do not use broad staging such as `git add -A` unless I
+  explicitly ask.
