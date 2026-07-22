@@ -17,6 +17,7 @@ workstation/
 ├── claude/        # 模块：Claude Code 全局指令（CLAUDE.md）、记忆管理说明、能力导读
 ├── codex/         # 模块：Codex 全局指令（AGENTS.md）、记忆管理说明、能力导读
 ├── scripts/       # 中立的跨工具公共脚本（例如指令译文同步提醒）
+├── remote-access/ # 模块：Windows + Tailscale + OpenSSH 三节点全互联
 └── hardware/      # 模块：硬件维护流程（台式机清灰指南 + 工具清单）
 ```
 
@@ -51,4 +52,5 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 | [git](git/README.md) | Git / SSH 环境：原生 git、SSH over 443、新机一次性配置、各机现状与排错 | 本仓库（git），纯文档；新机经 raw URL 引导 |
 | [claude](claude/README.md) | Claude Code 全局指令（CLAUDE.md）与记忆管理；[能力导读](claude/capabilities.md) | 本仓库（git）+ 符号链接到 `~/.claude/CLAUDE.md` |
 | [codex](codex/README.md) | Codex 全局指令（AGENTS.md）与记忆管理；[能力导读](codex/capabilities.md) | 本仓库（git）+ 链接到 `~/.codex/AGENTS.md` |
+| [remote-access](remote-access/README.md) | Windows 设备通过 Tailscale + OpenSSH 两两远程终端；密钥隔离、节点初始化、验证与恢复 | 本仓库只保存流程和脚本；私钥留在各设备 `~/.ssh`，真实 inventory 不入库 |
 | [hardware](hardware/README.md) | 硬件维护流程：台式主机（RTX 5070 Ti）清灰指南与工具清单 | 本仓库（git），纯文档，无需链接 |

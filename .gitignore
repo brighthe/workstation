@@ -6,3 +6,12 @@ projects/
 
 # Obsidian auto-generated editor state
 .obsidian/
+
+# remote-access local state and credentials (the repository is public)
+remote-access/inventory.local.psd1
+remote-access/state/
+remote-access/backups/
+remote-access/**/id_ed25519*
+remote-access/**/authorized_keys
+remote-access/**/*.key
+remote-access/**/*.pem
