@@ -16,7 +16,7 @@ workstation/
 ├── git/           # 模块：Git / SSH 环境跨设备迁移（原生 git、SSH over 443、新机一次性配置）
 ├── claude/        # 模块：Claude Code 全局指令（CLAUDE.md）、记忆管理说明、能力导读
 ├── codex/         # 模块：Codex 全局指令（AGENTS.md）、记忆管理说明、能力导读
-├── scripts/       # 中立的跨工具公共脚本（例如指令译文同步提醒）
+├── scripts/       # 中立的跨工具公共脚本（全局指令链接、iCloud 定时同步等）
 ├── remote-access/ # 模块：Windows + Tailscale + OpenSSH 三节点全互联
 └── hardware/      # 模块：硬件维护流程（台式机清灰指南 + 工具清单）
 ```
@@ -45,6 +45,8 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 
 脚本会根据自身位置自动识别仓库根目录，并在链接已经正确时保持不变。如果目标位置已有普通文件或指向其他位置的链接，脚本会在不修改任何内容的情况下停止；请先检查并手动备份。完成后可继续阅读各模块的 `README.md` 了解具体管理方式。Windows 创建符号链接需要启用 Developer Mode 或使用管理员 PowerShell；Codex hook 信任仍需在每台设备上单独确认。
 
+如需每天将 `dut-postdoc`、`dut-institute-work` 和 `heliangos` 镜像到 iCloud Obsidian，按 [scripts/icloud-sync/README.md](scripts/icloud-sync/README.md) 注册 Windows 定时任务。该配置可随本仓库迁移，但任何时刻只应在一台电脑启用。
+
 ## 模块清单
 
 | 模块 | 说明 | 跨设备方式 |
@@ -54,3 +56,4 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 | [codex](codex/README.md) | Codex 全局指令（AGENTS.md）与记忆管理；[能力导读](codex/capabilities.md) | 本仓库（git）+ 链接到 `~/.codex/AGENTS.md` |
 | [remote-access](remote-access/README.md) | Windows 设备通过 Tailscale + OpenSSH 两两远程终端；密钥隔离、节点初始化、验证与恢复 | 本仓库只保存流程和脚本；私钥留在各设备 `~/.ssh`，真实 inventory 不入库 |
 | [hardware](hardware/README.md) | 硬件维护流程：台式主机（RTX 5070 Ti）清灰指南与工具清单 | 本仓库（git），纯文档，无需链接 |
+| [scripts/icloud-sync](scripts/icloud-sync/README.md) | 三个个人仓库到 iCloud Obsidian 的每日镜像同步与跨设备任务迁移 | Windows Task Scheduler；旧机卸载、新机一键安装 |
