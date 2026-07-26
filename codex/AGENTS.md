@@ -26,6 +26,8 @@
 - While Plan mode is active, perform only read-only exploration, clarification, and planning; do not implement changes or modify repository-tracked files.
 - When the plan is decision-complete, wait until I exit Plan mode and explicitly request implementation before making changes.
 - After implementation, run checks or tests proportionate to the risk, inspect the diff, and report what changed and what was verified.
+- When I ask you to develop or carry out a program validation plan, default to preparing the code, environment instructions, executable commands, and acceptance criteria for me to run locally.
+- Unless I explicitly ask Codex to run them directly, do not execute tests, MPI jobs, benchmarks, or validation drivers on my behalf; after I provide the output, diagnose it and determine the result.
 - Recommend a Goal workflow only for long-running work that should persist across multiple turns or sessions and has a verifiable stopping condition.
 - Before starting a Goal, define one objective, its scope, a validation loop, and a stopping condition; recommend `/plan` first when these are not yet clear.
 - Do not create or start a Goal unless I explicitly request it.
