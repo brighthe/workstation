@@ -70,7 +70,7 @@
 | Worktrees 并行会话 | 多个会话在各自 git worktree 里互不干扰（[用法速记](#用法速记worktrees)） | [worktrees](https://code.claude.com/docs/zh-CN/worktrees) | 想试 |
 | Agent teams | 编排一组会话协作完成大任务 | [agent-teams](https://code.claude.com/docs/zh-CN/agent-teams) | 待标注 |
 | Code review | `/code-review` 审查当前分支或 PR | [code-review](https://code.claude.com/docs/zh-CN/code-review) | 待标注 |
-| 定时任务 / Routines | 按 cron 计划自动运行 prompt | [scheduled-tasks](https://code.claude.com/docs/zh-CN/scheduled-tasks) | 待标注 |
+| 定时任务 / Routines | 按 cron 计划自动运行 prompt | [scheduled-tasks](https://code.claude.com/docs/zh-CN/scheduled-tasks) | 在用 |
 | Headless / SDK | 脚本里程序化调用 Claude Code | [headless](https://code.claude.com/docs/zh-CN/headless) | 暂不需要 |
 | Sandbox | 沙箱化 Bash，降低权限弹窗与风险 | [sandboxing](https://code.claude.com/docs/zh-CN/sandboxing) | 待标注 |
 | Fast mode | Opus 提速输出（/fast 切换） | [fast-mode](https://code.claude.com/docs/zh-CN/fast-mode) | 待标注 |
@@ -103,29 +103,29 @@ worktree 里提交
 
 ## 3. 跟进机制（官方最新动态从哪看）
 
-### 最新一期官方周报
+### 三个信息源
 
-- **期次**：2026-07-13 至 2026-07-17（Week 29，v2.1.207 → v2.1.212）
-- **核对日期**：2026-07-21
-- **官方原文**：[What's New · Week 29](https://code.claude.com/docs/en/whats-new/2026-w29)
+粒度不同、内容互有重叠，分工是——**changelog 保证不漏，news 补背景，What's New 事后归档**：
 
-#### 本期重点
+| 源 | 覆盖 | 特点 |
+| :--- | :--- | :--- |
+| [What's New](https://code.claude.com/docs/en/whats-new) | 每周一期官方精选 | 有解读和示例，但滞后。**索引页最上面永远是最新一期**；期次详情页（如 `/2026-w29`）内容固定、不再变化，盯着它就永远发现不了新一期 |
+| [Changelog](https://code.claude.com/docs/en/changelog) | 逐版本 | 最快最全，但混大量 bug fix，需要筛 |
+| [Anthropic 新闻](https://www.anthropic.com/news) | 产品与模型公告 | 不限 Claude Code；模型发布这类大事在这里最完整 |
 
-- **Artifacts 可调用 MCP 连接器｜web**：发布出去的 artifact 页面在被查看时可实时调用查看者自己的 MCP 连接器——dashboard 显示活数据而非构建时的快照；同周还加了公开分享链接和 Team/Enterprise 协作编辑角色。适合把研究数据做成"常看常新"的页面。[官方说明](https://code.claude.com/docs/en/artifacts)
-- **Screen reader mode｜CLI**：`claude --ax-screen-reader` 把终端界面换成线性纯文本输出，适配 VoiceOver/NVDA 等读屏器。[官方说明](https://code.claude.com/docs/en/accessibility)
-- **`/fork` 语义变化｜CLI**：`/fork` 现在把对话复制到独立后台会话（在 `claude agents` 中有自己的条目）；原来在会话内派生子代理的行为改名为 `/subtask`。老习惯需要更新。
-- **其余要点**：超 2 分钟的 MCP 调用自动转后台（`CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS` 可调）；"Always allow" 权限规则改存仓库根、跨 worktree 生效；WebSearch 与子代理派生默认每会话上限 200 次，防循环失控。
+一律读英文页，`/zh-CN/` 翻译会滞后。
 
-### 周报后重要增量
+### 最新动态
 
-- **2026-07-19｜v2.1.215**：`/verify` 和 `/code-review` 不再被 Claude 自动运行，需要显式调用——如果依赖过"改完自动 review"的行为，现在要自己敲命令。
-- **2026-07-18｜v2.1.214**：修复 Windows PowerShell 5.1 的权限检查绕过问题——Windows 用户（含本机）建议保持及时升级。
-- **2026-07-20｜v2.1.216**：新增 `sandbox.filesystem.disabled` 设置（保留网络管控、跳过文件系统隔离）；修复长会话多秒卡顿等一批问题。
+**核对日期：2026-07-26**
 
-### 固定信息源
+三个源汇总后按日期倒序，每条注明出处。只记**会改变我实际使用方法**的变化——新命令、行为变更、破坏性变更、模型变更、Windows 相关、权限与安全；纯 bug 修复、内部重构、与 Claude Code 无关的产品新闻不记。滚动保留约一个月，更早的条目要么已经内化、要么升进第 2 节能力清单。
 
-- **What's New（官方周报）**：https://code.claude.com/docs/en/whats-new
-- **Changelog**：https://code.claude.com/docs/en/changelog
-- **Anthropic 官方新闻**：https://www.anthropic.com/news
+- **2026-07-24｜v2.1.219**：**Claude Opus 5**（`claude-opus-5`）成为默认 Opus 模型（1M context，fast mode $10/$50 per MTok），`/fast` 同时移除 Opus 4.7 支持；嵌套 subagent 默认深度由 1 提到 3（`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1` 可关回）；新增 `sandbox.network.strictAllowlist`（沙箱命令直接拒绝非白名单主机，不再弹窗）和 `DirectoryAdded` hook。〔[news](https://www.anthropic.com/news/claude-opus-5)｜[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-07-22｜v2.1.218**：`/code-review` 改为后台 subagent 运行，审查过程不再占满主对话上下文；同版修复 Windows 路径损坏问题。〔[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-07-20｜v2.1.216**：新增 `sandbox.filesystem.disabled` 设置（保留网络管控、跳过文件系统隔离）。〔[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-07-19｜v2.1.215**：`/verify` 和 `/code-review` 不再被 Claude 自动运行，需要显式调用——依赖过"改完自动 review"的话，现在要自己敲命令。〔[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-07-18｜v2.1.214**：修复 Windows PowerShell 5.1 的权限检查绕过问题——Windows 用户（含本机）建议保持及时升级。〔[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-07-13~17｜Week 29（v2.1.207–212）**：**`/fork` 语义变化**——现在是把对话复制到独立后台会话（在 `claude agents` 里有自己的条目），原来会话内派生子代理的行为改名 `/subtask`，老习惯需要更新；Artifacts 可调用查看者自己的 MCP 连接器（dashboard 显示活数据而非构建时快照）并支持公开分享链接；`claude --ax-screen-reader` 提供读屏器模式；超 2 分钟的 MCP 调用自动转后台（`CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS` 可调）；"Always allow" 权限规则改存仓库根、跨 worktree 生效。〔[Week 29](https://code.claude.com/docs/en/whats-new/2026-w29)〕
 
-维护方式：云端定时任务 `claude-capabilities-cloud-daily-update`（每天 9:00，在 Anthropic 云端沙箱运行，不依赖本机开机，消耗 Claude Code 订阅额度）自动读取 What's New 最前面的期次——出现新一期时整体替换"最新一期官方周报"导读，同时检查周报截止日之后的 changelog 和 Anthropic 新闻并更新"周报后重要增量"；新能力补进第 2 节清单（状态填"待标注"）。只记录会改变实际使用方法的重要变化；没有实质变化时不做任何改动。**状态列始终由我手动维护**；有实质更新时任务开 PR（分支 `capabilities/claude-daily-<日期>`），由我审阅后合并，不直接推 `main`。
+维护方式：定时任务 `claude-capabilities-cloud-daily-update`（每天 9:00，Anthropic 云端沙箱运行，消耗 Claude Code 订阅额度）每天读这三个源，把新出现的、会改变使用方法的变化按上述规则追加进"最新动态"并注明出处，同时刷新核对日期；发现有稳定官方入口的新能力时补进第 2 节清单，状态填"待标注"。没有实质变化时只刷新核对日期。取数失败必须显式报错，不得当成"无变化"。**状态列始终由我手动维护**；有实质更新时开 PR（分支 `capabilities/claude-daily-<日期>`），由我审阅后合并，不直接推 `main`。
