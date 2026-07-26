@@ -128,4 +128,4 @@ worktree 里提交
 - **Changelog**：https://code.claude.com/docs/en/changelog
 - **Anthropic 官方新闻**：https://www.anthropic.com/news
 
-维护方式：定时任务 `claude-capabilities-weekly-update`（每周一 9:00，桌面应用打开时运行）自动读取 What's New 最前面的期次——出现新一期时整体替换"最新一期官方周报"导读，同时检查周报截止日之后的 changelog 和 Anthropic 新闻并更新"周报后重要增量"；新能力补进第 2 节清单（状态填"待标注"）。只记录会改变实际使用方法的重要变化；没有实质变化时只刷新核对日期。**状态列始终由我手动维护**；文档改动不自动 commit，由我审阅后提交。
+维护方式：云端定时任务 `claude-capabilities-cloud-daily-update`（每天 9:00，在 Anthropic 云端沙箱运行，不依赖本机开机，消耗 Claude Code 订阅额度）自动读取 What's New 最前面的期次——出现新一期时整体替换"最新一期官方周报"导读，同时检查周报截止日之后的 changelog 和 Anthropic 新闻并更新"周报后重要增量"；新能力补进第 2 节清单（状态填"待标注"）。只记录会改变实际使用方法的重要变化；没有实质变化时不做任何改动。**状态列始终由我手动维护**；有实质更新时任务开 PR（分支 `capabilities/claude-daily-<日期>`），由我审阅后合并，不直接推 `main`。
