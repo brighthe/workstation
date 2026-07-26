@@ -81,24 +81,26 @@ Local 和 Worktree 都在本机运行；环境选项是否可用取决于当前�
 | config.toml | 配置参考 | [config-reference](https://developers.openai.com/codex/config-reference) | 待标注 |
 | Hooks | 事件钩子（高级配置） | [config-advanced#hooks](https://developers.openai.com/codex/config-advanced#hooks) | 待标注 |
 | Windows sandbox | Windows 下的沙箱行为 | [windows](https://developers.openai.com/codex/windows) | 待标注 |
+| Scheduled tasks | 按计划在后台运行一次性或周期性任务 | [automations](https://learn.chatgpt.com/docs/automations?surface=app) | 待标注 |
+| ChatGPT Voice | 在桌面应用中通过语音发起、检查和引导 Chat、Work 与 Codex 任务 | [voice](https://learn.chatgpt.com/docs/features/voice) | 待标注 |
+| 多文件夹本地项目 | 在一个本地项目中关联多个相关文件夹并指定主文件夹 | [projects](https://learn.chatgpt.com/docs/projects) | 待标注 |
 
 ## 5. 跟进机制（官方最新动态从哪看）
 
 ### 最新一期官方周报
 
-- **期次**：2026-07-06 至 2026-07-10
-- **核对日期**：2026-07-21
+- **期次**：2026-07-20 至 2026-07-24
+- **核对日期**：2026-07-26
 - **官方原文**：[What's new](https://learn.chatgpt.com/docs/whats-new)
 
 #### 本期重点
 
-- **Work mode｜ChatGPT**：适合目标明确、需要汇集文件与 Plugins 上下文并形成可审阅交付物的长任务；Scheduled Tasks 可以让这类工作按计划继续运行。[官方说明](https://learn.chatgpt.com/docs/get-started-with-work)
-- **模型选择｜Work、Codex CLI、Codex IDE extension**：官方按复杂度、速度和成本提供不同档位；实际选择应服从任务难度，不必长期固定到单一模型。[官方说明](https://learn.chatgpt.com/docs/models#recommended-models)
-- **桌面整合｜macOS、Windows**：Codex 已并入 ChatGPT desktop app，但仍保留独立的软件开发体验；桌面 Codex 支持 diff 行内编辑、侧边栏 PR review、更快的 Computer Use 和多仓库项目。[官方说明](https://learn.chatgpt.com/docs/app)
+- **ChatGPT Voice｜Chat、Work、Codex**：桌面应用新增由 GPT-Live 驱动的语音协作，可通过对话发起任务、检查进度或改变方向；macOS 开启 Screen context 后还可用 appshot 分享前台窗口。[官方说明](https://learn.chatgpt.com/docs/features/voice)
+- **多文件夹本地项目｜ChatGPT desktop app**：一个本地项目现在可以关联多个相关文件夹；主文件夹用于新任务、Git 操作以及自动发现 `AGENTS.md`、Skills 和 `config.toml`，其他文件夹仍可供搜索、读取和编辑。[官方说明](https://learn.chatgpt.com/docs/projects)
 
 ### 周报后重要增量
 
-- **2026-07-16｜ChatGPT desktop app｜macOS、Windows｜已面向所有计划上线**：桌面应用增加 ChatGPT/Codex 全局切换；ChatGPT 内区分 Chat 与 Work，并统一两者的 Recents、接入 Projects 和跨设备同步云端 Work。Codex 仍是独立视图，其工作流与历史记录不变。[官方发布说明](https://help.openai.com/en/articles/6825453-chatgpt-release-notes)
+截至 2026-07-26，暂无需要单独记录的重要增量。
 
 ### 固定信息源
 
@@ -108,6 +110,6 @@ Local 和 Worktree 都在本机运行；环境选项是否可用取决于当前�
 - **OpenAI release notes**：https://openai.com/products/release-notes/
 - **Codex 文档总览**：https://developers.openai.com/codex
 
-维护方式：每周读取 What's new 页面最前面的期次；出现新一期时替换上述周报导读，同时检查周报截止日之后的 changelog 和 release notes。只记录会改变实际使用方法的重要变化；没有实质变化时不修改本文档。
+维护方式：Scheduled task `codex-capabilities-daily-update` 每天 9:00 读取 What's new 页面最前面的期次，并检查 Codex changelog、Feature Maturity 和 OpenAI release notes。出现新一期时整体替换上述周报导读；周报截止日之后只记录会改变实际使用方法的重要增量；发现具有稳定官方入口的新能力时补进第 4 节清单，状态统一填“待标注”。没有实质变化时不修改本文档。**现有状态列始终由我手动维护**；文档改动不自动暂存、commit 或 push，由我审阅后提交。
 
 > 注意：`developers.openai.com/codex/*` 已 308 重定向到 `learn.chatgpt.com/docs/*`（2026-07 观察到），旧链接仍可达；若将来失效，以新域名为准。
