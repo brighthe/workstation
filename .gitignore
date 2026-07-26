@@ -15,3 +15,6 @@ remote-access/**/id_ed25519*
 remote-access/**/authorized_keys
 remote-access/**/*.key
 remote-access/**/*.pem
+
+# Claude Code 会话隔离用的 worktree 副本
+.claude/worktrees/

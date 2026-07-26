@@ -10,6 +10,8 @@
 
 维护原则：**不做官方文档的镜像或翻译**。官方页面每周更新，镜像必然过时；这里只放"筛选 + 一句话说明 + 入口链接 + 我的使用状态"，内容越薄越活得久。完整索引以 [llms.txt](https://code.claude.com/docs/llms.txt) 为准。
 
+**例外**：少数能力的取舍高度依赖我自己的仓库结构，官方页给不出答案，可以额外写一节"用法速记"，让我不必回查原文就能决策。速记只写三样稳定的东西——概念模型、我的选型判断、标准流程；**不抄参数、设置项和版本行为**，那些正是会变的部分，一律留链接。
+
 ## 1. 使用面与边界
 
 **Claude 的三种工作模式：Chat 用来想，Cowork 用来做事务，Code 用来改仓库。**
@@ -72,6 +74,32 @@
 | Headless / SDK | 脚本里程序化调用 Claude Code | [headless](https://code.claude.com/docs/zh-CN/headless) | 暂不需要 |
 | Sandbox | 沙箱化 Bash，降低权限弹窗与风险 | [sandboxing](https://code.claude.com/docs/zh-CN/sandboxing) | 待标注 |
 | Fast mode | Opus 提速输出（/fast 切换） | [fast-mode](https://code.claude.com/docs/zh-CN/fast-mode) | 待标注 |
+
+### 用法速记：Worktrees
+
+**是什么**：git 仓库的第二个工作目录，配一条自己的分支，与主检出**共享同一份 `.git` 和 remote**。所以它隔离的是**文件**，不是历史——worktree 里的提交，主检出立刻可见，不需要 push/fetch；但 worktree 里**未提交**的改动，主检出看不到。
+
+**怎么开**：桌面端新会话那排选择器（`Local` / 仓库 / 分支）里的 `worktree` 复选框；CLI 等价 `claude --worktree <name>`。默认建在 `<仓库根>/.claude/worktrees/<name>/`，分支名 `worktree-<name>`，从远程默认分支切出。
+
+**什么时候用**（这条是我的判断，官方不会替我回答）：
+
+- **用**：`mfleo`、`xihe` 这类代码仓，且确实要并行——一个会话做 feature、另一个修 bug，互不覆盖。
+- **不用**：`workstation`、`dut-postdoc`、`heliangos`、`dut-institute-work` 这类配置与知识库仓。改动小、基本单线程，有些还要立刻在真实路径生效；隔离副本的搬运成本高于收益，默认不勾。
+
+**标准循环**（改动的唯一正规回流路径）：
+
+```
+worktree 里提交
+  → 主检出 git merge worktree-<name>
+  → git worktree remove .claude/worktrees/<name>
+  → git branch -d worktree-<name>
+```
+
+`branch -d` 用小写 d 是有意的：它拒绝删除未合并的分支，等于免费加一道"真的合干净了吗"的检查。**不要用 patch 或复制文件搬改动**——丢历史、没有回退点，而且 `git diff` 默认不含未跟踪文件，新增的文件会被静默漏掉。
+
+**两个已知的坑**：worktree 是全新检出，`.env` 一类被 gitignore 的文件不会带过去（需要就在项目根加 `.worktreeinclude`）；另外 `.claude/worktrees/` 必须进各仓库的 `.gitignore`，否则隔离目录反过来污染主检出的状态。
+
+其余细节——基准分支设置、子代理隔离、自动清理策略、非 git 版本控制的 hook——以 [worktrees 官方页](https://code.claude.com/docs/en/worktrees) 为准，这些改得比较勤。
 
 ## 3. 跟进机制（官方最新动态从哪看）
 
