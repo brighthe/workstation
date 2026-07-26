@@ -67,7 +67,7 @@
 | Plan mode | 先出方案审批再动手（Shift+Tab） | [permission-modes](https://code.claude.com/docs/zh-CN/permission-modes) | 在用 |
 | /goal | 给定完成条件，长任务一口气跑完 | [goal](https://code.claude.com/docs/zh-CN/goal) | 在用 |
 | Checkpointing | 文件改动可回滚（Esc 两下 rewind） | [checkpointing](https://code.claude.com/docs/zh-CN/checkpointing) | 待标注 |
-| Worktrees 并行会话 | 多个会话在各自 git worktree 里互不干扰 | [worktrees](https://code.claude.com/docs/zh-CN/worktrees) | 待标注 |
+| Worktrees 并行会话 | 多个会话在各自 git worktree 里互不干扰（[用法速记](#用法速记worktrees)） | [worktrees](https://code.claude.com/docs/zh-CN/worktrees) | 想试 |
 | Agent teams | 编排一组会话协作完成大任务 | [agent-teams](https://code.claude.com/docs/zh-CN/agent-teams) | 待标注 |
 | Code review | `/code-review` 审查当前分支或 PR | [code-review](https://code.claude.com/docs/zh-CN/code-review) | 待标注 |
 | 定时任务 / Routines | 按 cron 计划自动运行 prompt | [scheduled-tasks](https://code.claude.com/docs/zh-CN/scheduled-tasks) | 待标注 |
