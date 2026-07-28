@@ -101,24 +101,15 @@
 - 如果我明确要求严格按照我的方案执行，只要不违反更高优先级的指令或安全边界，就按要求执行；但实施前仍应简要提示重大风险、不可逆后果或可能失败的结果。
 - 批评应基于证据并与影响程度相称。不要为了反对而反对，也不要对低风险偏好过度争论。
 
-## 工作区仓库（`C:\workspace`）
+## 工作区仓库治理（`C:\workspace`）
 
-本节只作为仓库的高层地图。进入某个仓库后，以该仓库自己的 `AGENTS.md` 和 `README.md` 为准。
+受管仓库的权威清单位于 `C:\workspace\workstation\workspace\repositories.json`。进行仓库发现、路由、所有权判断和预期 Git 远程检查时，读取该 manifest，不要在这里维护重复清单。
 
-| 仓库 | 类型 | 用途 | GitHub |
-| --- | --- | --- | --- |
-| `dut-postdoc` | 个人 | 大连理工大学博士后研究知识库，涵盖拓扑优化、FEM 和 PIML | `brighthe/dut-postdoc` |
-| `dut-institute-work` | 个人 | 大连工业软件研究院的工作管理；公开仓库，要求严格脱敏 | `brighthe/dut-institute-work` |
-| `heliangos` | 个人 | 个人中心，用于身份资料和微信沟通辅助 | `brighthe/heliangos` |
-| `workstation` | 个人 | 用于跨设备迁移的配置与工具中心 | `brighthe/workstation` |
-| `mfleo` | 企业 | 面向 CPU/GPU 平台的 Matrix-Free 线弹性算子工程中间件 | `suanhaitech/mfleo` |
-| `xihe` | 企业 | 覆盖超构透镜设计、仿真和制造的内部长期光学成像 CAX 平台 | `suanhaitech/xihe` |
+只有明确指定为受管科研工作区组成部分的仓库才应写入 manifest。不得自动添加临时、实验或无关的检出。添加或移除受管仓库时，应在同一任务中更新 manifest 及其公开的 workspace 文档。
 
-将 `suanhaitech` 下的仓库视为企业所有的工作。不要把企业代码、数据、凭据或内部文档复制到个人仓库中。
+进入某个仓库后，以该仓库自己的 `AGENTS.md` 和 `README.md` 为准。commit 或 push 前，验证仓库所配置的 `origin`。
 
-commit 或 push 前，验证仓库所配置的 `origin`。仓库特有的架构、命令、测试和工作流应放在该仓库自己的 `AGENTS.md` 或 `README.md` 中。
-
-每当有 Git 仓库被克隆或以其他方式直接添加到 `C:\workspace` 下时，必须在同一任务中更新此表。根据 GitHub owner 判断其类型，并根据仓库的 `README.md` 提炼用途。如果无法可靠判断其归属、类型或用途，应先询问，不得猜测。不得遗漏 `C:\workspace` 下的任何直属 Git 仓库。
+将 manifest 中类型为 `company` 的条目（包括由 `suanhaitech` 所有的仓库）视为企业所有的工作。不要把企业代码、数据、凭据或内部文档复制到个人仓库中。
 
 ## AI 指令文件边界
 

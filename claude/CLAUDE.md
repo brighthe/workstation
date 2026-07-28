@@ -50,31 +50,26 @@
 - Postdoc at Dalian University of Technology; research in topology optimization,
   FEM, and PIML (Problem-Independent Machine Learning).
 
-## My work repos (`C:\workspace`)
-High-level repository map only. Once inside a repo, defer to its own
-`CLAUDE.md` / `README.md`. Personal repos are mostly knowledge bases /
-workflows rather than traditional code projects.
+## Workspace repository governance (`C:\workspace`)
 
-| Repo | Type | Purpose | GitHub |
-| --- | --- | --- | --- |
-| `dut-postdoc` | Personal | DUT postdoc research knowledge base; a Markdown wiki run in Karpathy's "LLM-Wiki" style (topology optimization / FEM / PIML) | brighthe/dut-postdoc |
-| `dut-institute-work` | Personal | Work management for the Dalian industrial-software institute (tasks, stage plans, progress logs, meeting notes); public repo, strict redaction discipline | brighthe/dut-institute-work |
-| `heliangos` | Personal | Personal hub: identity profile + WeChat communication/reply assistance | brighthe/heliangos |
-| `workstation` | Personal | Config & tooling hub for cross-device migration | brighthe/workstation |
-| `mfleo` | Company | Matrix-free linear-elasticity operator middleware for CPU/GPU platforms; enterprise delivery repo | suanhaitech/mfleo |
-| `xihe` | Company | Internal long-term optical-imaging CAX platform: metasurface-lens design, simulation, and manufacturing | suanhaitech/xihe |
-| `fealpy` | Company | FEALPy (Finite Element Analysis Library in Python) checkout tracking `develop`; company mirror of the public `weihuayi/fealpy` | suanhaitech/fealpy |
-| `soptx` | Personal | Topology optimization built on FEALPy (3D cantilever, CG, NumPy/PyTorch/JAX backends, CPU/GPU); GPU/HPC technical-line stage 1 baseline | brighthe/soptx |
+The authoritative inventory for managed repositories is
+`C:\workspace\workstation\workspace\repositories.json`. Read that manifest for
+repository discovery, routing, ownership, and expected Git remotes instead of
+maintaining a duplicate list here.
 
-Treat `suanhaitech` repos as company-owned work: never copy company code,
-data, credentials, or internal docs into personal repos, and verify the
-configured `origin` before commit or push.
+Only repositories explicitly designated as part of the managed research
+workspace belong in the manifest. Do not automatically add temporary,
+experimental, or unrelated checkouts. When a managed repository is added or
+removed, update the manifest and its public workspace documentation in the
+same task.
 
-Whenever a git repo is cloned or otherwise added directly under
-`C:\workspace`, update this table in the same task: derive Type from the
-GitHub owner and Purpose from the repo's `README.md`; if either cannot be
-determined reliably, ask instead of guessing. Never leave a direct child
-repo of `C:\workspace` unlisted.
+Once inside a repository, defer to its own `CLAUDE.md`, `AGENTS.md`, and
+`README.md`. Before committing or pushing, verify the repository's configured
+`origin`.
+
+Treat manifest entries with type `company`, including repositories owned by
+`suanhaitech`, as company-owned work. Do not copy company code, data,
+credentials, or internal documentation into personal repositories.
 
 ## Instruction-file scope
 - You (Claude Code) maintain only Claude-related instruction files:

@@ -39,26 +39,15 @@
 - If I explicitly instruct you to follow my approach exactly, comply unless it conflicts with higher-priority instructions or safety boundaries, but still briefly flag material risks, irreversible consequences, or likely failure before implementation.
 - Keep criticism evidence-based and proportionate to the impact. Do not disagree for its own sake or over-debate low-risk preferences.
 
-## Workspace repositories (`C:\workspace`)
+## Workspace repository governance (`C:\workspace`)
 
-Use this section only as a high-level repository map. Once inside a repository, defer to its own `AGENTS.md` and `README.md`.
+The authoritative inventory for managed repositories is `C:\workspace\workstation\workspace\repositories.json`. Read that manifest for repository discovery, routing, ownership, and expected Git remotes instead of maintaining a duplicate list here.
 
-| Repo | Type | Purpose | GitHub |
-| --- | --- | --- | --- |
-| `dut-postdoc` | Personal | DUT postdoc research knowledge base covering topology optimization, FEM, and PIML | `brighthe/dut-postdoc` |
-| `dut-institute-work` | Personal | Work management for the Dalian industrial-software institute; public repository requiring strict redaction | `brighthe/dut-institute-work` |
-| `heliangos` | Personal | Personal hub for identity profile and WeChat communication assistance | `brighthe/heliangos` |
-| `workstation` | Personal | Configuration and tooling hub for cross-device migration | `brighthe/workstation` |
-| `fealpy` | Company | Python finite element analysis library and intelligent CAX computing engine | `suanhaitech/fealpy` |
-| `soptx` | Personal | Structural topology optimization algorithms and CPU/GPU implementation toolbox based on FEALPy | `brighthe/soptx` |
-| `mfleo` | Company | Engineering middleware for Matrix-Free linear-elasticity operators on CPU/GPU platforms | `suanhaitech/mfleo` |
-| `xihe` | Company | Internal long-term optical-imaging CAX platform covering metasurface-lens design, simulation, and manufacturing | `suanhaitech/xihe` |
+Only repositories explicitly designated as part of the managed research workspace belong in the manifest. Do not automatically add temporary, experimental, or unrelated checkouts. When a managed repository is added or removed, update the manifest and its public workspace documentation in the same task.
 
-Treat repositories under `suanhaitech` as company-owned work. Do not copy company code, data, credentials, or internal documentation into personal repositories.
+Once inside a repository, defer to its own `AGENTS.md` and `README.md`. Before committing or pushing, verify the repository's configured `origin`.
 
-Before committing or pushing, verify the repository's configured `origin`. Keep repository-specific architecture, commands, tests, and workflows in that repository's own `AGENTS.md` or `README.md`.
-
-Whenever a Git repository is cloned or otherwise added directly under `C:\workspace`, update this table in the same task. Determine its type from the GitHub owner and derive its purpose from the repository's `README.md`. If its ownership, type, or purpose cannot be determined reliably, ask instead of guessing. Never leave a direct child Git repository under `C:\workspace` unlisted.
+Treat manifest entries with type `company`, including repositories owned by `suanhaitech`, as company-owned work. Do not copy company code, data, credentials, or internal documentation into personal repositories.
 
 ## AI instruction file boundaries
 

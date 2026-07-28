@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "scope": "heliang-research-workspace",
+  "repositories": [
+    {
+      "name": "workstation",
+      "relativePath": "workstation",
+      "owner": "brighthe",
+      "type": "personal",
+      "remote": "git@github.com:brighthe/workstation.git",
+      "defaultBranch": "main",
+      "role": "operational-control-plane",
+      "purpose": "工具配置、设备迁移与本地工作区自动化"
+    },
+    {
+      "name": "heliangos",
+      "relativePath": "heliangos",
+      "owner": "brighthe",
+      "type": "personal",
+      "remote": "git@github.com:brighthe/heliangos.git",
+      "defaultBranch": "main",
+      "role": "personal-context",
+      "purpose": "个人档案、职业事实与沟通上下文"
+    },
+    {
+      "name": "dut-postdoc",
+      "relativePath": "dut-postdoc",
+      "owner": "brighthe",
+      "type": "personal",
+      "remote": "git@github.com:brighthe/dut-postdoc.git",
+      "defaultBranch": "main",
+      "role": "research-knowledge-base",
+      "purpose": "博士后科研知识、文献、研究路线与报告"
+    },
+    {
+      "name": "dut-institute-work",
+      "relativePath": "dut-institute-work",
+      "owner": "brighthe",
+      "type": "personal",
+      "remote": "git@github.com:brighthe/dut-institute-work.git",
+      "defaultBranch": "main",
+      "role": "project-work-management",
+      "purpose": "研究院项目任务、进度、会议与公开交付记录"
+    },
+    {
+      "name": "soptx",
+      "relativePath": "soptx",
+      "owner": "brighthe",
+      "type": "personal",
+      "remote": "git@github.com:brighthe/soptx.git",
+      "defaultBranch": "main",
+      "role": "research-software",
+      "purpose": "结构拓扑优化算法、实现、测试与发布"
+    },
+    {
+      "name": "fealpy",
+      "relativePath": "fealpy",
+      "owner": "suanhaitech",
+      "type": "company",
+      "remote": "git@github.com:suanhaitech/fealpy.git",
+      "defaultBranch": "main",
+      "role": "company-software-library",
+      "purpose": "公司科研软件协作仓库"
+    },
+    {
+      "name": "mfleo",
+      "relativePath": "mfleo",
+      "owner": "suanhaitech",
+      "type": "company",
+      "remote": "git@github.com:suanhaitech/mfleo.git",
+      "defaultBranch": "main",
+      "role": "company-engineering-middleware",
+      "purpose": "公司科研软件协作仓库"
+    },
+    {
+      "name": "xihe",
+      "relativePath": "xihe",
+      "owner": "suanhaitech",
+      "type": "company",
+      "remote": "git@github.com:suanhaitech/xihe.git",
+      "defaultBranch": "main",
+      "role": "company-internal-platform",
+      "purpose": "公司科研软件协作仓库"
+    }
+  ]
+}
