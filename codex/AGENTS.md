@@ -49,7 +49,7 @@ Use this section only as a high-level repository map. Once inside a repository, 
 | `dut-institute-work` | Personal | Work management for the Dalian industrial-software institute; public repository requiring strict redaction | `brighthe/dut-institute-work` |
 | `heliangos` | Personal | Personal hub for identity profile and WeChat communication assistance | `brighthe/heliangos` |
 | `workstation` | Personal | Configuration and tooling hub for cross-device migration | `brighthe/workstation` |
-| `fealpy` | Open source | Python finite element analysis library and intelligent CAX computing engine | `weihuayi/fealpy` |
+| `fealpy` | Company | Python finite element analysis library and intelligent CAX computing engine | `suanhaitech/fealpy` |
 | `soptx` | Personal | Structural topology optimization algorithms and CPU/GPU implementation toolbox based on FEALPy | `brighthe/soptx` |
 | `mfleo` | Company | Engineering middleware for Matrix-Free linear-elasticity operators on CPU/GPU platforms | `suanhaitech/mfleo` |
 | `xihe` | Company | Internal long-term optical-imaging CAX platform covering metasurface-lens design, simulation, and manufacturing | `suanhaitech/xihe` |
