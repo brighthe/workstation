@@ -40,10 +40,6 @@ try {
         [pscustomobject]@{
             Name = 'dut-institute-work'
             Script = Join-Path $WorkspaceRoot 'dut-institute-work\sync_to_icloud.ps1'
-        },
-        [pscustomobject]@{
-            Name = 'heliangos'
-            Script = Join-Path $WorkspaceRoot 'heliangos\sync_to_icloud.ps1'
         }
     )
 
@@ -72,7 +68,7 @@ try {
         throw ("Validation failed:`n- " + ($validationErrors -join "`n- "))
     }
 
-    Write-Host 'Validation passed for all three repositories.' -ForegroundColor Green
+    Write-Host 'Validation passed for both repositories.' -ForegroundColor Green
     Write-Host "Workspace: $WorkspaceRoot"
     Write-Host "iCloud:    $iCloudDrive"
 
