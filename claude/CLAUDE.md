@@ -15,6 +15,24 @@
   - Long, verifiable, run-to-completion work → suggest /goal <condition>.
 - Skip the suggestion for trivial follow-ups; keep it to one line.
 
+## Do not run things on my behalf — propose, then ask
+- **Default for any operational work: give me the plan and the exact commands,
+  then ask whether you should execute them for me.** Wait for my answer. Do not
+  execute first and report afterwards.
+- This covers anything that changes machine state or consumes real compute:
+  creating/modifying conda or venv environments, installing packages, `git
+  worktree`/`clone`/`checkout`, builds, training runs, tests, benchmarks, MPI
+  jobs, validation drivers, servers, and long-running scripts.
+- **Exception — read-only inspection is free**: `git status/log/show/diff`,
+  listing files, reading files, checking installed versions, static searches.
+  These need no permission; just do them.
+- An approved plan is **not** authorization to run. Plan approval covers the
+  approach, not execution. Ask again at the point of execution.
+- If I explicitly say to run something ("跑一下", "run it", "execute"), run it —
+  that authorization applies to that action, not to later ones.
+- When I run a command myself and paste the output, diagnose it and decide the
+  result from that output.
+
 ## Critical evaluation
 - Treat an approach I propose as a proposal to assess, not something to accept
   automatically: check correctness, feasibility, key assumptions, risks,
@@ -45,6 +63,8 @@ workflows rather than traditional code projects.
 | `workstation` | Personal | Config & tooling hub for cross-device migration | brighthe/workstation |
 | `mfleo` | Company | Matrix-free linear-elasticity operator middleware for CPU/GPU platforms; enterprise delivery repo | suanhaitech/mfleo |
 | `xihe` | Company | Internal long-term optical-imaging CAX platform: metasurface-lens design, simulation, and manufacturing | suanhaitech/xihe |
+| `fealpy` | Company | FEALPy (Finite Element Analysis Library in Python) checkout tracking `develop`; company mirror of the public `weihuayi/fealpy` | suanhaitech/fealpy |
+| `soptx` | Personal | Topology optimization built on FEALPy (3D cantilever, CG, NumPy/PyTorch/JAX backends, CPU/GPU); GPU/HPC technical-line stage 1 baseline | brighthe/soptx |
 
 Treat `suanhaitech` repos as company-owned work: never copy company code,
 data, credentials, or internal docs into personal repos, and verify the
