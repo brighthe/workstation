@@ -81,21 +81,15 @@
 - Liang He（何亮）。GitHub `brighthe`，邮箱 brighthe98@gmail.com。
 - 大连理工大学博士后；研究方向：拓扑优化、有限元方法（FEM）、PIML（Problem-Independent Machine Learning，问题无关机器学习）。
 
-## 我的工作仓库（`C:\workspace`）
-本节只作为仓库的高层地图。进入某仓库后，以其自带的 `CLAUDE.md` / `README.md` 为准。个人仓库多为知识库/工作流，而非传统代码项目。
+## 工作区仓库治理（`C:\workspace`）
 
-| 仓库 | 类型 | 用途 | GitHub |
-| --- | --- | --- | --- |
-| `dut-postdoc` | 个人 | 大连理工博后研究知识库；按 Karpathy「LLM-Wiki」模式运转的 Markdown wiki（拓扑优化 / FEM / PIML） | brighthe/dut-postdoc |
-| `dut-institute-work` | 个人 | 大连工业软件研究院的工作管理（任务、阶段计划、进度日志、会议记录）；公开仓库，严格执行脱敏纪律 | brighthe/dut-institute-work |
-| `heliangos` | 个人 | 个人中枢：身份档案 + 微信沟通/回复协助 | brighthe/heliangos |
-| `workstation` | 个人 | 跨设备迁移的配置与工具中枢 | brighthe/workstation |
-| `mfleo` | 企业 | 面向 CPU/GPU 平台的 Matrix-Free 线弹性算子中间件；企业交付仓库 | suanhaitech/mfleo |
-| `xihe` | 企业 | 内部长期光学成像 CAX 平台：超构透镜设计、仿真与制造 | suanhaitech/xihe |
+受管仓库的权威清单位于 `C:\workspace\workstation\workspace\repositories.json`。进行仓库发现、路由、所有权判断和预期 Git 远程检查时，读取该 manifest，不要在这里维护重复清单。
 
-将 `suanhaitech` 下的仓库视为企业所有的工作：绝不把企业代码、数据、凭据或内部文档复制到个人仓库；commit 或 push 前核对所配置的 `origin`。
+只有明确指定为受管科研工作区组成部分的仓库才应写入 manifest。不得自动添加临时、实验或无关的检出。添加或移除受管仓库时，应在同一任务中更新 manifest 及其公开的 workspace 文档。
 
-每当有 git 仓库被 clone 或以其他方式直接加入 `C:\workspace` 下时，在同一任务中更新本表：类型（Type）依据 GitHub 所有者判断，用途（Purpose）依据该仓库的 `README.md` 提炼；任一项无法可靠判断时，询问我而不要猜测。绝不让 `C:\workspace` 的直接子仓库处于未列出状态。
+进入某个仓库后，以该仓库自己的 `CLAUDE.md`、`AGENTS.md` 和 `README.md` 为准。commit 或 push 前，验证仓库所配置的 `origin`。
+
+将 manifest 中类型为 `company` 的条目（包括由 `suanhaitech` 所有的仓库）视为企业所有的工作。不要把企业代码、数据、凭据或内部文档复制到个人仓库中。
 
 ## 指令文件边界
 - 你（Claude Code）只维护 Claude 相关的指令文件：各处 `CLAUDE.md`、`~/.claude/`、项目内 `.claude/` 目录。
