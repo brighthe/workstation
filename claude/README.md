@@ -16,17 +16,20 @@
 - [workstation 中同步的 CLAUDE.md](CLAUDE.md)
   仓库内路径：`claude/CLAUDE.md`（真正维护的文件，随本仓库跨设备同步）
   LAPTOP-A51RSRUJ：`C:\workspace\workstation\claude\CLAUDE.md`
+  PC-20260706DAHN：`C:\workspace\workstation\claude\CLAUDE.md`
 
 - Claude 用户级全局指令
   通用位置：`~/.claude/CLAUDE.md`
   Windows 通用示例：`C:\Users\<用户名>\.claude\CLAUDE.md`
   LAPTOP-A51RSRUJ：`C:\Users\Lenovo\.claude\CLAUDE.md`
-  当前状态：符号链接，指向本设备克隆位置下的 `claude/CLAUDE.md`。
+  PC-20260706DAHN：`C:\Users\Administrator\.claude\CLAUDE.md`
+  当前状态：符号链接，指向本设备克隆位置下的 `claude/CLAUDE.md`。两台设备均已确认。
 
 - Claude 自动记忆目录
   通用位置：`~/.claude/projects/<project>/memory/`
   Windows 通用示例：`C:\Users\<用户名>\.claude\projects\<project>\memory\`
   LAPTOP-A51RSRUJ：`C:\Users\Lenovo\.claude\projects\<project>\memory\`
+  PC-20260706DAHN：`C:\Users\Administrator\.claude\projects\C--\memory\`（`C--` 对应工作目录 `C:\`）
   说明：`<project>` 由 git 仓库路径决定；同一仓库的所有 worktree 共享。**机器本地，不跨设备。**
 
 ## 官方文档链接
@@ -71,6 +74,14 @@
   - 长时间、有明确完成条件、要一口气跑完的活 → 建议 /goal <条件>。
 - 琐碎的追问就跳过建议；保持一行。
 
+## 不要替我执行 —— 先提方案，再询问
+- **任何操作性工作的默认做法：把方案和确切命令给我，然后询问是否要替我执行。** 等我回答。不要先执行再汇报。
+- 涵盖一切会改变机器状态或消耗真实算力的事：创建/修改 conda 或 venv 环境、安装包、`git worktree`/`clone`/`checkout`、构建、训练、测试、基准测试、MPI 作业、验证驱动、服务器、长时间运行的脚本。
+- **例外 —— 只读检查免询问**：`git status/log/show/diff`、列文件、读文件、查已安装版本、静态搜索。这些无需许可，直接做。
+- 方案获批**不等于**授权执行。批准方案只覆盖思路，不覆盖执行。到执行环节要再问一次。
+- 如果我明确说要跑（"跑一下"、"run it"、"execute"），就跑 —— 该授权只对那次动作生效，不延续到后续。
+- 当我自己运行命令并粘贴输出时，据该输出诊断并判定结果。
+
 ## 批判性评估
 - 把我提出的方案视为需要评估的提案，而不是自动接受的内容：采用前先检查其正确性、可行性、关键假设、风险、取舍和替代方案。
 - 如果方案错误、风险不合理，或明显劣于其他选择，给出具体理由指出问题，并在继续前推荐更好的方案。
@@ -83,13 +94,15 @@
 
 ## 工作区仓库治理（`C:\workspace`）
 
-受管仓库的权威清单位于 `C:\workspace\workstation\workspace\repositories.json`。进行仓库发现、路由、所有权判断和预期 Git 远程检查时，读取该 manifest，不要在这里维护重复清单。
+受管仓库的权威清单位于 `C:\workspace\workstation\workspace\repositories.json`。进行仓库发现、本地检出路由、所有权判断和预期 Git 远程检查时，读取该 manifest，不要在这里维护重复清单。
+
+进行跨仓库内容归属、事实源选择和引用时，读取 `C:\workspace\workstation\workspace\responsibilities.md`。不要在全局指令中复制其中的职责表或路由表。
 
 只有明确指定为受管科研工作区组成部分的仓库才应写入 manifest。不得自动添加临时、实验或无关的检出。添加或移除受管仓库时，应在同一任务中更新 manifest 及其公开的 workspace 文档。
 
 进入某个仓库后，以该仓库自己的 `CLAUDE.md`、`AGENTS.md` 和 `README.md` 为准。commit 或 push 前，验证仓库所配置的 `origin`。
 
-将 manifest 中类型为 `company` 的条目（包括由 `suanhaitech` 所有的仓库）视为企业所有的工作。不要把企业代码、数据、凭据或内部文档复制到个人仓库中。
+将 manifest 中类型为 `company` 的条目（包括由 `suanhaitech` 所有的仓库）视为算海所有的工作。不要把算海代码、数据、凭据或内部文档复制到个人仓库中。
 
 ## 指令文件边界
 - 你（Claude Code）只维护 Claude 相关的指令文件：各处 `CLAUDE.md`、`~/.claude/`、项目内 `.claude/` 目录。
@@ -110,6 +123,33 @@
 - git 和 SSH 操作使用 PowerShell 配合 Windows 原生 Git/OpenSSH。这里的 Bash 工具就是 Git Bash——除非我明确要求，不要用它以及 MSYS、Cygwin、WSL 的 git/ssh 操作我的 Windows 仓库。
 - 如果 GitHub SSH 在 Windows 上表现异常，检查 `HOME` 是否指向 Windows 用户目录，而不是 `/home/<user>` 这类 POSIX 路径。
 
+## 在本地运行程序并把结果回传（Windows Desktop）
+
+我经常想自己运行程序以掌握流程。下面是经过验证的路径，无需复制粘贴输出。
+
+- **我在 Desktop 终端 pane 里跑**（Views 菜单，或 ``Ctrl+` ``）。它在会话工作目录中打开，是持久 shell（`conda activate` 会保持），且是独立 pane，长任务在那跑不会占用聊天框。
+- **输出 tee 到仓库的 `logs/`**，你用 Read 工具读取：
+
+      conda activate <env>
+      python .\script.py 2>&1 | Tee-Object -FilePath .\logs\run.log
+
+  我指给你时随时读 —— 跑到一半也可以，不必等作业结束。这样不会被截断。
+- **出图用 `savefig` 存到 `figs/`**，绝不用 `plt.show()`。你能 Read 图片文件，但看不见弹窗。
+- **不要为此推荐 `!` shell mode 或 `Ctrl+B`。** 2026-07-29 验证：在 Desktop 中，`!` 只能捕获 PowerShell 内置命令，捕获不到外部程序（`git`、`python`、`conda`），且 `Ctrl+B` 转后台未绑定。官方文档描述的 `!` 行为适用于终端 CLI，不适用于 Desktop。
+- **当你自己执行时**（因为我说了"跑一下"或"放后台跑"），你的 Bash/PowerShell 工具能正常捕获 stdout/stderr 和退出码 —— 上述限制不适用。conda 用绝对路径，见下。
+
+### Windows Python 环境
+机器相关 —— 路径和环境名因设备而异。依赖前先验证；若当前机器不在下方列表中，解析出来并让我记录。
+
+- 绝不直接调用裸的 `python` 或 `conda`。在我的 Windows 机器上，`conda` 通常**不在 PATH 上**，而 PATH 上的 `python` 是 Microsoft Store 占位 stub（无输出、exit 49），不是真解释器。
+- 通用位置：`<用户目录>\miniconda3\Scripts\conda.exe`（或 `anaconda3`）。用 `Test-Path` 检查，再用 `conda env list` 列出环境。
+- **PC-20260706DAHN**：`C:\Users\Administrator\miniconda3\Scripts\conda.exe`；环境 `base`（无 numpy）、`fealpy-ml`、`soptx-gpu`、`xihe-fealpy`。
+- 当你自己运行 Python 时：
+
+      & "<conda 路径>" run -n <env> --no-capture-output python .\script.py
+
+  `--no-capture-output` 让输出实时流出，以便 tee 落盘。
+
 ## git 暂存纪律
 - commit 前先检查工作区，只暂存与当前任务相关的文件。除非我明确要求，不要使用 `git add -A` 这类宽泛暂存。
 ```
@@ -121,7 +161,7 @@
 CLAUDE.md 中"commit/push 前核对 `origin`"是建议性指令；官方文档明确 CLAUDE.md 只是 context，需要确定性保障时应使用 hook。为此配置了一个 PreToolUse hook：
 
 - **脚本本体**：[`claude/hooks/git-origin-context.ps1`](hooks/git-origin-context.ps1)，随本仓库跨设备同步。
-- **行为**：当 Bash 或 PowerShell 工具将要执行含 `commit`/`push` 的 git 命令时，把该仓库（支持 `git -C <path>` 写法）配置的 `origin` URL 注入 Claude 的上下文，提示核对 brighthe（个人）/ suanhaitech（企业）。只注入信息，从不拦截命令。
+- **行为**：当 Bash 或 PowerShell 工具将要执行含 `commit`/`push` 的 git 命令时，把该仓库（支持 `git -C <path>` 写法）配置的 `origin` URL 注入 Claude 的上下文，提示核对 brighthe（个人）/ suanhaitech（算海）。只注入信息，从不拦截命令。
 - **挂载位置**：本机 `~/.claude/settings.json`（用户级、机器本地，不做 Git 同步）中的 `hooks.PreToolUse`，通过 `-File` 绝对路径引用本仓库中的脚本。
 - **换设备**：clone 本仓库后，把该 hooks 配置块复制进新机器的 `~/.claude/settings.json`，并把 `-File` 路径改为本机克隆路径；改完后重启会话或运行 `/hooks` 使其生效。
 

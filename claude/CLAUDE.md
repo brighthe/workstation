@@ -54,8 +54,13 @@
 
 The authoritative inventory for managed repositories is
 `C:\workspace\workstation\workspace\repositories.json`. Read that manifest for
-repository discovery, routing, ownership, and expected Git remotes instead of
-maintaining a duplicate list here.
+repository discovery, checkout routing, ownership, and expected Git remotes
+instead of maintaining a duplicate list here.
+
+For cross-repository content placement, source-of-truth selection, and
+reference rules, read
+`C:\workspace\workstation\workspace\responsibilities.md`. Do not duplicate its
+responsibility or routing tables in global instructions.
 
 Only repositories explicitly designated as part of the managed research
 workspace belong in the manifest. Do not automatically add temporary,
@@ -68,7 +73,7 @@ Once inside a repository, defer to its own `CLAUDE.md`, `AGENTS.md`, and
 `origin`.
 
 Treat manifest entries with type `company`, including repositories owned by
-`suanhaitech`, as company-owned work. Do not copy company code, data,
+`suanhaitech`, as SuanHai-owned work. Do not copy SuanHai code, data,
 credentials, or internal documentation into personal repositories.
 
 ## Instruction-file scope
@@ -101,6 +106,48 @@ If unsure which page covers the question, fetch llms.txt first to find the slug.
   for my Windows repos unless I explicitly ask.
 - If GitHub SSH behaves strangely on Windows, check whether `HOME` points to
   the Windows user profile instead of a POSIX path such as `/home/<user>`.
+
+## Running programs locally and getting results back (Windows Desktop)
+
+I often want to run programs myself so I understand the flow. The path below is
+the verified way to do that without copy-pasting output.
+
+- **I run it in the Desktop terminal pane** (Views menu, or ``Ctrl+` ``). It opens
+  in the session working directory, is a persistent shell (so `conda activate`
+  sticks), and is a separate pane, so long jobs there don't block the chat box.
+- **Output is teed into the repo's `logs/`**, and you read it with the Read tool:
+
+      conda activate <env>
+      python .\script.py 2>&1 | Tee-Object -FilePath .\logs\run.log
+
+  Read the log whenever I point you at it — mid-run is fine, no need to wait for
+  the job to finish. Nothing gets truncated this way.
+- **Plots go to `figs/` via `savefig`**, never `plt.show()`. You can Read image
+  files; you cannot see a popup window.
+- **Do not suggest `!` shell mode or `Ctrl+B` for this.** Verified 2026-07-29:
+  in Desktop, `!` captures only PowerShell built-ins, not external programs
+  (`git`, `python`, `conda`), and `Ctrl+B` backgrounding is not bound. The `!`
+  behavior described in the official docs applies to the terminal CLI, not Desktop.
+- **When you run something yourself** (because I said "跑一下" or "放后台跑"),
+  your Bash/PowerShell tools capture stdout/stderr and exit codes fine — the
+  limitation above does not apply. Use absolute paths for conda; see below.
+
+### Windows Python environment
+Machine-specific — paths and env names differ per device. Verify before relying
+on them; if this machine isn't listed below, resolve it and ask me to record it.
+
+- Never invoke bare `python` or `conda`. On my Windows machines `conda` is
+  typically **not on PATH**, and the `python` that is on PATH is the Microsoft
+  Store placeholder stub (no output, exit 49), not a real interpreter.
+- Generic location: `<user profile>\miniconda3\Scripts\conda.exe` (or
+  `anaconda3`). Check with `Test-Path`, then list envs with `conda env list`.
+- **PC-20260706DAHN**: `C:\Users\Administrator\miniconda3\Scripts\conda.exe`;
+  envs `base` (no numpy), `fealpy-ml`, `soptx-gpu`, `xihe-fealpy`.
+- When you run Python yourself:
+
+      & "<conda path>" run -n <env> --no-capture-output python .\script.py
+
+  `--no-capture-output` streams output so it can be teed in real time.
 
 ## Git staging hygiene
 - Before committing, inspect the working tree and stage only files related to
