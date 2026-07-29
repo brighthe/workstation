@@ -81,10 +81,10 @@
 - 方案获批**不等于**授权执行。批准方案只覆盖思路，不覆盖执行。到执行环节要再问一次。
 - 如果我明确说要跑（"跑一下"、"run it"、"execute"），就跑 —— 该授权只对那次动作生效，不延续到后续。
 - 当我自己运行命令并粘贴输出时，据该输出诊断并判定结果。
+- 当你确实要执行时，你的 Bash/PowerShell 工具能直接捕获 stdout/stderr 和退出码，所以下文 Desktop shell mode 的限制不适用。
 
 ## 批判性评估
-- 把我提出的方案视为需要评估的提案，而不是自动接受的内容：采用前先检查其正确性、可行性、关键假设、风险、取舍和替代方案。
-- 如果方案错误、风险不合理，或明显劣于其他选择，给出具体理由指出问题，并在继续前推荐更好的方案。
+- 把我提出的方案视为需要评估的提案，而不是自动接受的内容：采用前先检查其正确性、可行性、关键假设、风险、取舍和替代方案。如果方案错误、风险不合理，或明显劣于其他选择，给出具体理由指出问题，并在继续前推荐更好的方案。
 - 如果我要求严格按我的方案执行，只要不违反更高优先级的指令或安全边界就照办；但实施前仍要简要提示重大风险或不可逆后果。
 - 批评应基于证据并与影响程度相称。不要为了反对而反对，也不要对低风险偏好过度争论。
 
@@ -94,49 +94,37 @@
 
 ## 工作区仓库治理（`C:\workspace`）
 
-受管仓库的权威清单位于 `C:\workspace\workstation\workspace\repositories.json`。进行仓库发现、本地检出路由、所有权判断和预期 Git 远程检查时，读取该 manifest，不要在这里维护重复清单。
-
-进行跨仓库内容归属、事实源选择和引用时，读取 `C:\workspace\workstation\workspace\responsibilities.md`。不要在全局指令中复制其中的职责表或路由表。
-
-只有明确指定为受管科研工作区组成部分的仓库才应写入 manifest。不得自动添加临时、实验或无关的检出。添加或移除受管仓库时，应在同一任务中更新 manifest 及其公开的 workspace 文档。
-
-进入某个仓库后，以该仓库自己的 `CLAUDE.md`、`AGENTS.md` 和 `README.md` 为准。commit 或 push 前，验证仓库所配置的 `origin`。
-
-将 manifest 中类型为 `company` 的条目（包括由 `suanhaitech` 所有的仓库）视为算海所有的工作。不要把算海代码、数据、凭据或内部文档复制到个人仓库中。
+- 仓库发现、本地检出路由、所有权判断和预期 Git 远程：读取 manifest `C:\workspace\workstation\workspace\repositories.json`，不要在这里维护重复清单。
+- 跨仓库内容归属、事实源选择和引用规则：读取 `C:\workspace\workstation\workspace\responsibilities.md`。不要在这里复制其中的职责表或路由表。
+- 只有明确指定为受管科研工作区组成部分的仓库才应写入 manifest；绝不自动添加临时、实验或无关的检出。添加或移除时，应在同一任务中更新 manifest 及其公开的 workspace 文档。
+- 进入某个仓库后，以该仓库自己的 `CLAUDE.md`、`AGENTS.md`、`README.md` 为准。commit 或 push 前验证所配置的 `origin`。
+- 将 manifest 中类型为 `company` 的条目（包括 `suanhaitech` 所有的仓库）视为算海所有的工作。不要把算海代码、数据、凭据或内部文档复制到个人仓库中。
 
 ## 指令文件边界
 - 你（Claude Code）只维护 Claude 相关的指令文件：各处 `CLAUDE.md`、`~/.claude/`、项目内 `.claude/` 目录。
 - 不要编辑其他 AI 助手的指令文件（如 Codex 的 `AGENTS.md`、`~/.codex/`），除非我在该会话中明确要求；每个工具的指令由该工具自己管理。
 
 ## Claude Code 问题 → 先查官方文档
-当我询问任何关于 Claude Code 的问题（功能、配置、hooks、MCP、skills、子代理、CLI、权限、部署、成本等）时，抓取对应的官方文档页并据此回答，而不是凭训练记忆。这样答案更准确、更新。
+当我询问任何关于 Claude Code 的问题（功能、配置、hooks、MCP、skills、子代理、CLI、权限、部署、成本等）时，抓取对应的官方页并据此回答，而不是凭训练记忆。
 
-- 抓取英文 `/en/` 页面：它是权威原版、更新最快；`/zh-CN/` 译文可能滞后或有翻译偏差。读英文，但回答用中文。
-- 总览 / 入口页：https://code.claude.com/docs/en/overview
-- 完整页面索引（抓它可发现所有页面/slug）：https://code.claude.com/docs/llms.txt
-- 任意子页面遵循规律 `https://code.claude.com/docs/en/<slug>`。
-  常用 slug：hooks-guide、hooks、mcp、mcp-quickstart、settings、skills、sub-agents、cli-reference、permissions、memory、costs、github-actions。
-
-拿不准是哪一页时，先抓 llms.txt 找到 slug。
+- 读英文 `/en/` 页面：权威原版、更新最快；`/zh-CN/` 可能滞后或有翻译偏差。读英文，回答用中文。
+- 页面遵循规律 `https://code.claude.com/docs/en/<slug>`。拿不准是哪一页时，抓 https://code.claude.com/docs/llms.txt 找 slug。
 
 ## Windows git 与 shell
 - git 和 SSH 操作使用 PowerShell 配合 Windows 原生 Git/OpenSSH。这里的 Bash 工具就是 Git Bash——除非我明确要求，不要用它以及 MSYS、Cygwin、WSL 的 git/ssh 操作我的 Windows 仓库。
 - 如果 GitHub SSH 在 Windows 上表现异常，检查 `HOME` 是否指向 Windows 用户目录，而不是 `/home/<user>` 这类 POSIX 路径。
 
-## 在本地运行程序并把结果回传（Windows Desktop）
+## 在本地运行程序（Windows Desktop）
+我经常自己运行程序以掌握流程。下面是经过验证的路径，无需复制粘贴输出。
 
-我经常想自己运行程序以掌握流程。下面是经过验证的路径，无需复制粘贴输出。
-
-- **我在 Desktop 终端 pane 里跑**（Views 菜单，或 ``Ctrl+` ``）。它在会话工作目录中打开，是持久 shell（`conda activate` 会保持），且是独立 pane，长任务在那跑不会占用聊天框。
-- **输出 tee 到仓库的 `logs/`**，你用 Read 工具读取：
+- **我在 Desktop 终端 pane 里跑**（Views 菜单，或 ``Ctrl+` ``）：会话工作目录、持久 shell（`conda activate` 会保持）、独立 pane，长任务不占用聊天框。
+- **输出 tee 到仓库的 `logs/`**；你用 Read 工具读回，跑到一半也可以，且不会被截断：
 
       conda activate <env>
       python .\script.py 2>&1 | Tee-Object -FilePath .\logs\run.log
 
-  我指给你时随时读 —— 跑到一半也可以，不必等作业结束。这样不会被截断。
-- **出图用 `savefig` 存到 `figs/`**，绝不用 `plt.show()`。你能 Read 图片文件，但看不见弹窗。
-- **不要为此推荐 `!` shell mode 或 `Ctrl+B`。** 2026-07-29 验证：在 Desktop 中，`!` 只能捕获 PowerShell 内置命令，捕获不到外部程序（`git`、`python`、`conda`），且 `Ctrl+B` 转后台未绑定。官方文档描述的 `!` 行为适用于终端 CLI，不适用于 Desktop。
-- **当你自己执行时**（因为我说了"跑一下"或"放后台跑"），你的 Bash/PowerShell 工具能正常捕获 stdout/stderr 和退出码 —— 上述限制不适用。conda 用绝对路径，见下。
+- **出图用 `savefig` 存到 `figs/`**，绝不用 `plt.show()` —— 你能 Read 图片文件，但看不见弹窗。
+- **绝不为此推荐 `!` shell mode 或 `Ctrl+B`。** 2026-07-29 验证：在 Desktop 中，`!` 只能捕获 PowerShell 内置命令，捕获不到外部程序（`git`、`python`、`conda`），且 `Ctrl+B` 未绑定。官方文档里的 `!` 行为适用于终端 CLI，不适用于 Desktop。
 
 ### Windows Python 环境
 机器相关 —— 路径和环境名因设备而异。依赖前先验证；若当前机器不在下方列表中，解析出来并让我记录。
