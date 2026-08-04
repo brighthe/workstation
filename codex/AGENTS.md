@@ -15,7 +15,9 @@
 
 - On Windows, use PowerShell and native Windows Git/OpenSSH for Git and SSH operations.
 - Do not use Cygwin, MSYS, Git Bash, or WSL Git/SSH for my Windows repositories unless I explicitly ask.
+- **Exception — `compute` tier repositories live in WSL.** Run their Git inside the distro (`wsl -d Ubuntu-24.04 -- git -C /home/brighthe/workspace/<repo>`), never Windows Git over `/mnt/c` or `\\wsl.localhost\`. The rule above governs the repositories that actually sit on Windows.
 - If GitHub SSH behaves strangely on Windows, check whether `HOME` points to the current Windows user profile instead of a POSIX-style path such as `/home/<user>`.
+- `wsl.exe ... -- bash -lc '...'` silently expands inner shell variables to empty strings, so loops written inside it report false negatives. Drive the loop from PowerShell and invoke `wsl.exe` once per iteration.
 
 ## Interaction mode
 
@@ -43,7 +45,9 @@
 - If I explicitly instruct you to follow my approach exactly, comply unless it conflicts with higher-priority instructions or safety boundaries, but still briefly flag material risks, irreversible consequences, or likely failure before implementation.
 - Keep criticism evidence-based and proportionate to the impact. Do not disagree for its own sake or over-debate low-risk preferences.
 
-## Workspace repository governance (`C:\workspace`)
+## Workspace repository governance
+
+The workspace spans two runtimes. Every managed repository carries a `tier`: `authoring` (documents plus Windows-native tooling) lives in `C:\workspace`, while `compute` (Python, MPI, MKL, CMake) lives in WSL under `~/workspace`. A repository's tier is a device-independent fact declared in the manifest; where each tier actually resolves on this machine comes from the gitignored `workspace/roots.local.json`. **Never assume a managed repository sits under `C:\workspace` — resolve its tier first.**
 
 The authoritative inventory for managed repositories is `C:\workspace\workstation\workspace\repositories.json`. Read that manifest for repository discovery, checkout routing, ownership, and expected Git remotes instead of maintaining a duplicate list here.
 

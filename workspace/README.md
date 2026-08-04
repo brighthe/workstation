@@ -31,12 +31,16 @@
 
 仓库按**运行时归属**分层。判据是「内容由哪套工具链消费」，不是文件类型——`workstation` 全是 PowerShell 代码但属于 `authoring`，因为它的运行时就是 Windows。
 
-| tier | 含义 |
-| --- | --- |
-| `authoring` | 文档写作与 Windows 原生运维；由 Office、LaTeX 编辑器与 PowerShell 消费 |
-| `compute` | 科学计算运行时；需要 Linux 下的 Python、MPI、MKL 与 CMake |
+| tier | 含义 | 成员 |
+| --- | --- | --- |
+| `authoring` | 文档写作与 Windows 原生运维；由 Office、LaTeX 编辑器与 PowerShell 消费 | `workstation`、`heliangos`、`dut-postdoc`、`xtu-phd-thesis`、`dut-institute-work` |
+| `compute` | 科学计算运行时；需要 Linux 下的 Python、MPI、MKL 与 CMake | `soptx`、`fealpy`、`mfleo`、`xihe` |
+
+成员一列便于速查，**权威来源仍是 [repositories.json](repositories.json) 的 `tier` 字段**；两者不一致时以清单为准。实时分布可由 `status.ps1` 的 `Tier` 列读出。
 
 `tier` 是设备无关的事实（「`soptx` 是计算仓库」在任何机器上都成立），因此写进清单。而「这台机器上 `compute` 落在哪个文件系统」是设备特定的，写进 `roots.local.json`——该文件已加入 `.gitignore`，因为本仓库 Public，发行版名与本机路径不进版本控制。
+
+PC-20260706DAHN 上当前的落点是：`authoring` → `C:\workspace`，`compute` → WSL (Ubuntu-24.04) 的 `~/workspace`。其它设备若未放置 `roots.local.json`，九个仓库全部落在 Windows 工作区根目录下。
 
 [roots.example.json](roots.example.json) 是模板。缺少 `roots.local.json` 时，**所有 tier 一律回退到 Windows 工作区根目录**，行为与引入分层之前完全一致；没有第二运行时的机器无需任何配置。
 

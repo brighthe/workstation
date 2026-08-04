@@ -96,8 +96,9 @@
 - Liang He（何亮）。GitHub `brighthe`，邮箱 brighthe98@gmail.com。
 - 大连理工大学博士后；研究方向：拓扑优化、有限元方法（FEM）、PIML（Problem-Independent Machine Learning，问题无关机器学习）。
 
-## 工作区仓库治理（`C:\workspace`）
+## 工作区仓库治理
 
+- 工作区横跨两个运行时。每个仓库带有 `tier`：`authoring`（文档与 Windows 原生工具链）位于 `C:\workspace`；`compute`（Python、MPI、MKL、CMake）位于 WSL 的 `~/workspace`。仓库的 tier 是设备无关的事实，声明在 manifest 中；各 tier 在本机的实际落点则读取已被 gitignore 的 `workspace/roots.local.json`。**不要假设受管仓库都在 `C:\workspace` 下——先解析它的 tier。**
 - 仓库发现、本地检出路由、所有权判断和预期 Git 远程：读取 manifest `C:\workspace\workstation\workspace\repositories.json`，不要在这里维护重复清单。
 - 跨仓库内容归属、事实源选择和引用规则：读取 `C:\workspace\workstation\workspace\responsibilities.md`。不要在这里复制其中的职责表或路由表。
 - 只有明确指定为受管科研工作区组成部分的仓库才应写入 manifest；绝不自动添加临时、实验或无关的检出。添加或移除时，应在同一任务中更新 manifest 及其公开的 workspace 文档。
@@ -116,7 +117,9 @@
 
 ## Windows git 与 shell
 - git 和 SSH 操作使用 PowerShell 配合 Windows 原生 Git/OpenSSH。这里的 Bash 工具就是 Git Bash——除非我明确要求，不要用它以及 MSYS、Cygwin、WSL 的 git/ssh 操作我的 Windows 仓库。
+- **例外 —— `compute` tier 的仓库在 WSL 里**：它们的 git 要在发行版内执行（`wsl -d Ubuntu-24.04 -- git -C /home/brighthe/workspace/<repo>`），绝不用 Windows git 经 `/mnt/c` 或 `\\wsl.localhost\` 操作。上一条约束的是真正位于 Windows 的那些仓库。
 - 如果 GitHub SSH 在 Windows 上表现异常，检查 `HOME` 是否指向 Windows 用户目录，而不是 `/home/<user>` 这类 POSIX 路径。
+- `wsl.exe ... -- bash -lc '...'` 会把内层 shell 变量静默展开成空字符串，写在里面的循环因而给出假阴性。循环要由 PowerShell 驱动，每轮单独调一次 `wsl.exe`。另外 Git Bash 会改写 POSIX 路径（`/home/...` 变成 `C:/Program Files/Git/home/...`），把命令用单引号交给 `bash -lc` 可避免。
 
 ## 在本地运行程序（Windows Desktop）
 我经常自己运行程序以掌握流程。下面是经过验证的路径，无需复制粘贴输出。
@@ -130,13 +133,17 @@
 - **出图用 `savefig` 存到 `figs/`**，绝不用 `plt.show()` —— 你能 Read 图片文件，但看不见弹窗。
 - **绝不为此推荐 `!` shell mode 或 `Ctrl+B`。** 2026-07-29 验证：在 Desktop 中，`!` 只能捕获 PowerShell 内置命令，捕获不到外部程序（`git`、`python`、`conda`），且 `Ctrl+B` 未绑定。官方文档里的 `!` 行为适用于终端 CLI，不适用于 Desktop。
 
-### Windows Python 环境
+### Python 环境
 机器相关 —— 路径和环境名因设备而异。依赖前先验证；若当前机器不在下方列表中，解析出来并让我记录。
 
-- 绝不直接调用裸的 `python` 或 `conda`。在我的 Windows 机器上，`conda` 通常**不在 PATH 上**，而 PATH 上的 `python` 是 Microsoft Store 占位 stub（无输出、exit 49），不是真解释器。
-- 通用位置：`<用户目录>\miniconda3\Scripts\conda.exe`（或 `anaconda3`）。用 `Test-Path` 检查，再用 `conda env list` 列出环境。
-- **PC-20260706DAHN**：`C:\Users\Administrator\miniconda3\Scripts\conda.exe`；环境 `base`（无 numpy）、`fealpy-ml`、`ihpcm`（SOPTX 数值验证）、`soptx-gpu`、`soptx-huzhang`。
-- 当你自己运行 Python 时：
+- 绝不直接调用裸的 `python` 或 `conda`，两侧都是如此。Windows 上 `conda` 通常**不在 PATH 上**，PATH 上的 `python` 一直是 Microsoft Store 占位 stub（无输出、exit 49）。WSL 里 `conda init` 写入 `~/.bashrc` 的位置在「非交互直接 return」守卫之后，因此 `wsl.exe -- bash -lc` 同样看不到 `conda`。两侧都必须用绝对路径。
+- Windows 通用位置：`<用户目录>\miniconda3\Scripts\conda.exe`（或 `anaconda3`）。用 `Test-Path` 检查，再用 `conda env list` 列出环境。
+- **PC-20260706DAHN —— 计算工作在 WSL 中进行。** `~/miniconda3/envs/ihpcm`，Python 3.12.13，FEALPy 与 SOPTX 从 `~/workspace/` 以 editable 方式安装；MKL 直接求解器与 Intel MPI 均已验证。调用方式：
+
+      wsl -d Ubuntu-24.04 -- bash -lc '~/miniconda3/envs/ihpcm/bin/python <script>'
+
+- **PC-20260706DAHN —— Windows 侧**：`C:\Users\Administrator\miniconda3\Scripts\conda.exe`。除 `base` 外仍保留 `fealpy-ml`、`ihpcm`、`soptx-gpu`、`soptx-huzhang`，它们已被 WSL 环境取代、等待清理，定义已导出到 `C:\Users\Administrator\conda-env-backup`。不要在其上开展新工作。
+- 当你自己在 Windows 上运行 Python 时：
 
       & "<conda 路径>" run -n <env> --no-capture-output python .\script.py
 

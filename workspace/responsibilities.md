@@ -1,9 +1,14 @@
 # 仓库职责与跨仓库路由
 
 本文是九个受管仓库的**人类可读职责与内容路由唯一规范**。
-[repositories.json](repositories.json) 只声明管理哪些仓库、它们的位置、所有权和
-Git 远程；本文只规定内容应该由哪个仓库维护。各仓库内部的架构、工作流、测试和
-发布方式继续以该仓库自己的 `README.md`、`AGENTS.md` 或 `CLAUDE.md` 为准。
+[repositories.json](repositories.json) 只声明管理哪些仓库、它们的运行时归属
+（`tier`）、所有权和 Git 远程；本文只规定内容应该由哪个仓库维护。各仓库内部的
+架构、工作流、测试和发布方式继续以该仓库自己的 `README.md`、`AGENTS.md` 或
+`CLAUDE.md` 为准。
+
+职责与物理位置互相独立：仓库落在 `C:\workspace` 还是 WSL 的 `~/workspace` 由
+`tier` 决定（见 [README.md](README.md)），而本文的路由规则只依据内容本身，
+不因仓库换到哪个文件系统而改变。
 
 ## 基本原则
 

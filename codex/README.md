@@ -81,7 +81,9 @@
 
 - 在 Windows 上进行 Git 和 SSH 操作时，使用 PowerShell 和 Windows 原生 Git/OpenSSH。
 - 除非我明确要求，不要在我的 Windows 仓库中使用 Cygwin、MSYS、Git Bash 或 WSL 的 Git/SSH。
+- **例外 —— `compute` tier 的仓库位于 WSL 中。** 它们的 Git 要在发行版内执行（`wsl -d Ubuntu-24.04 -- git -C /home/brighthe/workspace/<repo>`），绝不用 Windows Git 经 `/mnt/c` 或 `\\wsl.localhost\` 操作。上一条约束的是真正位于 Windows 的那些仓库。
 - 如果 Windows 上 GitHub SSH 表现异常，检查 `HOME` 是否指向当前 Windows 用户目录，而不是 `/home/<user>` 这类 POSIX 风格路径。
+- `wsl.exe ... -- bash -lc '...'` 会把内层 shell 变量静默展开成空字符串，写在其中的循环会给出假阴性。循环应由 PowerShell 驱动，每轮单独调用一次 `wsl.exe`。
 
 ## 交互模式
 
@@ -109,7 +111,9 @@
 - 如果我明确要求严格按照我的方案执行，只要不违反更高优先级的指令或安全边界，就按要求执行；但实施前仍应简要提示重大风险、不可逆后果或可能失败的结果。
 - 批评应基于证据并与影响程度相称。不要为了反对而反对，也不要对低风险偏好过度争论。
 
-## 工作区仓库治理（`C:\workspace`）
+## 工作区仓库治理
+
+工作区横跨两个运行时。每个受管仓库都带有 `tier`：`authoring`（文档与 Windows 原生工具链）位于 `C:\workspace`，`compute`（Python、MPI、MKL、CMake）位于 WSL 的 `~/workspace`。仓库的 tier 是设备无关的事实，声明在 manifest 中；各 tier 在本机的实际落点则来自已被 gitignore 的 `workspace/roots.local.json`。**绝不要假设受管仓库位于 `C:\workspace` 之下——先解析它的 tier。**
 
 受管仓库的权威清单位于 `C:\workspace\workstation\workspace\repositories.json`。进行仓库发现、本地检出路由、所有权判断和预期 Git 远程检查时，读取该 manifest，不要在这里维护重复清单。
 

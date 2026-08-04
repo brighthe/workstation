@@ -6,6 +6,8 @@
 脚本、配置模板、操作流程都在版本控制里；平时则通过各模块的 `capabilities.md`
 跟进该工具官方推出的新能力和使用教程；通过 `workspace/` 清单与只读脚本检查九个科研工作区仓库（六个个人、三个算海）是否完整、干净并连接到正确远程。
 
+**工作区跨两个运行时**：文档与 Windows 原生运维类仓库（`authoring`）在 `C:\workspace`，科学计算类仓库（`compute`）在 WSL 的 `~/workspace`。哪个仓库属于哪一层由清单声明，每台机器的实际落点由本地配置解析——所以 clone 完 `C:\workspace` 并不等于工作区就齐了，详见 [workspace/README.md](workspace/README.md)。
+
 > 注意：**这里只放工具与流程，不放数据本身**（聊天记录、密钥、token 等私密或大体量数据不进本仓库）。
 
 ## 目录结构
@@ -15,7 +17,7 @@ workstation/
 ├── README.md      # 本文件：总览 + 新机迁移入口
 ├── git/           # 模块：Git / SSH 环境跨设备迁移（原生 git、SSH over 443、新机一次性配置）
 ├── wsl/           # 模块：WSL2 + Ubuntu 开发环境（安装、映像缺组件的顶替方案、网络与 DNS）
-├── workspace/     # 模块：九个科研工作区仓库的声明式清单、职责边界与本地状态入口
+├── workspace/     # 模块：九个科研工作区仓库的声明式清单、运行时分层、职责边界与本地状态入口
 ├── claude/        # 模块：Claude Code 全局指令（CLAUDE.md）、记忆管理说明、能力导读
 ├── codex/         # 模块：Codex 全局指令（AGENTS.md）、记忆管理说明、能力导读
 ├── scripts/       # 中立的跨工具公共脚本（工作区检查、全局指令链接、iCloud 定时同步等）
@@ -67,7 +69,7 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 |---|---|---|
 | [git](git/README.md) | Git / SSH 环境：原生 git、SSH over 443、新机一次性配置、各机现状与排错 | 本仓库（git），纯文档；新机经 raw URL 引导 |
 | [wsl](wsl/README.md) | WSL2 + Ubuntu 开发环境：安装、映像缺 `VirtualMachinePlatform` 时的顶替方案、网络与 DNS、各机现状 | 本仓库（git），纯文档，无需链接 |
-| [workspace](workspace/README.md) | 九个科研工作区仓库的声明式清单、职责边界、配置验证与只读状态汇总 | 本仓库（git）；默认从 `workstation` 位置推导工作区根目录 |
+| [workspace](workspace/README.md) | 九个科研工作区仓库的声明式清单、运行时分层、职责边界、配置验证与只读状态汇总 | 本仓库（git）；`authoring` 根从 `workstation` 位置推导，`compute` 根由本机 `roots.local.json` 解析 |
 | [claude](claude/README.md) | Claude Code 全局指令（CLAUDE.md）与记忆管理；[能力导读](claude/capabilities.md) | 本仓库（git）+ 符号链接到 `~/.claude/CLAUDE.md` |
 | [codex](codex/README.md) | Codex 全局指令（AGENTS.md）与记忆管理；[能力导读](codex/capabilities.md) | 本仓库（git）+ 链接到 `~/.codex/AGENTS.md` |
 | [remote-access](remote-access/README.md) | Windows 设备通过 Tailscale + OpenSSH 两两远程终端；密钥隔离、节点初始化、验证与恢复 | 本仓库只保存流程和脚本；私钥留在各设备 `~/.ssh`，真实 inventory 不入库 |

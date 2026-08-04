@@ -51,8 +51,15 @@
 - Postdoc at Dalian University of Technology; research in topology optimization,
   FEM, and PIML (Problem-Independent Machine Learning).
 
-## Workspace repository governance (`C:\workspace`)
+## Workspace repository governance
 
+- The workspace spans two runtimes. Repositories carry a `tier`: `authoring`
+  (documents plus Windows-native tooling) lives in `C:\workspace`; `compute`
+  (Python, MPI, MKL, CMake) lives in WSL under `~/workspace`. The tier of a
+  repository is a device-independent fact and is declared in the manifest; where
+  each tier actually resolves on this machine is read from the gitignored
+  `workspace/roots.local.json`. Never assume a managed repository is under
+  `C:\workspace` — resolve its tier first.
 - Repository discovery, checkout routing, ownership, and expected Git remotes:
   read the manifest `C:\workspace\workstation\workspace\repositories.json`
   instead of maintaining a duplicate list here.
@@ -90,8 +97,17 @@ official page and answer from it instead of relying on training memory.
 - Use PowerShell with native Windows Git/OpenSSH for git and SSH operations.
   The Bash tool here is Git Bash — do not use it, MSYS, Cygwin, or WSL git/ssh
   for my Windows repos unless I explicitly ask.
+- **Exception — `compute` tier repositories live in WSL**: run their git inside
+  the distro (`wsl -d Ubuntu-24.04 -- git -C /home/brighthe/workspace/<repo>`),
+  never Windows git over `/mnt/c` or `\\wsl.localhost\`. The rule above governs
+  the repositories that are actually on Windows.
 - If GitHub SSH behaves strangely on Windows, check whether `HOME` points to
   the Windows user profile instead of a POSIX path such as `/home/<user>`.
+- `wsl.exe ... -- bash -lc '...'` silently expands inner shell variables to
+  empty, so loops written inside it produce false negatives. Drive the loop from
+  PowerShell and call `wsl.exe` once per iteration. Git Bash separately rewrites
+  POSIX paths (`/home/...` becomes `C:/Program Files/Git/home/...`); wrapping the
+  command in single quotes for `bash -lc` avoids that.
 
 ## Running programs locally (Windows Desktop)
 I often run programs myself to understand the flow. This is the verified way to
@@ -113,18 +129,29 @@ do that without copy-pasting output.
   `python`, `conda`), and `Ctrl+B` is not bound. The `!` behavior in the official
   docs applies to the terminal CLI, not Desktop.
 
-### Windows Python environment
+### Python environments
 Machine-specific — paths and env names differ per device. Verify before relying
 on them; if this machine isn't listed below, resolve it and ask me to record it.
 
-- Never invoke bare `python` or `conda`. On my Windows machines `conda` is
-  typically **not on PATH**, and the `python` that is on PATH is the Microsoft
-  Store placeholder stub (no output, exit 49), not a real interpreter.
-- Generic location: `<user profile>\miniconda3\Scripts\conda.exe` (or
+- Never invoke bare `python` or `conda`, on either side. On Windows `conda` is
+  typically **not on PATH** and the `python` that is has been the Microsoft Store
+  placeholder stub (no output, exit 49). In WSL, `conda init` writes into
+  `~/.bashrc` below its non-interactive guard, so `wsl.exe -- bash -lc` does not
+  see `conda` there either. Both sides need absolute paths.
+- Generic Windows location: `<user profile>\miniconda3\Scripts\conda.exe` (or
   `anaconda3`). Check with `Test-Path`, then list envs with `conda env list`.
-- **PC-20260706DAHN**: `C:\Users\Administrator\miniconda3\Scripts\conda.exe`;
-  envs `base` (no numpy), `fealpy-ml`, `soptx-gpu`, `xihe-fealpy`.
-- When you run Python yourself:
+- **PC-20260706DAHN — compute work runs in WSL.** `~/miniconda3/envs/ihpcm`,
+  Python 3.12.13, FEALPy and SOPTX installed editable from `~/workspace/`; MKL
+  direct solver and Intel MPI verified. Invoke as:
+
+      wsl -d Ubuntu-24.04 -- bash -lc '~/miniconda3/envs/ihpcm/bin/python <script>'
+
+- **PC-20260706DAHN — Windows side**: `C:\Users\Administrator\miniconda3\Scripts\conda.exe`.
+  Beyond `base` it still carries `fealpy-ml`, `ihpcm`, `soptx-gpu` and
+  `soptx-huzhang`, all superseded by the WSL environment and pending removal;
+  their definitions are exported to `C:\Users\Administrator\conda-env-backup`.
+  Do not build new work on them.
+- When you run Python on Windows:
 
       & "<conda path>" run -n <env> --no-capture-output python .\script.py
 
