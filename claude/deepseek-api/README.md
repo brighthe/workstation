@@ -300,6 +300,25 @@ Claude Desktop 的本地第三方推理配置库位于：
 
 ## 5. 常见问题
 
+### `Auto-update failed`，claude update 报 ECONNREFUSED
+
+CLI 的更新走官方的 `downloads.claude.ai`，与 DeepSeek 接入无关，因此这条失败不影响 claude-ds 正常使用。原因通常是 Claude Code 作为 Node 程序**不读取 Windows 系统代理设置**，只认 `HTTPS_PROXY` 等环境变量（官方 network configuration 文档明确此规则，且不支持 SOCKS 代理）。在普通 PowerShell 中临时指定代理后重试即可：
+
+```powershell
+$env:HTTPS_PROXY = "http://127.0.0.1:7897"; claude update
+```
+
+端口须与本机代理实际监听的 HTTP/混合端口一致，可从系统代理设置读取：
+
+```powershell
+(Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings').ProxyServer
+```
+
+报错中的 IP 会随配置变化：显示公网 IP 说明变量未生效仍在直连；显示 `127.0.0.1:<端口>` 说明变量已生效但该端口无人监听，属于端口填错。
+
+> [!NOTE]
+> 不要把 `HTTPS_PROXY` 设为用户级环境变量，否则 claude-ds 访问 `api.deepseek.com` 时也会绕行代理。仅在需要更新的终端里临时设置。
+
 ### 返回 401 或认证失败
 
 逐项核对 4.3 的连接参数表，并确认 API Key 完整、有效、未被吊销，账户有可用余额。
