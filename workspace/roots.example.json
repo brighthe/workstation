@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "tiers": {
+    "authoring": {
+      "kind": "windows"
+    },
+    "compute": {
+      "kind": "wsl",
+      "distro": "REPLACE_WITH_DISTRO_NAME",
+      "homeRelativePath": "workspace"
+    }
+  }
+}

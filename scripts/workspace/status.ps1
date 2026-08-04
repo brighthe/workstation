@@ -8,39 +8,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-function Get-NormalizedPath {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Path
-    )
-
-    return [System.IO.Path]::GetFullPath($Path).TrimEnd(
-        [System.IO.Path]::DirectorySeparatorChar,
-        [System.IO.Path]::AltDirectorySeparatorChar
-    )
-}
-
-function Invoke-GitText {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$RepositoryPath,
-        [Parameter(Mandatory = $true)]
-        [string[]]$Arguments
-    )
-
-    try {
-        $output = & git -C $RepositoryPath @Arguments 2>$null
-    }
-    catch {
-        return $null
-    }
-
-    if ($LASTEXITCODE -ne 0) {
-        return $null
-    }
-
-    return (($output | ForEach-Object { [string]$_ }) -join "`n").Trim()
-}
+. (Join-Path $PSScriptRoot 'common.ps1')
 
 $workstationRoot = Get-NormalizedPath -Path (Join-Path $PSScriptRoot '..\..')
 
@@ -64,16 +32,47 @@ if (-not (Test-Path -LiteralPath $ManifestPath -PathType Leaf)) {
 $manifest = Get-Content -Raw -LiteralPath $ManifestPath -Encoding UTF8 |
     ConvertFrom-Json
 $repositories = @($manifest.repositories)
+
+$declaredTiers = @($manifest.tiers.PSObject.Properties.Name)
+$tierResult = Get-TierLocation `
+    -WorkspaceRoot $WorkspaceRoot `
+    -WorkstationRoot $workstationRoot `
+    -TierName $declaredTiers
+
+foreach ($tierError in $tierResult.Errors) {
+    Write-Warning $tierError
+}
+
 $results = New-Object System.Collections.Generic.List[object]
 
 foreach ($repository in $repositories) {
-    $repositoryPath = Get-NormalizedPath -Path (
-        Join-Path $WorkspaceRoot ([string]$repository.relativePath)
-    )
+    $tier = [string]$repository.tier
 
-    if (-not (Test-Path -LiteralPath $repositoryPath -PathType Container)) {
+    if (-not $tierResult.Locations.ContainsKey($tier)) {
         $results.Add([pscustomobject]@{
             Name = $repository.name
+            Tier = $tier
+            Owner = $repository.owner
+            Type = $repository.type
+            Health = 'tier-unavailable'
+            Branch = $null
+            Dirty = $null
+            Ahead = $null
+            Behind = $null
+            RemoteOk = $false
+        })
+        continue
+    }
+
+    $location = $tierResult.Locations[$tier]
+    $repositoryPath = Get-RepositoryPath `
+        -Location $location `
+        -RelativePath ([string]$repository.relativePath)
+
+    if (-not (Test-RepositoryDirectory -Location $location -RepositoryPath $repositoryPath)) {
+        $results.Add([pscustomobject]@{
+            Name = $repository.name
+            Tier = $tier
             Owner = $repository.owner
             Type = $repository.type
             Health = 'missing'
@@ -86,13 +85,14 @@ foreach ($repository in $repositories) {
         continue
     }
 
-    $insideWorkTree = Invoke-GitText -RepositoryPath $repositoryPath -Arguments @(
-        'rev-parse',
-        '--is-inside-work-tree'
-    )
+    $insideWorkTree = Invoke-GitText `
+        -Location $location `
+        -RepositoryPath $repositoryPath `
+        -Arguments @('rev-parse', '--is-inside-work-tree')
     if ($insideWorkTree -ne 'true') {
         $results.Add([pscustomobject]@{
             Name = $repository.name
+            Tier = $tier
             Owner = $repository.owner
             Type = $repository.type
             Health = 'not-git'
@@ -105,40 +105,48 @@ foreach ($repository in $repositories) {
         continue
     }
 
-    $branch = Invoke-GitText -RepositoryPath $repositoryPath -Arguments @(
-        'branch',
-        '--show-current'
-    )
+    $branch = Invoke-GitText `
+        -Location $location `
+        -RepositoryPath $repositoryPath `
+        -Arguments @('branch', '--show-current')
     if ([string]::IsNullOrWhiteSpace($branch)) {
         $branch = '(detached)'
     }
 
-    $origin = Invoke-GitText -RepositoryPath $repositoryPath -Arguments @(
-        'remote',
-        'get-url',
-        'origin'
-    )
+    $origin = Invoke-GitText `
+        -Location $location `
+        -RepositoryPath $repositoryPath `
+        -Arguments @('remote', 'get-url', 'origin')
     $remoteOk = $origin -eq [string]$repository.remote
 
-    $workingTreeStatus = & git -C $repositoryPath status --porcelain=v1 2>$null
+    $workingTreeStatus = Invoke-GitLines `
+        -Location $location `
+        -RepositoryPath $repositoryPath `
+        -Arguments @('status', '--porcelain=v1')
     $dirty = @($workingTreeStatus).Count -gt 0
 
-    $upstream = Invoke-GitText -RepositoryPath $repositoryPath -Arguments @(
-        'rev-parse',
-        '--abbrev-ref',
-        '--symbolic-full-name',
-        '@{upstream}'
-    )
+    $upstream = Invoke-GitText `
+        -Location $location `
+        -RepositoryPath $repositoryPath `
+        -Arguments @(
+            'rev-parse',
+            '--abbrev-ref',
+            '--symbolic-full-name',
+            '@{upstream}'
+        )
     $ahead = $null
     $behind = $null
 
     if (-not [string]::IsNullOrWhiteSpace($upstream)) {
-        $counts = Invoke-GitText -RepositoryPath $repositoryPath -Arguments @(
-            'rev-list',
-            '--left-right',
-            '--count',
-            'HEAD...@{upstream}'
-        )
+        $counts = Invoke-GitText `
+            -Location $location `
+            -RepositoryPath $repositoryPath `
+            -Arguments @(
+                'rev-list',
+                '--left-right',
+                '--count',
+                'HEAD...@{upstream}'
+            )
         if (-not [string]::IsNullOrWhiteSpace($counts)) {
             $parts = $counts -split '\s+'
             if ($parts.Count -eq 2) {
@@ -172,6 +180,7 @@ foreach ($repository in $repositories) {
 
     $results.Add([pscustomobject]@{
         Name = $repository.name
+        Tier = $tier
         Owner = $repository.owner
         Type = $repository.type
         Health = $health

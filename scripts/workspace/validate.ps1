@@ -7,39 +7,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-function Get-NormalizedPath {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Path
-    )
-
-    return [System.IO.Path]::GetFullPath($Path).TrimEnd(
-        [System.IO.Path]::DirectorySeparatorChar,
-        [System.IO.Path]::AltDirectorySeparatorChar
-    )
-}
-
-function Invoke-GitText {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$RepositoryPath,
-        [Parameter(Mandatory = $true)]
-        [string[]]$Arguments
-    )
-
-    try {
-        $output = & git -C $RepositoryPath @Arguments 2>$null
-    }
-    catch {
-        return $null
-    }
-
-    if ($LASTEXITCODE -ne 0) {
-        return $null
-    }
-
-    return (($output | ForEach-Object { [string]$_ }) -join "`n").Trim()
-}
+. (Join-Path $PSScriptRoot 'common.ps1')
 
 function Stop-WorkspaceValidation {
     param(
@@ -91,8 +59,17 @@ catch {
     )
 }
 
-if ($manifest.schemaVersion -ne 2) {
+if ($manifest.schemaVersion -ne 3) {
     $issues.Add("Unsupported schemaVersion: $($manifest.schemaVersion)")
+}
+
+if ($manifest.PSObject.Properties.Name -notcontains 'tiers') {
+    Stop-WorkspaceValidation -Message 'Manifest is missing the "tiers" object.'
+}
+
+$declaredTiers = @($manifest.tiers.PSObject.Properties.Name)
+if ($declaredTiers.Count -eq 0) {
+    Stop-WorkspaceValidation -Message 'Manifest declares no tiers.'
 }
 
 $repositories = @($manifest.repositories)
@@ -100,9 +77,23 @@ if ($repositories.Count -eq 0) {
     $issues.Add('Manifest contains no repositories.')
 }
 
+# Tier locations come from workspace\roots.local.json, which is gitignored
+# because distro names and paths are machine specific. When that file is
+# absent every tier resolves to the Windows workspace root, so machines that
+# have not opted into a second runtime behave exactly as before.
+$tierResult = Get-TierLocation `
+    -WorkspaceRoot $WorkspaceRoot `
+    -WorkstationRoot $workstationRoot `
+    -TierName $declaredTiers
+
+foreach ($tierError in $tierResult.Errors) {
+    $issues.Add($tierError)
+}
+
 $requiredFields = @(
     'name',
     'relativePath',
+    'tier',
     'owner',
     'type',
     'remote',
@@ -121,7 +112,6 @@ $expectedOwnerTypes = @{
     brighthe = 'personal'
     suanhaitech = 'company'
 }
-$workspacePrefix = $WorkspaceRoot + [System.IO.Path]::DirectorySeparatorChar
 
 foreach ($repository in $repositories) {
     foreach ($field in $requiredFields) {
@@ -139,6 +129,7 @@ foreach ($repository in $repositories) {
 
     $name = [string]$repository.name
     $relativePath = [string]$repository.relativePath
+    $tier = [string]$repository.tier
     $owner = [string]$repository.owner
     $type = [string]$repository.type
     $remote = [string]$repository.remote
@@ -172,30 +163,49 @@ foreach ($repository in $repositories) {
         $seenNames[$name] = $true
     }
 
-    if ([System.IO.Path]::IsPathRooted($relativePath)) {
+    if ($declaredTiers -notcontains $tier) {
+        $issues.Add("[$name] tier '$tier' is not declared in the manifest tiers.")
+        continue
+    }
+
+    if (-not $tierResult.Locations.ContainsKey($tier)) {
+        # Get-TierLocation already reported why this tier could not resolve.
+        continue
+    }
+    $location = $tierResult.Locations[$tier]
+
+    if ([System.IO.Path]::IsPathRooted($relativePath) -or $relativePath -match '^[A-Za-z]:') {
         $issues.Add("[$name] relativePath must not be absolute: $relativePath")
         continue
     }
 
-    $repositoryPath = Get-NormalizedPath -Path (
-        Join-Path $WorkspaceRoot $relativePath
-    )
-    if (
-        $repositoryPath -ne $WorkspaceRoot -and
-        -not $repositoryPath.StartsWith(
-            $workspacePrefix,
-            [System.StringComparison]::OrdinalIgnoreCase
-        )
-    ) {
-        $issues.Add("[$name] path escapes workspace root: $relativePath")
+    if (($relativePath -split '[\\/]') -contains '..') {
+        $issues.Add("[$name] relativePath must not escape the tier root: $relativePath")
         continue
     }
 
-    if ($seenPaths.ContainsKey($repositoryPath)) {
+    $repositoryPath = Get-RepositoryPath -Location $location -RelativePath $relativePath
+
+    if ($location.Kind -eq 'windows') {
+        $workspacePrefix = $location.Root + [System.IO.Path]::DirectorySeparatorChar
+        if (
+            $repositoryPath -ne $location.Root -and
+            -not $repositoryPath.StartsWith(
+                $workspacePrefix,
+                [System.StringComparison]::OrdinalIgnoreCase
+            )
+        ) {
+            $issues.Add("[$name] path escapes workspace root: $relativePath")
+            continue
+        }
+    }
+
+    $pathKey = "$($location.Kind):$repositoryPath"
+    if ($seenPaths.ContainsKey($pathKey)) {
         $issues.Add("Duplicate repository path: $relativePath")
     }
     else {
-        $seenPaths[$repositoryPath] = $true
+        $seenPaths[$pathKey] = $true
     }
 
     if ($seenRemotes.ContainsKey($remote)) {
@@ -205,25 +215,24 @@ foreach ($repository in $repositories) {
         $seenRemotes[$remote] = $true
     }
 
-    if (-not (Test-Path -LiteralPath $repositoryPath -PathType Container)) {
+    if (-not (Test-RepositoryDirectory -Location $location -RepositoryPath $repositoryPath)) {
         $issues.Add("[$name] repository directory not found: $repositoryPath")
         continue
     }
 
-    $insideWorkTree = Invoke-GitText -RepositoryPath $repositoryPath -Arguments @(
-        'rev-parse',
-        '--is-inside-work-tree'
-    )
+    $insideWorkTree = Invoke-GitText `
+        -Location $location `
+        -RepositoryPath $repositoryPath `
+        -Arguments @('rev-parse', '--is-inside-work-tree')
     if ($insideWorkTree -ne 'true') {
         $issues.Add("[$name] not a Git working tree: $repositoryPath")
         continue
     }
 
-    $actualRemote = Invoke-GitText -RepositoryPath $repositoryPath -Arguments @(
-        'remote',
-        'get-url',
-        'origin'
-    )
+    $actualRemote = Invoke-GitText `
+        -Location $location `
+        -RepositoryPath $repositoryPath `
+        -Arguments @('remote', 'get-url', 'origin')
     if ($actualRemote -ne $remote) {
         $issues.Add(
             "[$name] origin mismatch: expected '$remote', got '$actualRemote'"
@@ -231,6 +240,7 @@ foreach ($repository in $repositories) {
     }
 
     $localDefaultBranch = Invoke-GitText `
+        -Location $location `
         -RepositoryPath $repositoryPath `
         -Arguments @(
             'show-ref',
@@ -239,6 +249,7 @@ foreach ($repository in $repositories) {
         )
 
     $remoteDefaultBranch = Invoke-GitText `
+        -Location $location `
         -RepositoryPath $repositoryPath `
         -Arguments @(
             'show-ref',
@@ -260,8 +271,15 @@ if ($issues.Count -gt 0) {
     )
 }
 
+$tierSummary = ($declaredTiers | ForEach-Object {
+    $loc = $tierResult.Locations[$_]
+    if ($loc.Kind -eq 'wsl') { "$_ -> wsl:$($loc.Distro):$($loc.Root)" }
+    else { "$_ -> windows:$($loc.Root)" }
+}) -join '; '
+
 Write-Host 'Workspace validation passed.' -ForegroundColor Green
 Write-Host "Manifest:  $ManifestPath"
 Write-Host "Workspace: $WorkspaceRoot"
+Write-Host "Tiers:     $tierSummary"
 Write-Host "Managed repositories: $($repositories.Count)"
 exit 0

@@ -1,10 +1,15 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "scope": "heliang-research-workspace",
+  "tiers": {
+    "authoring": "文档写作与 Windows 原生运维；由 Office、LaTeX 编辑器与 PowerShell 消费",
+    "compute": "科学计算运行时；需要 Linux 下的 Python、MPI、MKL 与 CMake"
+  },
   "repositories": [
     {
       "name": "workstation",
       "relativePath": "workstation",
+      "tier": "authoring",
       "owner": "brighthe",
       "type": "personal",
       "remote": "git@github.com:brighthe/workstation.git",
@@ -15,6 +20,7 @@
     {
       "name": "heliangos",
       "relativePath": "heliangos",
+      "tier": "authoring",
       "owner": "brighthe",
       "type": "personal",
       "remote": "git@github.com:brighthe/heliangos.git",
@@ -25,6 +31,7 @@
     {
       "name": "dut-postdoc",
       "relativePath": "dut-postdoc",
+      "tier": "authoring",
       "owner": "brighthe",
       "type": "personal",
       "remote": "git@github.com:brighthe/dut-postdoc.git",
@@ -35,6 +42,7 @@
     {
       "name": "xtu-phd-thesis",
       "relativePath": "xtu-phd-thesis",
+      "tier": "authoring",
       "owner": "brighthe",
       "type": "personal",
       "remote": "git@github.com:brighthe/xtu-phd-thesis.git",
@@ -45,6 +53,7 @@
     {
       "name": "dut-institute-work",
       "relativePath": "dut-institute-work",
+      "tier": "authoring",
       "owner": "brighthe",
       "type": "personal",
       "remote": "git@github.com:brighthe/dut-institute-work.git",
@@ -55,6 +64,7 @@
     {
       "name": "soptx",
       "relativePath": "soptx",
+      "tier": "compute",
       "owner": "brighthe",
       "type": "personal",
       "remote": "git@github.com:brighthe/soptx.git",
@@ -65,6 +75,7 @@
     {
       "name": "fealpy",
       "relativePath": "fealpy",
+      "tier": "compute",
       "owner": "suanhaitech",
       "type": "company",
       "remote": "git@github.com:suanhaitech/fealpy.git",
@@ -75,6 +86,7 @@
     {
       "name": "mfleo",
       "relativePath": "mfleo",
+      "tier": "compute",
       "owner": "suanhaitech",
       "type": "company",
       "remote": "git@github.com:suanhaitech/mfleo.git",
@@ -85,6 +97,7 @@
     {
       "name": "xihe",
       "relativePath": "xihe",
+      "tier": "compute",
       "owner": "suanhaitech",
       "type": "company",
       "remote": "git@github.com:suanhaitech/xihe.git",

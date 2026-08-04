@@ -16,7 +16,8 @@
 | 字段 | 含义 |
 | --- | --- |
 | `name` | 稳定仓库标识 |
-| `relativePath` | 相对工作区根目录的本地路径 |
+| `relativePath` | 相对所属 tier 根目录的本地路径 |
+| `tier` | 运行时归属；当前为 `authoring` 或 `compute` |
 | `owner` | GitHub owner；当前为 `brighthe` 或 `suanhaitech` |
 | `type` | 所有权类型；当前为 `personal` 或 `company` |
 | `remote` | 期望的 `origin` URL |
@@ -25,6 +26,19 @@
 | `purpose` | 面向人的简短用途说明 |
 
 分支状态、当前提交、dirty、ahead/behind 等动态信息不写回清单，由脚本实时读取。算海仓库在这个 Public 清单中只保留最小运维元数据，不记录内部技术目标；临时仓库 `fealpy_heliang` 不纳入。
+
+## 运行时分层与根目录解析
+
+仓库按**运行时归属**分层。判据是「内容由哪套工具链消费」，不是文件类型——`workstation` 全是 PowerShell 代码但属于 `authoring`，因为它的运行时就是 Windows。
+
+| tier | 含义 |
+| --- | --- |
+| `authoring` | 文档写作与 Windows 原生运维；由 Office、LaTeX 编辑器与 PowerShell 消费 |
+| `compute` | 科学计算运行时；需要 Linux 下的 Python、MPI、MKL 与 CMake |
+
+`tier` 是设备无关的事实（「`soptx` 是计算仓库」在任何机器上都成立），因此写进清单。而「这台机器上 `compute` 落在哪个文件系统」是设备特定的，写进 `roots.local.json`——该文件已加入 `.gitignore`，因为本仓库 Public，发行版名与本机路径不进版本控制。
+
+[roots.example.json](roots.example.json) 是模板。缺少 `roots.local.json` 时，**所有 tier 一律回退到 Windows 工作区根目录**，行为与引入分层之前完全一致；没有第二运行时的机器无需任何配置。
 
 ## 职责与内容路由
 
@@ -48,12 +62,16 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 - `status.ps1` 输出分支、dirty、ahead/behind 和远程匹配状态。ahead/behind 基于本地已有的远程引用，不会自动联网执行 `fetch`。
 - `status.ps1 -AsObject` 返回可继续通过 PowerShell 管道处理的对象；默认输出适合人工查看的表格。
 
-两个脚本默认从 `workstation` 所在位置推导工作区根目录，也可显式传入：
+两个脚本共享 [../scripts/workspace/common.ps1](../scripts/workspace/common.ps1)：它负责解析 tier 根目录，并按根目录类型分派 Git 调用（Windows 直接执行 `git`，WSL 经 `wsl.exe -d <distro> -- git`）。
+
+两个脚本默认从 `workstation` 所在位置推导 Windows 工作区根目录，也可显式传入：
 
 ```powershell
 .\scripts\workspace\validate.ps1 -WorkspaceRoot 'D:\workspace'
 .\scripts\workspace\status.ps1 -WorkspaceRoot 'D:\workspace'
 ```
+
+当某个 tier 映射到 WSL 时，脚本会区分两类失败：发行版无响应报告为 tier 级环境问题（一条错误），仓库目录缺失才报告为该仓库的问题。这样 WSL 未启动不会被误读成一批仓库丢失。
 
 ## 边界
 

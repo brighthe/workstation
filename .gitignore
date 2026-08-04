@@ -16,5 +16,8 @@ remote-access/**/authorized_keys
 remote-access/**/*.key
 remote-access/**/*.pem
 
+# workspace tier→root 映射是机器特定的（本仓库 Public）
+workspace/roots.local.json
+
 # Claude Code 会话隔离用的 worktree 副本
 .claude/worktrees/
