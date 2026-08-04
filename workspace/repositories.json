@@ -33,6 +33,16 @@
       "purpose": "博士后科研知识、文献、研究路线与报告"
     },
     {
+      "name": "xtu-phd-thesis",
+      "relativePath": "xtu-phd-thesis",
+      "owner": "brighthe",
+      "type": "personal",
+      "remote": "git@github.com:brighthe/xtu-phd-thesis.git",
+      "defaultBranch": "main",
+      "role": "doctoral-thesis-source",
+      "purpose": "湘潭大学博士学位论文 LaTeX 源码、图件与最终定稿"
+    },
+    {
       "name": "dut-institute-work",
       "relativePath": "dut-institute-work",
       "owner": "brighthe",
@@ -60,7 +70,7 @@
       "remote": "git@github.com:suanhaitech/fealpy.git",
       "defaultBranch": "main",
       "role": "company-software-library",
-      "purpose": "公司科研软件协作仓库"
+      "purpose": "算海科研软件协作仓库"
     },
     {
       "name": "mfleo",
@@ -70,7 +80,7 @@
       "remote": "git@github.com:suanhaitech/mfleo.git",
       "defaultBranch": "main",
       "role": "company-engineering-middleware",
-      "purpose": "公司科研软件协作仓库"
+      "purpose": "算海科研软件协作仓库"
     },
     {
       "name": "xihe",
@@ -80,7 +90,7 @@
       "remote": "git@github.com:suanhaitech/xihe.git",
       "defaultBranch": "main",
       "role": "company-internal-platform",
-      "purpose": "公司科研软件协作仓库"
+      "purpose": "算海科研软件协作仓库"
     }
   ]
 }

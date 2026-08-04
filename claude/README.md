@@ -43,6 +43,10 @@
 
 > 上面是中文页，便于你直接阅读；**Claude 查询时以英文 `/en/` 原版为准**（更新最快、无翻译偏差）。子页面通用规律：`https://code.claude.com/docs/en/<slug>`，把 `/en/` 换成 `/zh-CN/` 即中文版。
 
+## 专题指南
+
+- [Claude Code Desktop 接入 DeepSeek API 与双配置切换](deepseek-api/README.md)：Gateway 配置、模型映射、订阅恢复与故障排查。
+
 ## CLAUDE.md 的存放位置（按加载顺序，范围从宽到窄）
 
 | 范围 | 位置 | 用途 |
@@ -131,7 +135,7 @@
 
 - 绝不直接调用裸的 `python` 或 `conda`。在我的 Windows 机器上，`conda` 通常**不在 PATH 上**，而 PATH 上的 `python` 是 Microsoft Store 占位 stub（无输出、exit 49），不是真解释器。
 - 通用位置：`<用户目录>\miniconda3\Scripts\conda.exe`（或 `anaconda3`）。用 `Test-Path` 检查，再用 `conda env list` 列出环境。
-- **PC-20260706DAHN**：`C:\Users\Administrator\miniconda3\Scripts\conda.exe`；环境 `base`（无 numpy）、`fealpy-ml`、`soptx-gpu`、`xihe-fealpy`。
+- **PC-20260706DAHN**：`C:\Users\Administrator\miniconda3\Scripts\conda.exe`；环境 `base`（无 numpy）、`fealpy-ml`、`ihpcm`（SOPTX 数值验证）、`soptx-gpu`、`soptx-huzhang`。
 - 当你自己运行 Python 时：
 
       & "<conda 路径>" run -n <env> --no-capture-output python .\script.py

@@ -40,6 +40,10 @@
 
 > 本 README 只管"指令与记忆"。Skills、Plugins、MCP、Windows sandbox 等**能力类**入口、ChatGPT 与 Codex 的使用边界，以及官方最新动态的跟进，统一放在 [capabilities.md](capabilities.md)。
 
+## 专题指南
+
+- [在 Windows Codex 中接入与切换 DeepSeek API](deepseek-api/README.md)：第三方模型提供方配置、验证、恢复与兼容性边界。
+
 ## AGENTS.md 的存放位置与适用范围
 
 | 范围 | 位置 | 用途 |
@@ -87,12 +91,16 @@
 - 涉及文件编辑、配置修改、安装、commit、push 或多步骤排障时，建议使用 Plan mode。
 - Plan mode 生效期间，只进行只读调查、澄清和规划；不要实施修改，也不要修改 Git 跟踪文件。
 - 计划达到决策完备状态后，等我退出 Plan mode 并明确要求实施，再开始修改。
-- 实施完成后，运行与风险相称的检查或测试，检查 diff，并报告修改内容和验证结果。
-- 当我要求制定或实施程序验证计划时，默认只准备代码、环境说明、可执行命令和验收标准，由我在本地运行。
-- 除非我明确要求 Codex 直接运行，否则不要代替我执行测试、MPI 作业、Benchmark 或验证驱动；我提供输出后，再进行诊断和结果判定。
 - 只有长期持续推进、需要跨多轮或多会话追踪且具有可验证停止条件的工作，才建议使用 Goal workflow。
 - 启动 Goal 前，先定义一个目标、目标范围、验证循环和停止条件；这些内容尚不清晰时，先建议使用 `/plan`。
 - 除非我明确要求，否则不要创建或启动 Goal。
+
+## 用户亲自执行本地程序
+
+- 默认由我在本地执行程序和验证。为我准备代码、环境说明、每次一条完整的 PowerShell 命令和验收标准，并等我运行后再建议下一步。
+- 对每条命令，说明所需的工作目录和环境、目的、预期输出和生成文件。不要仅因为命令执行完毕就判定成功；应检查 exit code、预期输出、生成文件和既定验收标准。
+- 除非我明确要求 Codex 直接运行，否则不要代替我执行测试、MPI 作业、Benchmark 或验证驱动；结果可用后，再进行诊断并判断是否满足验收标准。
+- 当我在当前 Codex 集成终端中运行命令时，如我要求查看结果，直接读取可用输出；不要要求我粘贴已可直接获取的内容。如果我使用外部终端，请我提供相关输出或工作区内的日志文件。对于耗时长或重要的运行，建议把 stdout 和 stderr 保存在工作区日志文件中。
 
 ## 批判性评估
 
@@ -103,21 +111,25 @@
 
 ## 工作区仓库治理（`C:\workspace`）
 
-受管仓库的权威清单位于 `C:\workspace\workstation\workspace\repositories.json`。进行仓库发现、路由、所有权判断和预期 Git 远程检查时，读取该 manifest，不要在这里维护重复清单。
+受管仓库的权威清单位于 `C:\workspace\workstation\workspace\repositories.json`。进行仓库发现、本地检出路由、所有权判断和预期 Git 远程检查时，读取该 manifest，不要在这里维护重复清单。
+
+进行跨仓库内容归属、事实源选择和引用时，读取 `C:\workspace\workstation\workspace\responsibilities.md`。不要在全局指令中复制其中的职责表或路由表。
 
 只有明确指定为受管科研工作区组成部分的仓库才应写入 manifest。不得自动添加临时、实验或无关的检出。添加或移除受管仓库时，应在同一任务中更新 manifest 及其公开的 workspace 文档。
 
 进入某个仓库后，以该仓库自己的 `AGENTS.md` 和 `README.md` 为准。commit 或 push 前，验证仓库所配置的 `origin`。
 
-将 manifest 中类型为 `company` 的条目（包括由 `suanhaitech` 所有的仓库）视为企业所有的工作。不要把企业代码、数据、凭据或内部文档复制到个人仓库中。
+将 manifest 中类型为 `company` 的条目（包括由 `suanhaitech` 所有的仓库）视为算海所有的工作。不要把算海代码、数据、凭据或内部文档复制到个人仓库中。
 
 ## AI 指令文件边界
 
 - 维护 Codex 或 `AGENTS.md` 指令时，只修改 `AGENTS.md` 及保持其一致性所必需的 Codex 专属说明或配置。
+- 修改此指令源文件（`C:\workspace\workstation\codex\AGENTS.md`）时，必须在同一任务中同步更新 `C:\workspace\workstation\codex\README.md`，确保其中的中文译文保持一致。
 - 不要把修改联动到其他 AI 工具的指令文件，包括 `CLAUDE.md` 和 `GEMINI.md`；只有我明确点名这些文件或明确将其纳入任务范围时，才允许修改。
 
 ## Git 工作流卫生
 
+- 实施完成后，检查 diff，并报告修改内容和已验证事项。
 - 提交前先检查工作区，只暂存与当前任务相关的文件。
 - 除非我明确要求，不要使用 `git add -A` 这类宽泛暂存命令。
 - 除非我明确要求，不要 commit 或 push。
