@@ -146,6 +146,12 @@ on them; if this machine isn't listed below, resolve it and ask me to record it.
 
       wsl -d Ubuntu-24.04 -- bash -lc '~/miniconda3/envs/ihpcm/bin/python <script>'
 
+  `MPI4PY_MPIABI=openmpi` 已通过 `conda env config vars set` 注入 ihpcm: apt 的
+  MUMPS 5.6 是 OpenMPI 构建, 而 mpi4py 默认 dlopen 到 mpich 变体, 通信句柄不
+  匹配时 MUMPS 求解会崩 `MPI_Comm_f2c`。绝对路径直调上面的 python 不经过
+  activate, 不会注入该变量 —— 此时跑 mumps 需显式带 `MPI4PY_MPIABI=openmpi`,
+  或改用 `conda run -n ihpcm python ...`。
+
 - **PC-20260706DAHN — Windows side**: `C:\Users\Administrator\miniconda3\Scripts\conda.exe`.
   Beyond `base` it still carries `fealpy-ml`, `ihpcm`, `soptx-gpu` and
   `soptx-huzhang`, all superseded by the WSL environment and pending removal;
