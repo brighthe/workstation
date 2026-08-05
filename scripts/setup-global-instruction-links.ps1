@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
     [string]$RepoRoot,
     [string]$UserProfilePath
@@ -57,15 +57,22 @@ try {
     $linkDefinitions = @(
         [pscustomobject]@{
             Name = 'Codex'
-            Source = Join-Path $RepoRoot 'codex\AGENTS.md'
+            Source = Join-Path $RepoRoot 'agent-rules\Codex\AGENTS.md'
             Target = Join-Path $UserProfilePath '.codex\AGENTS.md'
         },
         [pscustomobject]@{
             Name = 'Claude Code'
-            Source = Join-Path $RepoRoot 'claude\CLAUDE.md'
+            Source = Join-Path $RepoRoot 'agent-rules\Claude\CLAUDE.md'
             Target = Join-Path $UserProfilePath '.claude\CLAUDE.md'
+        },
+        [pscustomobject]@{
+            Name = 'Antigravity'
+            Source = Join-Path $RepoRoot 'agent-rules\Antigravity\GEMINI.md'
+            Target = Join-Path $UserProfilePath '.gemini\config\GEMINI.md'
         }
     )
+
+
 
     $operations = New-Object System.Collections.Generic.List[object]
     $conflicts = New-Object System.Collections.Generic.List[string]
@@ -144,6 +151,8 @@ catch {
         }
     }
 
-    Write-Error ("初始化失败：{0}`n如果创建 SymbolicLink 被拒绝，请启用 Windows Developer Mode 或使用管理员 PowerShell。" -f $_.Exception.Message)
+    $msg = "初始化失败：$($_.Exception.Message)`n如果创建 SymbolicLink 被拒绝，请启用 Windows Developer Mode 或使用管理员 PowerShell。"
+    Write-Error $msg
     exit 1
 }
+

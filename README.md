@@ -14,15 +14,16 @@
 
 ```
 workstation/
-├── README.md      # 本文件：总览 + 新机迁移入口
-├── git/           # 模块：Git / SSH 环境跨设备迁移（原生 git、SSH over 443、新机一次性配置）
-├── wsl/           # 模块：WSL2 + Ubuntu 开发环境（安装、映像缺组件的顶替方案、网络与 DNS）
-├── workspace/     # 模块：九个科研工作区仓库的声明式清单、运行时分层、职责边界与本地状态入口
-├── claude/        # 模块：Claude Code 全局指令（CLAUDE.md）、记忆管理说明、能力导读
-├── codex/         # 模块：Codex 全局指令（AGENTS.md）、记忆管理说明、能力导读
-├── scripts/       # 中立的跨工具公共脚本（工作区检查、全局指令链接、iCloud 定时同步等）
-├── remote-access/ # 模块：Windows + Tailscale + OpenSSH 三节点全互联
-└── hardware/      # 模块：硬件维护流程（台式机清灰指南 + 工具清单）
+├── README.md        # 本文件：总览 + 新机迁移入口
+├── agent-rules/     # 模块：AI 全局规则与指令文件（Antigravity、Claude & Codex）
+├── agent-tutorials/ # 模块：Agent 接入教程、最佳实践与能力导读（Claude & Codex）
+├── git/             # 模块：Git / SSH 环境跨设备迁移（原生 git、SSH over 443、新机一次性配置）
+├── wsl/             # 模块：WSL2 + Ubuntu 开发环境（安装、映像缺组件的顶替方案、网络与 DNS）
+├── workspace/       # 模块：九个科研工作区仓库的声明式清单、运行时分层、职责边界与本地状态入口
+├── scripts/         # 中立的跨工具公共脚本（工作区检查、全局指令链接、iCloud 定时同步等）
+├── remote-access/   # 模块：Windows + Tailscale + OpenSSH 三节点全互联
+
+
 ```
 
 各工具的说明和配置留在自己的模块中；确实被多个工具复用的实现放在 `scripts/`，避免产品文档互相引用或把公共逻辑归属到某一个工具。
@@ -70,8 +71,12 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 | [git](git/README.md) | Git / SSH 环境：原生 git、SSH over 443、新机一次性配置、各机现状与排错 | 本仓库（git），纯文档；新机经 raw URL 引导 |
 | [wsl](wsl/README.md) | WSL2 + Ubuntu 开发环境：安装、映像缺 `VirtualMachinePlatform` 时的顶替方案、网络与 DNS、各机现状 | 本仓库（git），纯文档，无需链接 |
 | [workspace](workspace/README.md) | 九个科研工作区仓库的声明式清单、运行时分层、职责边界、配置验证与只读状态汇总 | 本仓库（git）；`authoring` 根从 `workstation` 位置推导，`compute` 根由本机 `roots.local.json` 解析 |
-| [claude](claude/README.md) | Claude Code 全局指令（CLAUDE.md）与记忆管理；[能力导读](claude/capabilities.md) | 本仓库（git）+ 符号链接到 `~/.claude/CLAUDE.md` |
-| [codex](codex/README.md) | Codex 全局指令（AGENTS.md）与记忆管理；[能力导读](codex/capabilities.md) | 本仓库（git）+ 链接到 `~/.codex/AGENTS.md` |
+| [agent-rules/Antigravity](agent-rules/Antigravity/README.md) | Antigravity 全局指令（GEMINI.md）与技能配置 | 本仓库（git）+ 链接到 `~/.gemini/config/GEMINI.md` |
+| [agent-rules/Claude](agent-rules/Claude/README.md) | Claude Code 全局指令（CLAUDE.md）管理 | 本仓库（git）+ 符号链接到 `~/.claude/CLAUDE.md` |
+| [agent-rules/Codex](agent-rules/Codex/README.md) | Codex 全局指令（AGENTS.md）与记忆管理 | 本仓库（git）+ 链接到 `~/.codex/AGENTS.md` |
+| [agent-tutorials](agent-tutorials/Claude/claude-deepseek-guide.md) | Agent 综合教程：桌面 App、CLI 命令行、VS Code 插件接入教程与 [Claude 能力导读](agent-tutorials/Claude/capabilities.md) & [Codex 能力导读](agent-tutorials/Codex/capabilities.md) | 本仓库（git）教程与能力文档 |
+
+
 | [remote-access](remote-access/README.md) | Windows 设备通过 Tailscale + OpenSSH 两两远程终端；密钥隔离、节点初始化、验证与恢复 | 本仓库只保存流程和脚本；私钥留在各设备 `~/.ssh`，真实 inventory 不入库 |
 | [hardware](hardware/README.md) | 硬件维护流程：台式主机（RTX 5070 Ti）清灰指南与工具清单 | 本仓库（git），纯文档，无需链接 |
 | [scripts/icloud-sync](scripts/icloud-sync/README.md) | 两个个人仓库到 iCloud Obsidian 的每日镜像同步与跨设备任务迁移 | Windows Task Scheduler；旧机卸载、新机一键安装 |
