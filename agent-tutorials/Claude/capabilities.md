@@ -117,10 +117,13 @@ worktree 里提交
 
 ### 最新动态
 
-**核对日期：2026-07-26**
+**核对日期：2026-08-06**
 
 三个源汇总后按日期倒序，每条注明出处。只记**会改变我实际使用方法**的变化——新命令、行为变更、破坏性变更、模型变更、Windows 相关、权限与安全；纯 bug 修复、内部重构、与 Claude Code 无关的产品新闻不记。滚动保留约一个月，更早的条目要么已经内化、要么升进第 2 节能力清单。
 
+- **2026-08-06｜v2.1.223**：`/review` 变成 `/code-review` 的别名（`/code-review <level> <pr#>` 审查当前 diff 或 PR，`/code-review ultra` 触发云端深度审查；不带 effort level 时复用上次输入的级别）；同版修复多处权限检测绕过——Bash 命令用 tab/隐藏 Unicode 藏参数、workflow 脚本靠动态 `import()` 逃出沙箱、agent 定义的 `bypassPermissions` 绕过组织禁用策略。〔[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-08-04｜v2.1.222**：**移除 Ultraplan**（Week 15 起的云端计划工具下线）；修复 worktree 隔离会话可对主检出执行破坏性 git 命令的隔离漏洞（隔离范围现覆盖所有会话类型的文件编辑与 Bash）；Remote Control 自动启动改为只能在 user scope 打开，仓库级 `.claude/settings.json` 只能关不能开。〔[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-08-04｜v2.1.221**：新增 sandbox 凭证文件 `mode: "mask"`（Linux/WSL 下沙箱进程读取哨兵副本，真实值仅在代理出口替换；macOS 回退为 `deny`）；后台会话（background sessions）行为变更——现在会 commit + push 保留工作、按需开 draft PR、遵循 CLAUDE.md 里的 git 指令、结束时报告工作去向；`/fork` 派生的会话改为新建独立 worktree，不再共用原会话检出；同版修复 zsh `[[ ]]` 正则条件和 PowerShell 带引号路径的权限检测绕过。〔[changelog](https://code.claude.com/docs/en/changelog)〕
 - **2026-07-24｜v2.1.219**：**Claude Opus 5**（`claude-opus-5`）成为默认 Opus 模型（1M context，fast mode $10/$50 per MTok），`/fast` 同时移除 Opus 4.7 支持；嵌套 subagent 默认深度由 1 提到 3（`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1` 可关回）；新增 `sandbox.network.strictAllowlist`（沙箱命令直接拒绝非白名单主机，不再弹窗）和 `DirectoryAdded` hook。〔[news](https://www.anthropic.com/news/claude-opus-5)｜[changelog](https://code.claude.com/docs/en/changelog)〕
 - **2026-07-22｜v2.1.218**：`/code-review` 改为后台 subagent 运行，审查过程不再占满主对话上下文；同版修复 Windows 路径损坏问题。〔[changelog](https://code.claude.com/docs/en/changelog)〕
 - **2026-07-20｜v2.1.216**：新增 `sandbox.filesystem.disabled` 设置（保留网络管控、跳过文件系统隔离）。〔[changelog](https://code.claude.com/docs/en/changelog)〕
