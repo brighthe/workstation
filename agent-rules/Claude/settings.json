@@ -1,0 +1,88 @@
+{
+  "autoCompactWindow": 200000,
+  "cleanupPeriodDays": 14,
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": [
+              "-NoProfile",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-File",
+              "C:\\Users\\Administrator\\.claude\\notify.ps1"
+            ],
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": [
+              "-NoProfile",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-File",
+              "C:\\Users\\Administrator\\.claude\\notify.ps1"
+            ],
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": [
+              "-NoProfile",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-File",
+              "C:\\workspace\\workstation\\claude\\hooks\\git-origin-context.ps1"
+            ],
+            "if": "Bash(git *)",
+            "timeout": 15,
+            "statusMessage": "Checking git origin..."
+          }
+        ]
+      },
+      {
+        "matcher": "PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": [
+              "-NoProfile",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-File",
+              "C:\\workspace\\workstation\\claude\\hooks\\git-origin-context.ps1"
+            ],
+            "if": "PowerShell(git *)",
+            "timeout": 15,
+            "statusMessage": "Checking git origin..."
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NoProfile -ExecutionPolicy Bypass -File C:/Users/Administrator/.claude/statusline.ps1",
+    "padding": 0
+  },
+  "theme": "auto"
+}

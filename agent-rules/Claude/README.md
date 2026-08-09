@@ -24,6 +24,49 @@
 
 ---
 
+## 配置文件镜像清单（硬链接 / 符号链接）
+
+与 Codex 侧（`agent-rules/Codex/`）一致，Claude 侧实际生效的配置文件统一以本目录为维护源头，通过链接绑定到各环境。修改本目录文件（或任意链接端）即同步生效。
+
+| 仓库文件（源头） | 绑定位置 | 链接类型 |
+| :--- | :--- | :--- |
+| `CLAUDE.md` | `C:\Users\Administrator\.claude\CLAUDE.md`（Windows） | 硬链接 |
+| `CLAUDE.md` | `~/.claude/CLAUDE.md`（WSL，指向 `~/workspace/workstation/` 副本） | 符号链接 |
+| `settings.json` | `C:\Users\Administrator\.claude\settings.json` | 硬链接 |
+| `profile-pwsh7.ps1` | `C:\Users\Administrator\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` | 硬链接 |
+| `profile-ps51.ps1` | `C:\Users\Administrator\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` | 硬链接 |
+| `claude_ds_func.sh` | `~/.claude_ds_func`（WSL，指向 `/mnt/c` 仓库文件） | 符号链接 |
+| `settings-wsl.json` | `~/.claude/settings.json`（WSL，指向 `/mnt/c` 仓库文件） | 符号链接 |
+
+> [!WARNING]
+> - 硬链接仅同卷（C:）有效；仓库被复制/克隆到其他机器或分区后链接退化为普通文件，需重新执行创建命令。
+> - **硬链接会因"原子替换写入"而断开**（2026-08-09 实证）：Claude Code 自动改写（`/config`、权限追加）或使用 Edit/Write 工具修改仓库源文件都会产生新 inode，断开后生效文件停留在旧内容。检测：`fsutil hardlink list <仓库文件>`（正常应显示 2 个路径）；重建：`Remove-Item <生效路径>; New-Item -ItemType HardLink -Path <生效路径> -Target <仓库文件>`。
+> - `settings.local.json`（每机本地权限规则）**不镜像**——Claude Code 会频繁自动追加，且各机规则不同。
+> - `claude_ds_func.sh` 不硬编码 API key：运行时从 Windows 用户环境变量 `DEEPSEEK_API_KEY` 读取。
+
+---
+
+## settings.json 共享键/环境键管理规则
+
+两份 `settings.json`（Windows 侧 `settings.json`、WSL 侧 `settings-wsl.json`）各为完整可用文件，按键分类维护：
+
+| 类别 | 键 | 维护规则 |
+| :--- | :--- | :--- |
+| **共享键**（两文件必须一致） | `model`、`theme`、`autoCompactWindow`、`cleanupPeriodDays`、`effortLevel` | 改动时两文件同步修改 |
+| **环境键**（各自独立） | `hooks`、`statusLine`（Windows）；`permissions.allow`、`additionalDirectories`（WSL） | 只改对应环境的文件 |
+
+共享键一致性检查：
+
+```powershell
+$w = Get-Content agent-rules\Claude\settings.json -Raw | ConvertFrom-Json
+$l = Get-Content agent-rules\Claude\settings-wsl.json -Raw | ConvertFrom-Json
+@('model','theme','autoCompactWindow','cleanupPeriodDays','effortLevel') | ForEach-Object { "{0}: {1} vs {2}" -f $_, $w.$_, $l.$_ }
+```
+
+> 说明：WSL 侧暂不迁移 `hooks`/`statusLine`（命令为 Windows 风格，跨环境需适配 `powershell.exe` 与路径转换，属后续工作）。
+
+---
+
 ## 全局指令中文详细对照与解读（`CLAUDE.md`）
 
 为了方便查阅与日常维护，以下为精简优化后的 [`CLAUDE.md`](CLAUDE.md) 完整中文规则对照说明：
