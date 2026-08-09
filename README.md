@@ -79,4 +79,5 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 
 | [remote-access](remote-access/README.md) | Windows 设备通过 Tailscale + OpenSSH 两两远程终端；密钥隔离、节点初始化、验证与恢复 | 本仓库只保存流程和脚本；私钥留在各设备 `~/.ssh`，真实 inventory 不入库 |
 | [hardware](hardware/README.md) | 硬件维护流程：台式主机（RTX 5070 Ti）清灰指南与工具清单 | 本仓库（git），纯文档，无需链接 |
+| [windsurf](windsurf/README.md) | Windsurf 编辑器：WSL 远程开发、Python/conda 解释器、静态分析与故障恢复 | 本仓库（git）保存流程；扩展、服务端与本地路径在每台机器上重建 |
 | [scripts/icloud-sync](scripts/icloud-sync/README.md) | 两个个人仓库到 iCloud Obsidian 的每日镜像同步与跨设备任务迁移 | Windows Task Scheduler；旧机卸载、新机一键安装 |
