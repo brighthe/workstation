@@ -1,6 +1,6 @@
 # OpenAI Codex 全局记忆与指令管理说明
 
-> - **整理日期**：2026-08-05
+> - **整理日期**：2026-08-09
 > - **适用环境**：Windows 11、Windows PowerShell、WSL Ubuntu、Codex CLI、Codex Desktop App
 
 本文档用于管理和说明 OpenAI Codex 的“全局指令（[`AGENTS.md`](AGENTS.md)）”以及与“Memories”的核心分工。
@@ -21,6 +21,24 @@
 - **[workstation 仓库主文件](AGENTS.md)**：[`C:\workspace\workstation\agent-rules\Codex\AGENTS.md`](file:///C:/workspace/workstation/agent-rules/Codex/AGENTS.md)
 - **Windows 全局绑定路径**：`C:\Users\Administrator\.codex\AGENTS.md`
 - **WSL Linux 全局绑定路径**：`\\wsl.localhost\ubuntu-24.04\home\brighthe\.codex\AGENTS.md`
+
+---
+
+## 目录文件与链接一览
+
+| 文件 | 作用 | 真实路径 | 链接 |
+| :--- | :--- | :--- | :--- |
+| `AGENTS.md` | 全局指令（每个会话开始自动加载） | `C:\workspace\workstation\agent-rules\Codex\AGENTS.md` | 硬链接至 `C:\Users\Administrator\.codex\AGENTS.md`（WSL 另行绑定） |
+| `README.md` | 本说明文档 | 本目录 | 普通文件 |
+| `config.toml` | 官方订阅配置（Desktop / CLI / VS Code 共用） | `C:\Users\Administrator\.codex\config.toml` | 硬链接 |
+| `config-deepseek.toml` | DeepSeek 模式配置（仅 `codex-deepseek` 命令） | `C:\Users\Administrator\.codex-deepseek\config.toml` | 硬链接 |
+| `deep-task.toml` | 自定义 agent（复杂任务委托，`gpt-5.6-sol` + `high`） | `C:\Users\Administrator\.codex\agents\deep-task.toml` | 硬链接 |
+
+### 边界与冲突说明
+- `config.toml` 与 `config-deepseek.toml` 属于两个独立的 `CODEX_HOME` 配置档（`~/.codex` 与 `~/.codex-deepseek`），一个进程只加载其中一份，互不冲突。
+- `deep-task.toml` 是 agent 定义层，仅在调用 `deep-task` 时生效，不影响日常会话的默认模型（`gpt-5.6-terra`）。
+- 本目录中的 `.toml` 均为硬链接，用于查看与维护；真实文件位于各自目录，删除链接不影响真实文件。
+- 注意：`deep-task` 目前仅存在于官方模式（`~/.codex/agents/`）；DeepSeek 模式如需使用需在 `~/.codex-deepseek/agents/` 另行放置。
 
 ---
 
@@ -63,6 +81,12 @@
 - Windows 仓库使用 PowerShell 与原生 Windows Git/OpenSSH；`compute` 仓库在 WSL Linux 内运行 Git。
 - 提交前检查 Working Tree，仅 Stage 与当前任务相关的修改文件，严禁使用 `git add -A`。
 - 未经用户明确指示，不自动执行 `git commit` 或 `git push`。
+
+---
+
+### 9. 复杂任务委托（Complex Task Delegation）
+- 对于真正复杂、高价值的任务（多步骤重构、跨模块设计、深度代码审查、深度研究、疑难排错），自动委托给自定义 `deep-task` agent（`~/.codex/agents/deep-task.toml`，模型 `gpt-5.6-sol`，推理 `high`）。
+- 规则保持窄范围：常规编辑、问答、只读检查与范围明确的小任务继续使用默认模型（`gpt-5.6-terra`）。
 
 ---
 

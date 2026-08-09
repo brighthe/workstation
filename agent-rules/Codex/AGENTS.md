@@ -34,3 +34,7 @@
 - Windows repos: use PowerShell with native Windows Git/OpenSSH.
 - `compute` repos in WSL: run Git inside the distro (`wsl -d Ubuntu-24.04 -- git -C /home/brighthe/workspace/<repo>`).
 - Inspect working tree before committing; stage only task-related files. Avoid broad staging (`git add -A`). Do not commit/push without explicit request.
+
+## Complex Task Delegation
+- Delegate genuinely complex, high-value tasks (multi-step refactors, cross-module design, deep code review, deep research, ambiguous debugging) to the `deep-task` agent.
+- Keep this narrow: routine edits, Q&A, read-only checks, and well-scoped small tasks stay on the default model.

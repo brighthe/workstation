@@ -1,0 +1,125 @@
+model = "gpt-5.6-terra"
+
+service_tier = "default"
+personality = "pragmatic"
+
+
+
+notify = [ "C:\\Users\\Administrator\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\f1bf3cd3a5929acd\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
+
+[marketplaces.openai-bundled]
+last_updated = "2026-08-07T13:52:59Z"
+source_type = "local"
+source = '\\?\C:\Users\Administrator\.codex\.tmp\bundled-marketplaces\openai-bundled'
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-08-07T05:38:03Z"
+source_type = "local"
+source = '\\?\C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
+[features]
+js_repl = false
+
+[desktop]
+conversationDetailMode = "STEPS_COMMANDS"
+sansFontSize = 14
+codeFontSize = 13
+ambient-suggestions-enabled = true
+followUpQueueMode = "queue"
+show-context-window-usage = true
+usePointerCursors = true
+
+[windows]
+sandbox = "elevated"
+
+[projects.'c:\users\administrator\documents\codex\2026-07-07\ji']
+trust_level = "trusted"
+
+[projects.'c:\users\administrator\documents\codex']
+trust_level = "trusted"
+
+[projects.'c:\']
+trust_level = "trusted"
+
+[projects.'c:\workspace\dut-postdoc']
+trust_level = "trusted"
+
+[projects.'c:\workspace\workstation']
+trust_level = "trusted"
+
+[projects.'c:\workspace\xihe']
+trust_level = "trusted"
+
+[projects.'c:\workspace\mfleo']
+trust_level = "trusted"
+
+[projects.'c:\workspace\heliangos']
+trust_level = "trusted"
+
+[projects.'c:\workspace']
+trust_level = "trusted"
+
+[projects.'c:\workspace\dut-institute-work']
+trust_level = "trusted"
+
+[projects.'c:\workspace\soptx']
+trust_level = "trusted"
+
+[projects.'\\?\unc\wsl.localhost\ubuntu-24.04\home\brighthe\workspace\soptx']
+trust_level = "trusted"
+
+[mcp_servers.node_repl]
+args = []
+command = 'C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\f1bf3cd3a5929acd\bin\node_repl.exe'
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\f1bf3cd3a5929acd\bin\node_modules'
+NODE_REPL_NODE_PATH = 'C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\f1bf3cd3a5929acd\bin\node.exe'
+NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\Administrator\.codex;C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\f1bf3cd3a5929acd\bin\node_modules'
+CODEX_HOME = 'C:\Users\Administrator\.codex'
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "e7f98a8ce324234ed7f3be8fa39ba54b26e2e8fc79feed2470dcd0871af4a5b3"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.803.41515"
+SKY_CUA_NATIVE_PIPE = "1"
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-42451b83-2c5b-4451-8a7c-b53218420ce8'
+CODEX_CLI_PATH = 'C:\Users\Administrator\AppData\Local\OpenAI\Codex\bin\cfac6bda2d141e07\codex.exe'
+
+[shell_environment_policy.set]
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "e7f98a8ce324234ed7f3be8fa39ba54b26e2e8fc79feed2470dcd0871af4a5b3"
+NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\Administrator\.codex;C:\Users\Administrator\AppData\Local\OpenAI\Codex\runtimes\cua_node\f1bf3cd3a5929acd\bin\node_modules'
