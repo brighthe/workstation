@@ -170,8 +170,8 @@ function claude-ds() {
   "claudeCode.disableLoginPrompt": true,
   "claudeCode.environmentVariables": [
     { "name": "ANTHROPIC_BASE_URL", "value": "https://api.deepseek.com/anthropic" },
-    { "name": "ANTHROPIC_API_KEY", "value": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" },
-    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" },
+    { "name": "ANTHROPIC_API_KEY", "value": "sk-替换为你的 DeepSeek API Key" },
+    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "sk-替换为你的 DeepSeek API Key" },
     { "name": "ANTHROPIC_MODEL", "value": "deepseek-v4-pro" },
     { "name": "ANTHROPIC_DEFAULT_OPUS_MODEL", "value": "deepseek-v4-pro" },
     { "name": "ANTHROPIC_DEFAULT_SONNET_MODEL", "value": "deepseek-v4-pro" },
@@ -180,6 +180,36 @@ function claude-ds() {
 }
 ```
 保存后按 `Ctrl + Shift + P` 运行 `Developer: Reload Window` 重载窗口，无论本地还是 WSL 远程均自动切为 DeepSeek API！
+
+> [!CAUTION]
+> **关键陷阱提示：必须同时注入 `ANTHROPIC_API_KEY`！**
+> Claude Code 底层判定 API 模式强依赖 `ANTHROPIC_API_KEY`。如果仅配置了 `ANTHROPIC_AUTH_TOKEN` 而遗漏了 `ANTHROPIC_API_KEY`，插件会误判定未提供 API 密钥，从而回退（Fallback）去读取 Desktop 共享保存的本地 OAuth Token（`~/.claude.json`）。这会导致当你在 Desktop 登录官方订阅时，VS Code 会被自动带入官方订阅模式！
+
+#### C. Devin 中使用 Claude Code 插件
+
+Devin 的 `settings.json` 同样可配置 Claude Code 插件的 `claudeCode.*` 设置。**不要直接用上方示例覆盖整个文件**，否则会删除 Devin 自身设置（例如 `devin.cascade.enabled`）以及 Claude Code 的界面偏好（例如 `claudeCode.preferredLocation`）。应在原有 JSON 对象中合并新增字段，并注意各顶级键之间的逗号。
+
+例如，若 `C:\\Users\\Administrator\\AppData\\Roaming\\Devin\\User\\settings.json` 原本包含下列 Devin 设置，可合并为：
+
+```json
+{
+  "devin.cascade.enabled": false,
+  "claudeCode.preferredLocation": "panel",
+
+  "claudeCode.disableLoginPrompt": true,
+  "claudeCode.environmentVariables": [
+    { "name": "ANTHROPIC_BASE_URL", "value": "https://api.deepseek.com/anthropic" },
+    { "name": "ANTHROPIC_API_KEY", "value": "sk-替换为你的 DeepSeek API Key" },
+    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "sk-替换为你的 DeepSeek API Key" },
+    { "name": "ANTHROPIC_MODEL", "value": "deepseek-v4-pro" },
+    { "name": "ANTHROPIC_DEFAULT_OPUS_MODEL", "value": "deepseek-v4-pro" },
+    { "name": "ANTHROPIC_DEFAULT_SONNET_MODEL", "value": "deepseek-v4-pro" },
+    { "name": "ANTHROPIC_DEFAULT_HAIKU_MODEL", "value": "deepseek-v4-flash" }
+  ]
+}
+```
+
+保存后运行 `Developer: Reload Window`。若在 WSL 远程窗口中重载后仍显示 Claude Pro，则检查 Devin 的 `Settings (Remote) [WSL: Ubuntu-24.04]` 是否有同名设置；远程运行的扩展可能以远程设置为准。请使用新建的 API Key，切勿将已泄露或已撤销的 Key 写回配置。
 
 ### 3.3 多模型选择与映射支持
 Claude Code 原生采用 **Anthropic Messages API** 协议，DeepSeek 在该协议上完整支持两款模型的动态映射：
@@ -194,6 +224,10 @@ Claude Code 原生采用 **Anthropic Messages API** 协议，DeepSeek 在该协�
 ---
 
 ## 4. 常见问题排查
+
+### 在 Desktop 登录官方订阅后，VS Code 自动同步切为官方订阅？
+- **原因**：VS Code 的 `settings.json` 中配置 `claudeCode.environmentVariables` 时，遗漏了 `ANTHROPIC_API_KEY` 变量。插件因缺少 API Key 判定未开启 API 模式，从而回退（Fallback）去读取 Desktop 共享保存的 `~/.claude.json` OAuth 凭据。
+- **解决**：在 `settings.json` 的 `claudeCode.environmentVariables` 数组中务必包含 `{ "name": "ANTHROPIC_API_KEY", "value": "sk-xxxxxxxx..." }`。保存后运行 `Developer: Reload Window` 重载窗口并在对话框中发送 `/logout` 清除缓存。
 
 ### `OAuth error: Socket is closed`
 - **原因**：WSL Linux 终端运行时继承了 Windows PATH 误调用了 `claude.exe`。
