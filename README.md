@@ -15,8 +15,8 @@
 ```
 workstation/
 ├── README.md        # 本文件：总览 + 新机迁移入口
-├── agent-rules/     # 模块：AI 全局规则与指令文件（Antigravity、Claude & Codex）
-├── agent-tutorials/ # 模块：Agent 接入教程、最佳实践与能力导读（Claude & Codex）
+├── agent-rules/     # 模块：AI 全局规则、指令文件与配置（Antigravity、Claude、Codex & DeepSeek）
+├── agent-tutorials/ # 模块：Agent 接入教程、最佳实践与能力导读（Claude、Codex & DeepSeek）
 ├── git/             # 模块：Git / SSH 环境跨设备迁移（原生 git、SSH over 443、新机一次性配置）
 ├── wsl/             # 模块：WSL2 + Ubuntu 开发环境（安装、映像缺组件的顶替方案、网络与 DNS）
 ├── workspace/       # 模块：九个科研工作区仓库的声明式清单、运行时分层、职责边界与本地状态入口
@@ -74,9 +74,8 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 | [agent-rules/Antigravity](agent-rules/Antigravity/README.md) | Antigravity 全局指令（GEMINI.md）与技能配置 | 本仓库（git）+ 链接到 `~/.gemini/config/GEMINI.md` |
 | [agent-rules/Claude](agent-rules/Claude/README.md) | Claude Code 全局指令（CLAUDE.md）管理 | 本仓库（git）+ 符号链接到 `~/.claude/CLAUDE.md` |
 | [agent-rules/Codex](agent-rules/Codex/README.md) | Codex 全局指令（AGENTS.md）与记忆管理 | 本仓库（git）+ 链接到 `~/.codex/AGENTS.md` |
-| [agent-tutorials](agent-tutorials/Claude/claude-deepseek-guide.md) | Agent 综合教程：桌面 App、CLI 命令行、VS Code 插件接入教程与 [Claude 能力导读](agent-tutorials/Claude/capabilities.md) & [Codex 能力导读](agent-tutorials/Codex/capabilities.md) | 本仓库（git）教程与能力文档 |
-
-
+| [agent-rules/DeepSeek](agent-rules/DeepSeek/README.md) | DeepSeek Harness 配置分层（`settings.yaml`、profile patch 层）、凭据边界与升级核对清单 | 本仓库（git）+ 硬链接到 `~/.dsh/` |
+| [agent-tutorials](agent-tutorials/Claude/claude-guide.md) | Agent 综合教程：桌面 App、CLI 命令行、VS Code 插件接入教程与 [Claude 能力导读](agent-tutorials/Claude/capabilities.md) & [Codex 能力导读](agent-tutorials/Codex/capabilities.md) & [DeepSeek Harness 能力导读](agent-tutorials/DeepSeek/capabilities.md) | 本仓库（git）教程与能力文档 |
 | [remote-access](remote-access/README.md) | Windows 设备通过 Tailscale + OpenSSH 两两远程终端；密钥隔离、节点初始化、验证与恢复 | 本仓库只保存流程和脚本；私钥留在各设备 `~/.ssh`，真实 inventory 不入库 |
 | [hardware](hardware/README.md) | 硬件维护流程：台式主机（RTX 5070 Ti）清灰指南与工具清单 | 本仓库（git），纯文档，无需链接 |
 | [windsurf](windsurf/README.md) | Windsurf 编辑器：WSL 远程开发、Python/conda 解释器、静态分析与故障恢复 | 本仓库（git）保存流程；扩展、服务端与本地路径在每台机器上重建 |

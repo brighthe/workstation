@@ -1,0 +1,8 @@
+# 仓库无全局行尾策略，本文件只针对必须锁定行尾的个别文件。
+#
+# agent-rules/DeepSeek/ 下的 YAML 是 dsh 的活配置，硬链接到 ~/.dsh/
+# （settings.yaml、profiles/<name>/cordis.patch.yml）。本机 core.autocrlf=true，
+# 若不锁定，checkout / stash pop / 新机 clone 会把 CRLF 直接写进 dsh 的运行时配置。
+# 详见 agent-rules/DeepSeek/README.md 的硬链接一节。
+agent-rules/DeepSeek/*.yaml text eol=lf
+agent-rules/DeepSeek/*.yml  text eol=lf
