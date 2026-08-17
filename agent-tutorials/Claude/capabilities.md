@@ -74,6 +74,8 @@
 | Headless / SDK | 脚本里程序化调用 Claude Code | [headless](https://code.claude.com/docs/zh-CN/headless) | 暂不需要 |
 | Sandbox | 沙箱化 Bash，降低权限弹窗与风险 | [sandboxing](https://code.claude.com/docs/zh-CN/sandboxing) | 待标注 |
 | Fast mode | Opus 提速输出（/fast 切换） | [fast-mode](https://code.claude.com/docs/zh-CN/fast-mode) | 待标注 |
+| 跨会话消息 | 同机 Claude Code 会话间可直接互发消息，配 `ListAgents` 发现对方 | [cross-session-messaging](https://code.claude.com/docs/en/cross-session-messaging) | 待标注 |
+| Self-hosted environments | 云端会话跑在自建 runner 上，而非 Anthropic 托管沙箱 | [self-hosted-environments](https://code.claude.com/docs/en/self-hosted-environments) | 待标注 |
 
 ### 用法速记：Worktrees
 
@@ -117,10 +119,13 @@ worktree 里提交
 
 ### 最新动态
 
-**核对日期：2026-07-26**
+**核对日期：2026-08-08**
 
 三个源汇总后按日期倒序，每条注明出处。只记**会改变我实际使用方法**的变化——新命令、行为变更、破坏性变更、模型变更、Windows 相关、权限与安全；纯 bug 修复、内部重构、与 Claude Code 无关的产品新闻不记。滚动保留约一个月，更早的条目要么已经内化、要么升进第 2 节能力清单。
 
+- **2026-08-07｜v2.1.224**：新增跨会话 `SendMessage`——同机 Claude Code 会话之间可直接互发消息，配合 `ListAgents` 发现对方（macOS/Linux）；移除 200-subagent-per-session 生成上限；新增 `claude self-hosted-runner`（Team/Enterprise 自建云端运行环境）；沙箱新增凭证脱敏选项（JWT claim 脱敏、AWS SigV4 重签名等）。〔[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-08-06｜v2.1.223**：`/review` 改为 `/code-review` 的别名，`/code-review ultra` 对应云端深度审查；`/code-review` 不带 effort 参数时复用上次输入的等级；`CLAUDE_CODE_DISABLE_1M_CONTEXT` 现在把所有原生 1M 窗口的 Claude 模型统一压到 200K；修复多处权限检查绕过漏洞（Bash 命令用 tab/不可见 Unicode 隐藏参数、workflow 脚本用动态 `import()` 逃出沙箱、agent 定义的 `bypassPermissions` 曾绕过组织禁用策略）。〔[changelog](https://code.claude.com/docs/en/changelog)〕
+- **2026-08-04｜v2.1.221–222**：修复 worktree 隔离会话/子代理可对主检出执行破坏性 git 命令的安全漏洞，以及 `PreToolUse` auto-allow hook 绕过后台任务工具限制的漏洞；移除 Ultraplan 功能；沙箱新增 Linux/WSL 凭证文件 `mask` 模式；修复 zsh `[[ ]]` 条件和 PowerShell 引号路径下的权限检查绕过；后台会话改为按需提交/推送、按需开草稿 PR；`/fork` 派生的会话现在会新建 worktree；VSCode 新增 Focus 视图（`Ctrl+Alt+F` 折叠工具活动展示）。〔[changelog](https://code.claude.com/docs/en/changelog)〕
 - **2026-07-24｜v2.1.219**：**Claude Opus 5**（`claude-opus-5`）成为默认 Opus 模型（1M context，fast mode $10/$50 per MTok），`/fast` 同时移除 Opus 4.7 支持；嵌套 subagent 默认深度由 1 提到 3（`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1` 可关回）；新增 `sandbox.network.strictAllowlist`（沙箱命令直接拒绝非白名单主机，不再弹窗）和 `DirectoryAdded` hook。〔[news](https://www.anthropic.com/news/claude-opus-5)｜[changelog](https://code.claude.com/docs/en/changelog)〕
 - **2026-07-22｜v2.1.218**：`/code-review` 改为后台 subagent 运行，审查过程不再占满主对话上下文；同版修复 Windows 路径损坏问题。〔[changelog](https://code.claude.com/docs/en/changelog)〕
 - **2026-07-20｜v2.1.216**：新增 `sandbox.filesystem.disabled` 设置（保留网络管控、跳过文件系统隔离）。〔[changelog](https://code.claude.com/docs/en/changelog)〕
