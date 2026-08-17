@@ -295,6 +295,23 @@ Get-NetTCPConnection -LocalPort 3080 -State Listen |
 **想换 workspace？**
 Web UI 左侧栏可切换；或停掉服务后重新启动并在引导页重选。会话按 workspace 分目录保存，切换不会丢历史。
 
+**Web UI 点击选择文件夹报 `directory picker failed: win32 folder dialog worker exited before reporting result`？**
+Windows 下原生目录选择器（`@deepseek-ai/dsh-host-directory-picker-native`）派生的 Win32 COM worker 子进程在调用底层 `koffi` 时异常退出。
+
+解决方案：在 `$DSH_HOME/profiles/web/cordis.patch.yml`（即 `~/.dsh/profiles/web/cordis.patch.yml`）中配置 patch 禁用 native 选择器并启用随包自带的 Web 内置文件树选择器：
+
+```yaml
+- id: directory-picker
+  disabled: true
+- insert:
+  - id: directory-picker-browse
+    name: '@deepseek-ai/dsh-host-directory-picker-browse'
+  - id: ui-directory-picker-browse
+    name: '@deepseek-ai/dsh-client-ui-directory-picker-browse'
+```
+
+保存后重启 `dsh web` 即可；或在界面中直接将目标文件夹从资源管理器**拖拽**至工作区区域。
+
 **怎么确认配置到底生效了哪一层？**
 `dsh --profile <name> --dump-config` 与 `--dump-default-config` 对比。
 
