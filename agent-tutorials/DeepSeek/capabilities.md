@@ -4,8 +4,7 @@
 
 定位（与本仓库其他 DeepSeek 文件的分工）：
 
-- [`deepseek-guide.md`](deepseek-guide.md)：安装与日常使用指南。
-- [`vscode-acp-guide.md`](vscode-acp-guide.md)：VS Code 编辑器接入（ACP）指南。
+- [`deepseek-guide.md`](deepseek-guide.md)：安装与日常使用指南（含 §5 VS Code/ACP 接入）。
 - [`agent-rules/DeepSeek/README.md`](../../agent-rules/DeepSeek/README.md)：本机配置面的**管理**说明。
 - 本文档：官方**能力与教程**的导读，含个人使用状态。
 
@@ -32,7 +31,7 @@
 
 ### 我的使用边界
 
-- **已接入 VS Code 日常工作流**（2026-08-17 起）：通过 `deepseek-acp` 在 VS Code 编辑器内使用 DSH（见 [`vscode-acp-guide.md`](vscode-acp-guide.md)）；Web UI 仍可用作完整交互入口。
+- **已接入 VS Code 日常工作流**（2026-08-17 起）：通过 `deepseek-acp` 在 VS Code 编辑器内使用 DSH（见 [`deepseek-guide.md`](deepseek-guide.md) §5）；Web UI 仍可用作完整交互入口。
 - 不把 DSH 路由到非 DeepSeek 的模型服务；同理，也不再把 Codex 转发到 DeepSeek API（见 [`agent-rules/Codex/README.md`](../../agent-rules/Codex/README.md) 的认证与旧配置清理一节）。
 - API Key 只通过官方界面或凭据流程提供（`deepseek-acp --setup` 写入 `~/.dsh/.credentials.yaml`），**不写入本仓库任何文件**。
 
@@ -112,7 +111,7 @@ v0.1.0-rc.6 全局安装后实测约 200 个 `@deepseek-ai/dsh-*` 包，能看�
 | **权限预设** | 输入框旁可选权限档位（如 `Workspace Write`） | ✅ 已用默认档 |
 | **模型与推理强度** | 输入框旁选模型与 reasoning 档位（如 `DeepSeek-V4-Flash` + `High`） | ✅ 已用 |
 | **实时用量条** | 底部显示 turns / steps、LLM 耗时、TTFT、tok/s、cache hit、输入输出 token | ✅ 已用 |
-| **VS Code 编辑器接入（ACP）** | 通过 `deepseek-acp`（社区 ACP server）把 DSH 接进 VS Code：流式回复、思考过程、工具卡片、diff、终端输出、会话恢复 | ✅ 已用（2026-08-17 跑通，见 [`vscode-acp-guide.md`](vscode-acp-guide.md)） |
+| **VS Code 编辑器接入（ACP）** | 通过 `deepseek-acp`（社区 ACP server）把 DSH 接进 VS Code：流式回复、思考过程、工具卡片、diff、终端输出、会话恢复 | ✅ 已用（2026-08-17 跑通，见 [`deepseek-guide.md`](deepseek-guide.md) §5） |
 | **子 agent** | `dsh-subagent-*`，支持 fork 与 spawn | 未用 |
 | **工作流与调度** | `dsh-workflow`、`dsh-schedule` | 未用 |
 | **MCP 客户端** | `dsh-mcp-client` | 未用 |
