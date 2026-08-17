@@ -50,7 +50,7 @@
               "-ExecutionPolicy",
               "Bypass",
               "-File",
-              "C:\\workspace\\workstation\\claude\\hooks\\git-origin-context.ps1"
+              "C:\\workspace\\workstation\\agent-rules\\Claude\\hooks\\git-origin-context.ps1"
             ],
             "if": "Bash(git *)",
             "timeout": 15,
@@ -69,7 +69,7 @@
               "-ExecutionPolicy",
               "Bypass",
               "-File",
-              "C:\\workspace\\workstation\\claude\\hooks\\git-origin-context.ps1"
+              "C:\\workspace\\workstation\\agent-rules\\Claude\\hooks\\git-origin-context.ps1"
             ],
             "if": "PowerShell(git *)",
             "timeout": 15,

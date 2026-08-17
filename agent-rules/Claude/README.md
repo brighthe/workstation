@@ -1,9 +1,9 @@
-# Claude Code 全局记忆与指令管理说明
+# Claude 全局配置与指令管理说明
 
-> - **整理日期**：2026-08-05
+> - **整理日期**：2026-08-14
 > - **适用环境**：Windows 11、Windows PowerShell、WSL Ubuntu、Claude Code CLI
 
-本文档用于管理和说明 Claude Code 的“全局指令（[`CLAUDE.md`](CLAUDE.md)）”以及与“自动记忆（Auto Memory）”的核心分工。
+本文档用于管理 Claude Desktop、Claude Code CLI 与 VS Code 扩展的全局指令、配置与启动入口。Claude 使用 Claude 订阅登录或 Anthropic 官方 API；DeepSeek 等其他产品应使用各自的客户端或 Harness，不再复用 Claude 的启动函数、环境变量或模型路由。
 
 ---
 
@@ -35,14 +35,13 @@
 | `settings.json` | `C:\Users\Administrator\.claude\settings.json` | 硬链接 |
 | `profile-pwsh7.ps1` | `C:\Users\Administrator\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` | 硬链接 |
 | `profile-ps51.ps1` | `C:\Users\Administrator\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` | 硬链接 |
-| `claude_ds_func.sh` | `~/.claude_ds_func`（WSL，指向 `/mnt/c` 仓库文件） | 符号链接 |
+| `hooks/git-origin-context.ps1` | 由 `settings.json` 的 `PreToolUse` Hook 调用 | 普通文件 |
 | `settings-wsl.json` | `~/.claude/settings.json`（WSL，指向 `/mnt/c` 仓库文件） | 符号链接 |
 
 > [!WARNING]
 > - 硬链接仅同卷（C:）有效；仓库被复制/克隆到其他机器或分区后链接退化为普通文件，需重新执行创建命令。
 > - **硬链接会因"原子替换写入"而断开**（2026-08-09 实证）：Claude Code 自动改写（`/config`、权限追加）或使用 Edit/Write 工具修改仓库源文件都会产生新 inode，断开后生效文件停留在旧内容。检测：`fsutil hardlink list <仓库文件>`（正常应显示 2 个路径）；重建：`Remove-Item <生效路径>; New-Item -ItemType HardLink -Path <生效路径> -Target <仓库文件>`。
 > - `settings.local.json`（每机本地权限规则）**不镜像**——Claude Code 会频繁自动追加，且各机规则不同。
-> - `claude_ds_func.sh` 不硬编码 API key：运行时从 Windows 用户环境变量 `DEEPSEEK_API_KEY` 读取。
 
 ---
 
@@ -64,6 +63,15 @@ $l = Get-Content agent-rules\Claude\settings-wsl.json -Raw | ConvertFrom-Json
 ```
 
 > 说明：WSL 侧暂不迁移 `hooks`/`statusLine`（命令为 Windows 风格，跨环境需适配 `powershell.exe` 与路径转换，属后续工作）。
+
+---
+
+## 认证与旧路由清理
+
+- Claude Desktop、Claude Code CLI 和 VS Code 扩展使用 Claude 订阅登录或 Anthropic 官方 API；第三方模型路由不属于本目录支持的工作流。
+- 原先的 `claude-ds`、`claude_ds_func.sh`、`ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic` 和 `codex-deepseek` 启动函数均已废弃并应删除。
+- `DEEPSEEK_API_KEY` 不由本目录管理或删除；若独立 DeepSeek Harness 仍使用它，应继续由该 Harness 自行管理。
+- `settings.json` 与 `settings-wsl.json` 保留为 Claude 官方配置，不应加入第三方 Base URL、模型映射或第三方认证令牌。
 
 ---
 

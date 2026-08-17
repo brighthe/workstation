@@ -1,77 +1,86 @@
-# Claude Code 省 Token 优化记录
+# Claude Code 使用量优化记录
 
-> - **整理日期**：2026-08-09
-> - **适用环境**：Windows 11、Claude Code CLI（Windows / WSL）、官方订阅 + DeepSeek API 双模式
-> - **对应文档**：Codex 侧见 [`token-optimization.md`](../Codex/token-optimization.md)
+> - **更新日期**：2026-08-14
+> - **适用环境**：Windows 11、Claude Desktop、Claude Code CLI、VS Code 中的 Claude Code
+> - **服务边界**：Claude 账号订阅或 Anthropic 官方 API；不使用第三方模型 Gateway
 
-本文记录 2026-08 期间针对"Claude Code token 用量"的分析与落地变更，作为后续维护依据。方案基于 [Claude Code 官方文档](https://code.claude.com/docs/en/) 查证，避免凭空猜测。
+本文记录 Claude 与 Claude Code 的使用量优化原则。安装、认证方式和三个使用入口见 [Claude 使用指南](claude-guide.md)；本文不包含第三方 Provider、模型映射或第三方 API 的配置策略。
+
+---
 
 ## 1. 背景与目标
 
-- 现象：官方订阅额度消耗偏快，需要明确 token 花在哪里、如何控制。
-- 目标：在保证复杂任务质量的前提下，降低 token 消耗，延长额度可用时间。
-- 原则：官方订阅侧保持稳定；DeepSeek 侧按量付费、以低成本例行任务为主。
+- **现象**：长会话、较高 effort、多个子代理以及大量已启用的工具/连接器都会加快使用量消耗。
+- **目标**：在不牺牲关键任务质量的前提下，减少无效上下文和不必要的并行工作，使额度更可预测。
+- **原则**：优先用任务拆分、清晰提示、上下文治理和按需提高 effort 优化；不要依赖固定价格数字或第三方模型路由。
 
-## 2. 关键认识：token 花在哪里
+Claude Desktop、Claude Code CLI 和 IDE 中的 Claude Code 会计入同一订阅用量池；不同计划的可用量不同，应以客户端提示和账号页面为准。
 
-| 来源 | 说明 |
-| :--- | :--- |
-| 输入（input） | 每轮重发累积上下文，长会话占大头；缓存命中部分按 ~10% 费率计（cache read） |
-| 输出（output，含 thinking） | 按输出 token 计费，最贵；effort 档位决定思考预算 |
-| 缓存写入（cache write） | 首次写入按全价计，供后续轮次命中 |
-| 上下文增长 | 系统提示、CLAUDE.md、工具结果、会话历史逐轮累积，触发缓存整段失效重算 |
+---
 
-官方参考：
-- Settings：https://code.claude.com/docs/en/settings
-- Model config / Effort levels：https://code.claude.com/docs/en/model-config
+## 2. 使用量主要来源
 
-## 3. 关键认识：两个"自动"的真实语义（与 Codex 的差异）
-
-| 维度 | Codex 官方模式 | Claude Code |
+| 来源 | 影响 | 优化方式 |
 | :--- | :--- | :--- |
-| 不设档位时的行为 | 真正自动选档——按任务复杂度自适应 | 固定在模型默认档（`high`），不随任务变化 |
-| "auto" 的语义 | 不配置 `model_reasoning_effort` = 自动调整 | `/effort auto` 仅复位到模型默认档 |
-| 档位内 | — | adaptive reasoning：每步由模型自行决定思考多少 |
-| 手动切换 | `/reasoning low\|high\|max` | `/effort low\|medium\|high\|xhigh` |
+| 长会话上下文 | 提示、回复、读取的文件与工具结果会持续累积。 | 独立任务使用独立会话；完成后以简短摘要交接。 |
+| Effort / thinking | 更高 effort 通常会增加推理和输出开销。 | 日常任务使用默认或较低 effort；只在复杂设计、深度调试和关键审查时提高。 |
+| 子代理 | 每个子代理拥有独立上下文和工具调用。 | 只为可独立并行的高价值子任务启用。 |
+| 工具、连接器与 MCP | 工具定义及返回结果会占用上下文。 | 对每个会话仅启用必要工具；定期审查低频连接器。 |
+| 过大的项目上下文 | 冗长的项目说明和无关文件会降低有效上下文比例。 | 保持 `CLAUDE.md` 简短、聚焦；移除不再需要的项目文件。 |
 
-结论：Claude Code 无"按任务自动选模型/选档位"机制；模型 `default` = 账号固定推荐模型（Pro → Sonnet 5），effort 默认档按模型固定。官方建议 "Start with the defaults, then reach for the dials"——默认配置 + 需要时手动拧旋钮。
+---
 
-## 4. 已落地变更
+## 3. 当前策略
 
-| 日期 | 变更 | 文件 | 效果 |
-| :--- | :--- | :--- | :--- |
-| 2026-08-09 | 删除 `model: haiku`（选项 A） | `agent-rules/Claude/settings.json`（Windows 全局，硬链接至 `~/.claude/settings.json`）、`settings-wsl.json`（WSL 全局，symlink 至 `~/.claude/settings.json`） | 恢复账号推荐模型（Pro → Sonnet 5），不再锁定最低档 |
-| 2026-08-09 | 删除 `effortLevel: high` | `settings-wsl.json` | 恢复模型默认档 `high`，档内自适应 |
-| 2026-08-09 | 新增 `autoCompactWindow: 200000` | 两份 settings.json | 接近 200k 上下文时自动压缩，控制输入 token 增长 |
-| 2026-08-09 | 新增 `cleanupPeriodDays: 14` | 两份 settings.json | 旧会话/文件 14 天后清理（默认 30 天） |
-| 2026-08-09 | 删除 `CLAUDE_CODE_EFFORT_LEVEL = "max"` | `agent-rules/Claude/claude_ds_func.sh`（WSL symlink 至 `~/.claude_ds_func`）、`profile-pwsh7.ps1`、`profile-ps51.ps1`（硬链接至两个 PowerShell profile） | DeepSeek 模式解除固定 max，回落到模型默认档 |
-| 2026-08-09 | API key 脱敏 | `claude_ds_func.sh` | 不硬编码 `sk-...`，运行时从 Windows 用户环境变量 `DEEPSEEK_API_KEY` 读取 |
-| 2026-08-09 | statusline 增加 cache 命中率指标 | `C:\Users\Administrator\.claude\statusline.ps1`（独立文件，不镜像） | 本地渲染，零 token 开销；显示 `cache N% hit` |
-| 2026-08-09 | 清理 settings.local.json 乱码行（25→23 条 allow） | 项目级 `.claude/settings.local.json`（不镜像，git 忽略） | 修复损坏规则 |
-| 2026-08-09 | 恢复 PreToolUse 钩子 | `claude/hooks/git-origin-context.ps1`（从 `a8f9796^` 恢复） | 修复 settings.json 中 hook 断链（重构时被删） |
+| 项目 | 策略 | 目的 |
+| :--- | :--- | :--- |
+| 模型与 effort | 从客户端默认配置开始，按任务临时调整 `/model` 或 `/effort`。 | 避免长期固定在过高或过低档位。 |
+| 长会话 | 接近上下文限制时使用 `/context` 检查，再用 `/compact` 或新会话整理。 | 控制累积上下文。 |
+| 会话恢复 | 使用 `/clear` 清除已无关的上下文；需要保留结论时先写简短摘要。 | 减少无效历史的持续携带。 |
+| 子代理 | 仅在复杂、可并行的检索、审查或独立实现任务中使用。 | 避免简单任务被多代理放大。 |
+| 工具与 MCP | 非关键工具和连接器按需启用。 | 减少工具定义和工具结果带来的上下文占用。 |
+| 状态查看 | 使用 `/usage`、`/cost`、`/context` 观察限额、会话消耗和上下文。 | 基于实际状态调整策略。 |
 
-## 5. 保持现状的决定
+---
 
-- **模型**：不设置 `model` 键，使用账号推荐模型（Pro → Sonnet 5）。无按任务自动选模型机制；需要时会话内 `/model` 临时切换。
-- **Effort**：不设置任何档位 = 模型默认档；`/effort auto` 可随时复位。需要更省临时 `/effort low`，复杂任务临时调高。
-- **statusline / notify.ps1**：不镜像到 `agent-rules/Claude/`——只保留策略与配置，不留实现细节（用户决定）。
+## 4. 推荐工作流
 
-## 6. 文件链接与备份
+### 4.1 日常任务
 
-- 镜像架构详见 [`agent-rules/Claude/README.md`](../../agent-rules/Claude/README.md)（硬链接 ×4 + WSL symlink ×2；statusline/notify 不镜像）。
-- 修改前备份：`~/.claude_ds_func.bak-20260809`、`~/.claude/settings.json.bak-20260809`（WSL，**后者含明文 key，2026-08-09 已删除**）；Windows 侧 `settings.json.bak-20260809`、两个 `profile.bak-20260809`。
+1. 首次请求写清目标、涉及文件、约束和验收标准。
+2. 先让 Claude Code定位相关文件，再要求最小范围修改。
+3. 完成一个独立交付物后结束会话；后续任务从摘要和必要文件开始。
 
-## 7. 使用与维护
+### 4.2 复杂任务
 
-- 官方模式：默认配置即可；省 token 临时 `/effort low`，复杂任务临时调高后 `/effort auto` 复位。
-- DeepSeek 模式：`claude-ds` 启动，默认档；会话内 `/effort` 切换。
-- 监控：statusline cache 命中率（命中率高 = 缓存生效，省钱）；`/status` 查看用量。
-- 会话纪律：长会话及时 `/compact` / `/clear`（切换模型或档位会整段缓存失效，先做完再切）。
-- 升级后补键：`crossSessionInbound` 需 Claude Code ≥ 2.1.224（当前 WSL 2.1.222），升级后补入两份 settings.json。
+对跨模块重构、架构设计、性能分析或高风险审查，可以临时提高 effort 或委托明确的子任务。若任务存在严格顺序或共享大量上下文，优先单个主会话而不是并行子代理。
 
-## 8. 后续可选优化（未执行）
+### 4.3 项目记忆与工具
 
-- WSL 侧迁移 `hooks` / `statusLine`（命令为 Windows 风格，跨环境需适配 `powershell.exe` 与路径转换）。
-- 长会话拆分为短会话（一个任务一个会话，控制输入 token 累积）。
-- statusline 增加更多指标（如 output/thinking token 占比）。
-- 评估 `autoCompactWindow` 与 `cleanupPeriodDays` 的实际效果后微调阈值。
+`CLAUDE.md` 应只保留稳定的项目约定、必要命令和安全边界；任务特定背景放在当前请求中。完成涉及外部系统的工作后，关闭本次不再需要的工具或 MCP 连接。
+
+---
+
+## 5. 监控与维护
+
+- 用 `/usage` 查看计划用量与速率限制状态。
+- 用 `/cost` 查看当前会话的 token 使用与费用信息（若当前认证方式提供）。
+- 用 `/context` 找出上下文主要占用来源，再决定 `/compact`、`/clear` 或新建会话。
+- 遇到长期高使用量时，优先降低例行任务 effort、缩短项目说明并减少无关工具，而不是将第三方 API Key 写入本地设置。
+- 模型、用量与限额会随账户和产品更新变化；以 [Claude Help Center 的用量说明](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work) 为准。
+
+## 6. 后续可选优化（未执行）
+
+- 审查低频工具、连接器和 MCP 是否需要长期启用。
+- 为重复任务编写简短、可复用的提示模板。
+- 将超长任务按功能或交付物拆分为多个会话。
+- 定期检查 `CLAUDE.md`，删除不再适用的说明与文件引用。
+- 对自动化工作流，在质量满足要求时选择更经济的官方模型，并监控其实际消耗。
+
+---
+
+## 7. 官方参考
+
+- [Claude Help Center：Usage and length limits](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work)
+- [Claude Help Center：Claude Code cheatsheet](https://support.claude.com/en/articles/14553413-claude-code-cheatsheet)
+- [Anthropic Docs：Claude Code CLI reference](https://docs.anthropic.com/en/docs/claude-code/cli-usage)

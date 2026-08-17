@@ -25,31 +25,3 @@ function claude {
     & $exe.FullName @args
 }
 
-# Claude Code CLI via DeepSeek Anthropic API (per-invocation; plain `claude`
-# keeps the Claude subscription login). Requires user env var DEEPSEEK_API_KEY.
-function claude-ds {
-    if (-not $env:DEEPSEEK_API_KEY) {
-        # Shells spawned by a long-running parent (e.g. the Desktop terminal pane)
-        # inherit a stale environment snapshot; fall back to the User-scope value.
-        $env:DEEPSEEK_API_KEY = [Environment]::GetEnvironmentVariable('DEEPSEEK_API_KEY', 'User')
-    }
-    if (-not $env:DEEPSEEK_API_KEY) {
-        Write-Error "DEEPSEEK_API_KEY is not set. Set it once with: [Environment]::SetEnvironmentVariable('DEEPSEEK_API_KEY','sk-...','User') and open a new shell."
-        return
-    }
-    $env:ANTHROPIC_BASE_URL = "https://api.deepseek.com/anthropic"
-    $env:ANTHROPIC_AUTH_TOKEN = $env:DEEPSEEK_API_KEY
-    $env:ANTHROPIC_MODEL = "deepseek-v4-pro"
-    $env:ANTHROPIC_DEFAULT_OPUS_MODEL = "deepseek-v4-pro"
-    $env:ANTHROPIC_DEFAULT_SONNET_MODEL = "deepseek-v4-pro"
-    $env:ANTHROPIC_DEFAULT_HAIKU_MODEL = "deepseek-v4-flash"
-    $env:CLAUDE_CODE_SUBAGENT_MODEL = "deepseek-v4-flash"
-    try { claude @args }
-    finally {
-        Remove-Item Env:ANTHROPIC_BASE_URL, Env:ANTHROPIC_AUTH_TOKEN, Env:ANTHROPIC_MODEL,
-            Env:ANTHROPIC_DEFAULT_OPUS_MODEL, Env:ANTHROPIC_DEFAULT_SONNET_MODEL,
-            Env:ANTHROPIC_DEFAULT_HAIKU_MODEL, Env:CLAUDE_CODE_SUBAGENT_MODEL,
-            -ErrorAction SilentlyContinue
-    }
-}
-

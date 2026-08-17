@@ -42,7 +42,7 @@ WSL 本身的安装、网络与 DNS 问题见 [`wsl/`](../wsl/README.md)；本�
 
 ## 本机 SOPT-X / FEALPy 示例
 
-本机解释器为 `/home/brighthe/miniconda3/envs/ihpcm/bin/python`，FEALPy 源码为 `/home/brighthe/workspace/fealpy_stable`。SOPT-X 的本地配置文件不应被复制到其他计算机；迁移时按上述模板替换为新机器的路径。
+本机解释器为 `/home/brighthe/miniconda3/envs/ihpcm/bin/python`，FEALPy 源码为 `/home/brighthe/workspace/fealpy`。SOPT-X 的本地配置文件不应被复制到其他计算机；迁移时按上述模板替换为新机器的路径。
 
 ## 进一步信息
 

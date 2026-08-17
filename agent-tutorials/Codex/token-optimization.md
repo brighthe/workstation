@@ -1,63 +1,76 @@
-# Codex 省 Token 优化记录
+# Codex 使用量优化记录
 
-> - **整理日期**：2026-08-09
-> - **适用环境**：Windows 11、Codex Desktop / CLI / VS Code、DeepSeek API 双模式
+> - **更新日期**：2026-08-14
+> - **适用环境**：Windows 11、Codex Desktop、Codex CLI、VS Code 的 Codex IDE 扩展
+> - **认证方式**：ChatGPT 官方登录
 
-本文记录 2026-08 期间针对"Codex token 消耗过快、额度很快用完"问题的分析与落地变更，作为后续维护依据。
+本文记录官方 Codex 使用量的优化原则和已落地设置。三种入口、认证方式和配置位置见 [Codex 使用指南](codex-guide.md)。本文不包含第三方 Provider、模型转发或第三方 API 的用量策略。
+
+---
 
 ## 1. 背景与目标
 
-- 现象：官方订阅额度与 DeepSeek API 用量消耗偏快。
-- 目标：在保证复杂任务质量的前提下，降低 token 消耗，延长额度可用时间。
-- 原则：官方订阅侧保持稳定；DeepSeek 侧按量付费、以低成本例行任务为主。
+- **现象**：长会话、较高推理强度、多个子代理以及过多的工具定义都会增加使用量。
+- **目标**：在保证复杂任务质量的前提下，减少不必要的上下文和并行工作量，使订阅额度更可预测。
+- **原则**：优先通过任务拆分、上下文控制和按需委托优化，而不是通过固定的价格数字或未验证模型名称做决策。
 
-## 2. 关键认识：token 花在哪里
+---
 
-| 来源 | 说明 |
-| :--- | :--- |
-| 推理输出（reasoning） | 推理按输出 token 计费，最贵；Terra 输出约 300 credits/百万，输入仅 50 |
-| 长会话输入 | 每轮重发累积上下文，输入占大头（官方长任务示例：25 小时约 1300 万 token，其中输入约 1070 万） |
-| 子代理（subagents） | 每个子代理独立做模型与工具调用，比单代理更耗 |
-| 插件 / MCP | 每个启用的插件与 MCP server 每轮注入工具定义，占用上下文 |
+## 2. 使用量主要来源
 
-官方参考：
-- Pricing / 用量：https://learn.chatgpt.com/docs/pricing
-- 模型选择：https://learn.chatgpt.com/docs/models
-- 子代理：https://learn.chatgpt.com/docs/agent-configuration/subagents
+| 来源 | 影响 | 优化方式 |
+| :--- | :--- | :--- |
+| 长会话上下文 | 每轮会携带已有对话与相关上下文，任务越长，累积输入通常越多。 | 一个相对独立的任务使用一个新会话；完成后以简短摘要交接。 |
+| 推理强度 | 更高推理强度通常会带来更长的思考与输出。 | 默认使用 `medium`；仅在复杂设计、深度调试或关键审查时提高。 |
+| 子代理 | 每个子代理都有独立的模型和工具调用。 | 只为确实可并行或高价值的子任务启用；简单任务保持单代理。 |
+| 插件与 MCP | 已启用的工具及其定义会占用上下文。 | 保留高频工具；定期检查低频插件和 MCP 是否仍有必要。 |
+| 宽泛请求 | 不清晰的目标常导致反复澄清、大范围搜索和重复修改。 | 首次请求给出目标、范围、约束、验收标准和相关文件。 |
 
-## 3. 已落地变更
+> [!NOTE]
+> 模型可用性、用量限额与产品定价会随账号和产品更新而变化。不要在本地维护固定的 token 单价或额度估算；以官方页面和客户端显示为准。
 
-| 日期 | 变更 | 文件 | 效果 |
-| :--- | :--- | :--- | :--- |
-| 2026-08-07 | 删除 `model_reasoning_effort = "high"` | `C:\Users\Administrator\.codex\config.toml` | 官方模式（Desktop/CLI/IDE）恢复自动选档 |
-| 2026-08-07 | 删除 `model_reasoning_effort = "high"` | `C:\Users\Administrator\.codex-deepseek\config.toml` | DeepSeek 解除固定档，会话内手动 `/reasoning` 切换 |
-| 2026-08-09 | 新建自定义 agent `deep-task`（`gpt-5.6-sol` + `high`） | `C:\Users\Administrator\.codex\agents\deep-task.toml` | 复杂任务可自动/手动委托，质量不失守 |
-| 2026-08-09 | AGENTS.md 追加 `Complex Task Delegation` 规则 | 全局 AGENTS.md（硬链接至 `~/.codex`） | 复杂任务自动委托 `deep-task`（半自动） |
-| 2026-08-09 | 删除定时任务 `codex-capabilities-daily-update` | 桌面应用 Scheduled | 消除每天 9:00 的固定消耗（周报每周才更新一次） |
+---
 
-## 4. 保持现状的决定
+## 3. 当前已落地设置
 
-- **插件**：保持官方默认配置（10 个插件 + node_repl MCP），不精简。代价：每轮上下文稍大；功能完整优先。
-- **DeepSeek 默认档**：不修改 models.json 的 `default_reasoning_level`（当前为 `high`），由用户在会话内手动 `/reasoning` 切换。
+| 项目 | 当前策略 | 目的 |
+| :--- | :--- | :--- |
+| 默认推理强度 | `model_reasoning_effort = "medium"` | 在日常编码质量与使用量之间保持平衡。 |
+| 复杂任务 | 使用 `deep-task` 处理确有必要的多步骤重构、深度审查或复杂排障。 | 将高强度推理集中到高价值任务。 |
+| 多代理 | `[features] multi_agent = true`，但按任务启用。 | 不为简单任务增加并行调用。 |
+| 定时任务 | 不保留每日固定的能力更新任务。 | 避免没有明确产出的周期性消耗。 |
+| 配置 | 使用 ChatGPT 官方登录，不配置第三方 `model_provider`。 | 避免认证、模型路由与用量统计混乱。 |
 
-## 5. 文件链接与备份
+## 4. 建议工作流
 
-- `agent-rules\Codex\config.toml` → `C:\Users\Administrator\.codex\config.toml`（硬链接）
-- `agent-rules\Codex\config-deepseek.toml` → `C:\Users\Administrator\.codex-deepseek\config.toml`（硬链接）
-- `agent-rules\Codex\deep-task.toml` → `C:\Users\Administrator\.codex\agents\deep-task.toml`（硬链接）
-- 修改前备份：`C:\Users\Administrator\.codex\config.toml.bak-20260807-215057`、`C:\Users\Administrator\.codex-deepseek\config.toml.bak-20260807-215057`
+### 4.1 日常任务
 
-## 6. 使用与维护
+1. 用一两句话说明目标、涉及文件和验收标准。
+2. 让 Codex 先定位相关文件，再进行最小修改。
+3. 完成一个独立目标后结束会话；后续工作从摘要和必要文件重新开始。
 
-- 官方模式：不固定档位即自动选档；需要更省可临时调低，需要深度可临时调高。
-- DeepSeek 模式：会话内 `/reasoning low|high|max` 手动切换；无自动按任务选档。
-- 复杂任务：直接说"用 deep-task 处理"，或依赖 AGENTS.md 自动委托。
-- 监控：CLI `/status`、https://chatgpt.com/codex/settings/usage、DeepSeek 开放平台控制台。
-- 恢复：如需恢复固定 `high`，用对应 `.bak` 文件覆盖即可。
+### 4.2 复杂任务
 
-## 7. 后续可选优化（未执行）
+在以下情况使用 `deep-task` 或明确要求深度分析：跨模块重构、架构决策、复杂测试失败、性能瓶颈和高风险代码审查。
 
-- 精简官方侧插件（需重新评估使用习惯）。
-- 将 `deep-task` 复制到 `C:\Users\Administrator\.codex-deepseek\agents\` 供 DeepSeek 模式使用（模型需改为 DeepSeek 侧配置）。
-- 例行/批量任务手动切 `gpt-5.6-luna`。
-- 长会话拆分为短会话（一个任务一个会话）。
+不要仅因任务文件多就开启多代理；若子任务之间共享大量上下文或存在严格执行顺序，单代理通常更节省。
+
+### 4.3 插件与 MCP
+
+在需要外部数据或操作时再启用相应插件/MCP。完成工作后，对长期未使用的集成进行审查；移除前先确认它们不属于固定工作流。
+
+---
+
+## 5. 监控与维护
+
+- 在 CLI 或 IDE 中使用可用的状态/用量界面查看当前会话状态。
+- 使用 [Codex 使用设置](https://chatgpt.com/codex/settings/usage) 查看账号可见的用量信息。
+- 需要变更模型、推理强度或功能开关时，先检查 [OpenAI 配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)。
+- 变更后记录“目的、设置、效果”，不要记录 API Key、访问令牌或认证文件内容。
+
+## 6. 后续可选优化（未执行）
+
+- 审查低频插件和 MCP，确认是否需要长期加载。
+- 为重复性任务建立简短、可复用的提示模板。
+- 将过长对话按功能或交付物拆分为多个会话。
+- 在提高推理强度或启用子代理前，先明确预期收益和验收标准。
