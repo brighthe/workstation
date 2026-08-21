@@ -195,9 +195,9 @@ printf "[network]\ngenerateHosts = false\n" >> /etc/wsl.conf   # 与 generateRes
 
 ### 4.5 与 Clash 的关系
 
-WSL 启动时会警告「检测到 localhost 代理配置但未镜像到 WSL」。这是实情：**nat 模式下 WSL 里的 `127.0.0.1` 不是宿主的 `127.0.0.1`**，宿主上只监听回环的 Clash 端口在 WSL 里够不着。`autoProxy=false` 就是不去假装它能用。
+WSL 启动时会警告「检测到 localhost 代理配置但未镜像到 WSL」。前半是实情：**nat 模式下 WSL 里的 `127.0.0.1` 不是宿主的 `127.0.0.1`**，`autoProxy=false` 就是不去假装它能自动镜像。
 
-真要在 WSL 里走 Clash，需要让 Clash 开 `allow-lan` 并在 WSL 内指向宿主地址——**本机未验证**。公网直连正常时不必折腾。
+> **2026-08-21 更正**：此处原写「宿主上只监听回环的 Clash 端口在 WSL 里够不着」「真要在 WSL 里走 Clash……**本机未验证**」——**两句均不成立**。实测代理进程监听 `::`（全地址），WSL 经**默认网关**完全可达；本机两个发行版已按此配好。配置法、网关动态取法与非交互 shell 的守卫位置见 [network/README.md](../network/README.md) §4。
 
 **2026-08-04 验证：WSL 里 GitHub SSH 直连可用，不需要 Clash。** `ssh -T git@github.com` 经 `ssh.github.com:443` 直接通过，随后 5 个 remote（含三个 `suanhaitech` 私有仓库）的 `git ls-remote` 与 `git clone` 全部正常。密钥与 Windows 共用（§6），但 **`~/.ssh/config` 里不要照抄 Windows 那段的 `ProxyCommand`**——它指向 `connect.exe`，WSL 里没有这个二进制。
 
@@ -207,26 +207,11 @@ WSL 启动时会警告「检测到 localhost 代理配置但未镜像到 WSL」�
 
 ### 4.6 VPN 全隧道会把公网下载拖慢两个数量级
 
-企业 VPN 常下发 `0.0.0.0/0` 默认路由，且其接口度量值优于物理网卡，**连上之后连公网流量也绕经对方网关**。实测同一台机器：
+企业 VPN 全隧道会把公网流量也送进隧道，实测下载速率相差约 75 倍（约 70 KB/s vs 约 5 MB/s），**Windows 与 WSL 两侧一致，与操作系统无关**——所以这不是 WSL 的问题。路由优先级规则、确认命令与实测数据见 [network/README.md](../network/README.md) §3。
 
-| 状态 | 公网下载速率 |
-| --- | --- |
-| VPN 连接 | 约 70 KB/s |
-| VPN 断开 | **约 5 MB/s** |
+**结论：大批量公网下载（`apt`、`pip`、拉镜像）前先断开 VPN。** 只有访问仅 VPN 可达的内网资源时才需要连着。
 
-约 75 倍差距，**Windows 与 WSL 两侧一致，与操作系统无关**。确认方法：
-
-```powershell
-Get-NetRoute -DestinationPrefix '0.0.0.0/0' | Sort-Object RouteMetric |
-    Select-Object InterfaceAlias, RouteMetric
-Get-NetIPInterface -AddressFamily IPv4 | Select-Object InterfaceAlias, InterfaceMetric
-```
-
-路由优先级看的是 **RouteMetric + InterfaceMetric 之和**，不是单看其一——VPN 接口的 InterfaceMetric 往往远小于无线网卡，因此即便 RouteMetric 更大也会胜出。
-
-**所以：大批量公网下载（`apt`、`pip`、拉镜像）前先断开 VPN。** 只有访问仅 VPN 可达的内网资源时才需要连着。
-
-**还有一个更隐蔽的坑**：VPN 连接状态改变时，已建立的 TCP 连接会变成半死状态，**`apt` / `pip` 会挂住而不是报错**——表现为进程还在、下载量长时间不增、吞吐 0 KB/s。判断方法是隔几分钟对比两次：
+**还有一个 WSL 侧更隐蔽的坑**：VPN 连接状态改变时，已建立的 TCP 连接会变成半死状态，**`apt` / `pip` 会挂住而不是报错**——表现为进程还在、下载量长时间不增、吞吐 0 KB/s。判断方法是隔几分钟对比两次：
 
 ```bash
 du -sh /var/cache/apt/archives          # apt 累计下载量
