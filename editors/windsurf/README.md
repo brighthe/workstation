@@ -2,7 +2,7 @@
 
 本模块记录 Windsurf 编辑器在 Windows + WSL2 工作流中的安装、配置、验证与恢复。它是工具配置，不承载项目代码、研究数据、日志、凭据或算例结果。
 
-WSL 本身的安装、网络与 DNS 问题见 [`wsl/`](../wsl/README.md)；本模块只处理 Windsurf 这一软件产品。
+WSL 本身的安装、网络与 DNS 问题见 [`machine/wsl/`](../../machine/wsl/README.md)；本模块只处理 Windsurf 这一软件产品。
 
 ## 标准配置
 

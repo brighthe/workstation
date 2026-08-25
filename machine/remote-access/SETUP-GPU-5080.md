@@ -164,7 +164,7 @@ Enter same passphrase again:
 $sshdConfig = Join-Path $env:ProgramData 'ssh\sshd_config'
 $sshd = Join-Path $env:SystemRoot 'System32\OpenSSH\sshd.exe'
 $tailscale = Join-Path $env:ProgramFiles 'Tailscale\tailscale.exe'
-$recordPath = 'C:\workspace\workstation\remote-access\state\node-gpu-5080.public.json'
+$recordPath = 'C:\workspace\workstation\machine\remote-access\state\node-gpu-5080.public.json'
 
 Get-Service sshd, ssh-agent | Select-Object Name, Status, StartType
 Test-NetConnection -ComputerName 127.0.0.1 -Port 22

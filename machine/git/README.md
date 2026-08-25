@@ -10,7 +10,7 @@
 
 > 照这份 README（重点 §1、§3、§4）把这台 Windows 电脑的 git 环境配好，用 PowerShell 原生 git（别用 cygwin/MSYS）。配到需要加公钥那步，把 id_ed25519.pub 打印给我、停下等我加到 GitHub。加好后把 git@github.com:brighthe/<仓库名>.git（SSH）clone 到 C:\workspace，并 ls-remote 验证鉴权。以后每次 push 前，都先按 §4 同步并整合远程最新提交。
 
-- 手上没有本文件、但有网时，可改让 agent 先读它的 raw 版：`https://raw.githubusercontent.com/brighthe/workstation/main/git/README.md`。本仓库 Public、匿名可读，**不依赖 SSH 已配好**——这正是新机器第一步能启动的前提。
+- 手上没有本文件、但有网时，可改让 agent 先读它的 raw 版：`https://raw.githubusercontent.com/brighthe/workstation/main/machine/git/README.md`。本仓库 Public、匿名可读，**不依赖 SSH 已配好**——这正是新机器第一步能启动的前提。
 - §1/§3 是**账户级、每台机器配一次即终身通用**；之后在这台机上再拉你名下别的仓库，只需把仓库名一换。
 - 唯一必须你手动的一步是**把公钥加到 GitHub**（沙箱里 agent 代替不了）。
 
