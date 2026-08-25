@@ -46,44 +46,42 @@
 为了方便查阅与日常维护，以下为精简优化后的 [`AGENTS.md`](AGENTS.md) 完整中文规则对照说明：
 
 ### 1. 语言规范（Language）
-- 默认使用**简体中文**进行回答。
-- 所有的技术术语、路径、命令、配置键、API 名称及产品名称保持**英文**原文。
+- 默认使用**简体中文**进行回复与沟通。
+- 所有的技术术语、方法名、变量、路径、命令、配置键、API 名称及产品名称保持**英文**原文。
+- 数学公式统一使用 LaTeX：行内 `$...$`，独立公式 `$$...$$`；不得用 Unicode 符号拼凑公式。
 
-### 2. 文档优先原则（Documentation First）
-- 当询问 Codex 本身的功能或规则时，必须优先查阅 [OpenAI Codex 官方文档](https://developers.openai.com/codex)，严禁凭空猜测。
+### 2. 交互模式建议（Interaction Mode）
+- 在会话或非平凡任务开始时，用一行建议合适的模式，由用户决定：
+  - **默认模式（Normal）**：只读问答、解释与小澄清，直接回答即可。
+  - **Plan Mode（`/plan`）**：多步编辑、重构、配置变更。
+  - **Goal 式连续执行**：长周期、可验证、可运行到底的工作；无原生 Goal 机制，属行为约定——必须有明确可验证的停止条件，且仅在用户显式要求时启动。
+- 平凡后续问题跳过建议；建议保持一行。
 
-### 3. 交互模式建议（Interaction Mode）
-- 在非平凡任务开始前，建议适合的模式：
-  - **默认模式（Normal）**：用于只读检查、解答疑问、说明与小澄清。
-  - **Plan 计划模式**：用于代码修改、配置变更、安装包、Commit 或多步骤排错。
-  - **Goal 工作流**：仅用于跨多轮会话的长周期任务，且必须有明确可验证的停止条件（非显式要求不随意开启）。
-
-### 4. 用户操作导向与请示（Operational Work & User Guidance）
-- **默认准备好执行步骤供用户操作**：提供完整的代码、环境说明、单条 PowerShell 命令及验收标准，等待用户反馈结果后再提供下一步。
-- 未经用户明确要求，不随意自动运行测试、MPI 任务、基准测试或验证驱动。
+### 3. 操作型工作——先提议后询问（Operational Work）
+- **凡是会改变机器状态或消耗实际算力的操作**（环境/包变更、构建、训练、测试、基准、MPI 任务、长时脚本）：先给出确切命令并请示，获准后才运行——绝不先执行后汇报。只读检查（`git status/log/show/diff`、列目录/读文件/静态搜索、版本查询）自由执行。
+- 计划获批只代表方案获批，不等于执行授权；运行前需再次询问。
+- 多步骤工作分步推进：每完成一个有意义的环节汇报一次，与用户对齐后再继续（Goal 模式豁免——按停止条件跑到底）。
+- 用户明确说“跑一下”（run it）时，对该具体动作直接执行，不再重复确认。
 - 读取当前内置终端中的输出时直接查看，无需让用户重复粘贴已有的控制台输出。
 
-### 5. 批判性评估（Critical Evaluation）
-- 对用户提出的方案进行独立评估，检查正确性、可行性、核心假设、风险与替代方案。
-- 如果用户的方案存在错误或明显劣于其他选择，指出具体原因并推荐更好的方法。
+### 4. 批判性评估（Critical Evaluation）
+- 对用户提出的方案进行独立评估，而非盲目接受：检查正确性、可行性、关键假设、风险、权衡与替代方案。
+- 如果用户的方案存在错误、过大风险或明显劣于其他方案，必须给出具体理由并推荐更好的方案，再继续执行。
+- 若用户明确要求完全按其方案执行，遵从用户的同时需简要进行风险提示。
 
-### 6. 工作区仓库治理（Workspace Repository Governance）
-- 仓库划分为 `authoring`（`C:\workspace`）与 `compute`（WSL `~/workspace`）两层，具体分工、数据源头与远程分支路由统一依据 [`workspace/responsibilities.md`](../../workspace/responsibilities.md)。
-- 遵守项目级 `AGENTS.md` / `README.md`。提交或推送前核对 `origin`。
-- 标记为 `company` / `suanhaitech` 的仓库代码、数据及凭据严禁复制到个人仓库。
-
-### 7. AI 指令界限（Scope & Instruction Boundaries）
-- 仅维护 Codex 自身的 `AGENTS.md` 及相关配置。修改 `AGENTS.md` 时同步更新本中文 `README.md`；不要把第三方模型路由配置混入官方 Codex 配置。
-- 未经授权不主动修改其他 AI 工具的指令文件（如 `CLAUDE.md`）。
-
-### 8. 执行与 Git 卫生（Execution & Git Hygiene）
-- Windows 仓库使用 PowerShell 与原生 Windows Git/OpenSSH；`compute` 仓库在 WSL Linux 内运行 Git。
-- 提交前检查 Working Tree，仅 Stage 与当前任务相关的修改文件，严禁使用 `git add -A`。
-- 未经用户明确指示，不自动执行 `git commit` 或 `git push`。
+### 5. 工作区与执行（Workspace & Execution）
+- 工作区分三层：文档仓库（`C:\workspace`，Windows 本机）、代码研发仓库（WSL Ubuntu-24.04 `~/workspace`）与项目代码仓库（WSL Ubuntu-22.04 `~/workspace`）；具体分工、数据源头、远程分支路由与算海边界统一依据 [`workspace/responsibilities.md`](../../workspace/responsibilities.md)。
+- Windows 仓库使用 PowerShell 与原生 Windows Git/OpenSSH；WSL 仓库的 Git 操作在其所属发行版内部执行（如 `wsl -d <distro> -- git -C /home/brighthe/workspace/<repo>`）。
+- **Python 运行指定**：
+  - WSL: `wsl -d Ubuntu-24.04 -- bash -lc '~/miniconda3/envs/ihpcm/bin/python <script>'`
+  - Windows: `& "C:\Users\Administrator\miniconda3\Scripts\conda.exe" run -n <env> --no-capture-output python .\script.py`
+  - 长时间运行输出重定向至 `logs/run.log`；绘制图片保存至 `figs/`。
+- 提交前检查 Working Tree 并核对 `origin`，仅 Stage 与当前任务相关的修改文件，严禁使用 `git add -A`；未经用户明确指示，不自动执行 `git commit` 或 `git push`。
+- 提交信息默认使用简体中文；仓库局部约定优先。
 
 ---
 
-### 9. 复杂任务委托（Complex Task Delegation）
+### 6. 复杂任务委托（Complex Task Delegation）
 - 对于真正复杂、高价值的任务（多步骤重构、跨模块设计、深度代码审查、深度研究、疑难排错），自动委托给自定义 `deep-task` agent（`~/.codex/agents/deep-task.toml`，模型 `gpt-5.6-sol`，推理 `high`）。
 - 规则保持窄范围：常规编辑、问答、只读检查与范围明确的小任务继续使用默认模型（`gpt-5.6-terra`）。
 

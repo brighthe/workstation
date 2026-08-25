@@ -1,7 +1,8 @@
 # Global instructions for Grok
 
 ## Language
-- Reply to me in Chinese (简体中文) by default. Keep technical terms, method names, variables, commands, config keys, and product names in English.
+- Reply to me in Chinese (简体中文) by default. Keep technical terms, method names, variables, paths, commands, config keys, API names, and product names in English.
+- Use LaTeX for mathematical formulas: `$...$` inline, `$$...$$` for display equations. Never approximate math with Unicode symbols.
 
 ## Interaction mode — suggest before non-trivial work
 - At the start of a session or non-trivial task, suggest the fitting mode in one line before proceeding; I decide the mode:
@@ -11,36 +12,22 @@
 - Skip suggestions for trivial follow-ups; keep it to one line.
 
 ## Operational work — propose, then ask
-- **Default for operational work: provide the plan and exact commands, then ask for permission before running.** Wait for my answer. Do not execute first and report afterwards.
-- Applies to: creating/modifying conda environments, installing packages, git worktree/clone/checkout, builds, training runs, tests, benchmarks, MPI jobs, and long-running scripts.
-- **Exception — read-only inspection is free**: git status/log/show/diff, listing files, reading files, version checks, static searches.
-- Plan approval covers the approach, not execution authorization. Ask again before running commands.
-- If I explicitly instruct you to run something ("跑一下", "run it"), run it for that specific action.
+- **Anything that changes machine state or consumes real compute (env/package changes, builds, training runs, tests, benchmarks, MPI jobs, long scripts): propose the exact commands and ask before running — never execute first and report afterwards.** Read-only inspection (`git status/log/show/diff`, listing/reading/searching files, version checks) is free.
+- Plan approval covers the approach, not execution authorization; ask again before running.
+- Execute multi-step work incrementally: report after each meaningful step and sync with me before moving on (goal runs are exempt — they run to their stop condition).
+- If I explicitly say run it ("跑一下"), run that specific action without re-asking.
 
 ## Critical evaluation
 - Evaluate my proposed approach as a proposal: check correctness, feasibility, key assumptions, risks, tradeoffs, and alternatives.
 - If it is wrong, unreasonably risky, or inferior to another option, state reasons and recommend the better approach before proceeding.
 - If instructed to follow my approach exactly, comply unless it violates safety boundaries, but briefly flag material risks first.
 
-## About me
-- Liang He (何亮). GitHub righthe, email righthe98@gmail.com. Postdoc at Dalian University of Technology (topology optimization, FEM, PIML).
-
-## Workspace repository governance
-- Workspace spans uthoring (C:\workspace) and compute (WSL ~/workspace). Follow C:\workspace\workstation\workspace\responsibilities.md for routing, source-of-truth, and remotes.
-- Defer to repository-local AGENTS.md/README.md. Verify origin before commit/push.
-- Treat company / suanhaitech repositories as SuanHai work; do not leak assets to personal repositories.
-
-## Scope & Documentation
-- Maintain only Grok-related instruction files (AGENTS.md). Do not edit other tools' instruction files unless explicitly asked.
-- Consult official Grok documentation for technical questions before answering.
-
-## Windows & WSL execution
-- Windows repos: use PowerShell with native Windows Git/OpenSSH.
-- compute repos in WSL: run Git inside the distro (wsl -d Ubuntu-24.04 -- git -C /home/brighthe/workspace/<repo>).
+## Workspace & execution
+- Workspace spans three roots: docs (`C:\workspace`, Windows), R&D code (WSL Ubuntu-24.04 `~/workspace`), and project code (WSL Ubuntu-22.04 `~/workspace`). Follow `C:\workspace\workstation\workspace\responsibilities.md` for routing, source-of-truth, remotes, and SuanHai boundaries.
+- Windows repos: use PowerShell with native Windows Git/OpenSSH. WSL repos: run Git inside the owning distro (wsl -d <distro> -- git -C /home/brighthe/workspace/<repo>).
 - Running Python:
   - WSL: wsl -d Ubuntu-24.04 -- bash -lc '~/miniconda3/envs/ihpcm/bin/python <script>'
   - Windows: & "C:\Users\Administrator\miniconda3\Scripts\conda.exe" run -n <env> --no-capture-output python .\script.py
-  - Tee long-running output into logs/run.log; save figures to igs/.
-
-## Git staging hygiene
-- Inspect working tree before committing; stage only files related to current task. Avoid broad staging (git add -A). Do not commit/push without explicit request.
+  - Tee long-running output into `logs/run.log`; save figures to `figs/`.
+- Inspect working tree and verify origin before committing; stage only files related to current task. Avoid broad staging (git add -A). Do not commit/push without explicit request.
+- Write commit messages in 简体中文 by default; repository-local conventions override.

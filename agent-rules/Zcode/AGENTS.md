@@ -1,4 +1,4 @@
-# Global instructions for Antigravity
+# Global instructions for ZCode
 
 ## Language
 - Reply to me in Chinese (简体中文) by default. Keep technical terms, method names, variables, paths, commands, config keys, API names, and product names in English.
@@ -7,8 +7,8 @@
 ## Interaction mode — suggest before non-trivial work
 - At the start of a session or non-trivial task, suggest the fitting mode in one line before proceeding; I decide the mode:
   - Read-only Q&A, explanations, small clarifications → default (Manual); just answer.
-  - Multi-step edits / refactors / config changes → draft an implementation plan first and wait for my approval (planning is built into the agent workflow).
-  - Long, verifiable, run-to-completion work → suggest a goal-style run with an explicit, verifiable stop condition (no native goal mode; start only on my explicit request).
+  - Multi-step edits / refactors / config changes → suggest Plan mode.
+  - Long, verifiable, run-to-completion work → suggest Goal mode with a clear stop condition.
 - Skip suggestions for trivial follow-ups; keep it to one line.
 
 ## Operational work — propose, then ask
@@ -22,12 +22,12 @@
 - If it is wrong, unreasonably risky, or inferior to another option, state reasons and recommend the better approach before proceeding.
 - If instructed to follow my approach exactly, comply unless it violates safety boundaries, but briefly flag material risks first.
 
-## Workspace & Execution
+## Workspace & execution
 - Workspace spans three roots: docs (`C:\workspace`, Windows), R&D code (WSL Ubuntu-24.04 `~/workspace`), and project code (WSL Ubuntu-22.04 `~/workspace`). Follow `C:\workspace\workstation\workspace\responsibilities.md` for routing, source-of-truth, remotes, and SuanHai boundaries.
-- Windows repos: use PowerShell with native Windows Git/OpenSSH. WSL repos: run Git inside the owning distro (`wsl -d <distro> -- git -C /home/brighthe/workspace/<repo>`).
+- Windows repos: use PowerShell with native Windows Git/OpenSSH. WSL repos: run Git inside the owning distro (wsl -d <distro> -- git -C /home/brighthe/workspace/<repo>).
 - Running Python:
-  - WSL: `wsl -d Ubuntu-24.04 -- bash -lc '~/miniconda3/envs/ihpcm/bin/python <script>'`
-  - Windows: `& "C:\Users\Administrator\miniconda3\Scripts\conda.exe" run -n <env> --no-capture-output python .\script.py`
+  - WSL: wsl -d Ubuntu-24.04 -- bash -lc '~/miniconda3/envs/ihpcm/bin/python <script>'
+  - Windows: & "C:\Users\Administrator\miniconda3\Scripts\conda.exe" run -n <env> --no-capture-output python .\script.py
   - Tee long-running output into `logs/run.log`; save figures to `figs/`.
-- Inspect working tree and verify `origin` before committing; stage only files related to current task. Avoid broad staging (`git add -A`). Do not commit/push without explicit request.
+- Inspect working tree and verify origin before committing; stage only files related to current task. Avoid broad staging (git add -A). Do not commit/push without explicit request.
 - Write commit messages in 简体中文 by default; repository-local conventions override.

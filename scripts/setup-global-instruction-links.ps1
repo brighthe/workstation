@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [string]$RepoRoot,
     [string]$UserProfilePath
@@ -32,6 +32,20 @@ function Get-LinkTargetPath {
     }
 
     return Get-NormalizedPath -Path (Join-Path $Link.DirectoryName $rawTarget)
+}
+
+function Get-FileIdentity {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    $identity = (& fsutil file queryfileid $Path 2>$null | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($identity)) {
+        throw "无法读取文件标识：$Path"
+    }
+
+    return $identity
 }
 
 $createdLinks = New-Object System.Collections.Generic.List[string]
@@ -68,7 +82,22 @@ try {
         [pscustomobject]@{
             Name = 'Antigravity'
             Source = Join-Path $RepoRoot 'agent-rules\Antigravity\GEMINI.md'
-            Target = Join-Path $UserProfilePath '.gemini\config\GEMINI.md'
+            Target = Join-Path $UserProfilePath '.gemini\GEMINI.md'
+        },
+        [pscustomobject]@{
+            Name = 'Grok'
+            Source = Join-Path $RepoRoot 'agent-rules\Grok\AGENTS.md'
+            Target = Join-Path $UserProfilePath '.grok\AGENTS.md'
+        },
+        [pscustomobject]@{
+            Name = 'OpenCode (Windows)'
+            Source = Join-Path $RepoRoot 'agent-rules\OpenCode\AGENTS.md'
+            Target = Join-Path $UserProfilePath '.config\opencode\AGENTS.md'
+        },
+        [pscustomobject]@{
+            Name = 'ZCode'
+            Source = Join-Path $RepoRoot 'agent-rules\Zcode\AGENTS.md'
+            Target = Join-Path $UserProfilePath '.zcode\AGENTS.md'
         }
     )
 
@@ -92,14 +121,21 @@ try {
             continue
         }
 
-        if ($existingItem.LinkType -ne 'SymbolicLink') {
-            $conflicts.Add("$($definition.Name)：目标已存在且不是 SymbolicLink：$($definition.Target)")
-            continue
+        if ($existingItem.LinkType -eq 'SymbolicLink') {
+            $actualTarget = Get-LinkTargetPath -Link $existingItem
+            if ($actualTarget -ine $definition.Source) {
+                $conflicts.Add("$($definition.Name)：目标链接指向 $actualTarget，而不是 $($definition.Source)")
+                continue
+            }
         }
-
-        $actualTarget = Get-LinkTargetPath -Link $existingItem
-        if ($actualTarget -ine $definition.Source) {
-            $conflicts.Add("$($definition.Name)：目标链接指向 $actualTarget，而不是 $($definition.Source)")
+        elseif ($existingItem.LinkType -eq 'HardLink') {
+            if ((Get-FileIdentity -Path $existingItem.FullName) -ne (Get-FileIdentity -Path $definition.Source)) {
+                $conflicts.Add("$($definition.Name)：目标 HardLink 不属于维护源：$($definition.Target)")
+                continue
+            }
+        }
+        else {
+            $conflicts.Add("$($definition.Name)：目标已存在且不是受管链接：$($definition.Target)")
             continue
         }
 
@@ -122,20 +158,26 @@ try {
             $null = New-Item -ItemType Directory -Path $targetDirectory -Force
         }
 
-        $null = New-Item -ItemType SymbolicLink -Path $definition.Target -Target $definition.Source
+        $null = New-Item -ItemType HardLink -Path $definition.Target -Target $definition.Source
         $createdLinks.Add($definition.Target)
         Write-Host "$($definition.Name)：已创建 $($definition.Target) -> $($definition.Source)"
     }
 
     foreach ($definition in $linkDefinitions) {
         $link = Get-Item -LiteralPath $definition.Target -Force -ErrorAction Stop
-        if ($link.LinkType -ne 'SymbolicLink') {
-            throw "$($definition.Name) 验证失败：目标不是 SymbolicLink。"
+        if ($link.LinkType -eq 'SymbolicLink') {
+            $actualTarget = Get-LinkTargetPath -Link $link
+            if ($actualTarget -ine $definition.Source) {
+                throw "$($definition.Name) 验证失败：实际目标为 $actualTarget。"
+            }
         }
-
-        $actualTarget = Get-LinkTargetPath -Link $link
-        if ($actualTarget -ine $definition.Source) {
-            throw "$($definition.Name) 验证失败：实际目标为 $actualTarget。"
+        elseif ($link.LinkType -eq 'HardLink') {
+            if ((Get-FileIdentity -Path $link.FullName) -ne (Get-FileIdentity -Path $definition.Source)) {
+                throw "$($definition.Name) 验证失败：HardLink 不属于维护源。"
+            }
+        }
+        else {
+            throw "$($definition.Name) 验证失败：目标不是受管链接。"
         }
     }
 

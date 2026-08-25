@@ -84,5 +84,6 @@
     "command": "powershell -NoProfile -ExecutionPolicy Bypass -File C:/Users/Administrator/.claude/statusline.ps1",
     "padding": 0
   },
-  "theme": "auto"
+  "theme": "auto",
+  "model": "opus"
 }

@@ -1,46 +1,31 @@
 # Global instructions for OpenCode
 
 ## Language
-- Reply to me in Chinese (简体中文) by default. Keep technical terms, method names, variables, commands, config keys, and product names in English.
-
-## Documentation First
-- OpenCode is open-source and model-agnostic. Before answering questions about OpenCode itself (features, config, rules, CLI/TUI), consult the official docs at https://opencode.ai/docs — do not guess.
+- Reply to me in Chinese (简体中文) by default. Keep technical terms, method names, variables, paths, commands, config keys, API names, and product names in English.
+- Use LaTeX for mathematical formulas: `$...$` inline, `$$...$$` for display equations. Never approximate math with Unicode symbols.
 
 ## Interaction mode — suggest before non-trivial work
 - At the start of a session or non-trivial task, suggest the fitting mode in one line before proceeding; I decide the mode:
   - Read-only Q&A, explanations, small clarifications → default; just answer.
   - Multi-step edits / refactors / config changes → suggest the `plan` agent (`/plan`).
-  - Long, verifiable, run-to-completion work → suggest `/goal`-style scoped execution only when an explicit, verifiable stopping condition exists.
+  - Long, verifiable, run-to-completion work → suggest a goal-style run with an explicit, verifiable stop condition (no native goal mode; start only on my explicit request).
 - Skip suggestions for trivial follow-ups; keep it to one line.
 
 ## Operational work — propose, then ask
-- **Default for operational work: provide the plan and exact commands, then ask for permission before running.** Wait for my answer. Do not execute first and report afterwards.
-- Applies to: creating/modifying conda environments, installing packages, `git worktree`/`clone`/`checkout`, builds, training runs, tests, benchmarks, MPI jobs, and long-running scripts.
-- **Exception — read-only inspection is free**: `git status/log/show/diff`, listing files, reading files, version checks, static searches.
-- Plan approval covers the approach, not execution authorization. Ask again before running commands.
-- If I explicitly instruct you to run something ("跑一下", "run it"), run it for that specific action.
+- **Anything that changes machine state or consumes real compute (env/package changes, builds, training runs, tests, benchmarks, MPI jobs, long scripts): propose the exact commands and ask before running — never execute first and report afterwards.** Read-only inspection (`git status/log/show/diff`, listing/reading/searching files, version checks) is free.
+- Plan approval covers the approach, not execution authorization; ask again before running.
+- Execute multi-step work incrementally: report after each meaningful step and sync with me before moving on (goal runs are exempt — they run to their stop condition).
+- If I explicitly say run it ("跑一下"), run that specific action without re-asking.
 
 ## Critical evaluation
 - Evaluate my proposed approach as a proposal: check correctness, feasibility, key assumptions, risks, tradeoffs, and alternatives.
 - If it is wrong, unreasonably risky, or inferior to another option, state reasons and recommend the better approach before proceeding.
 - If instructed to follow my approach exactly, comply unless it violates safety boundaries, but briefly flag material risks first.
 
-## About me
-- Liang He (何亮). GitHub `brighthe`, email `brighthe98@gmail.com`. Postdoc at Dalian University of Technology (topology optimization, FEM, PIML).
-
-## Workspace repository governance
-- Workspace spans `authoring` (`C:\workspace`) and `compute` (WSL `~/workspace`). Follow `C:\workspace\workstation\workspace\responsibilities.md` for routing, source-of-truth, and remotes.
-- Defer to repository-local `AGENTS.md`/`README.md`. Verify `origin` before commit/push.
-- Treat `company` / `suanhaitech` repositories as SuanHai work; do not leak assets to personal repositories.
-
-## Scope & Documentation
-- Maintain only OpenCode-related instruction/config files (`~/.config/opencode/`). Do not edit other tools' instruction files unless explicitly asked.
-- When I ask to configure OpenCode itself (agents, subagents, skills, plugins, MCP, permissions, `opencode.json`), prefer reading the matching official doc page first.
-
-## Execution environment
-- OpenCode runs in WSL (`compute`): use `git -C /home/brighthe/workspace/<repo>` for compute repos; authoring repos are reachable via `/mnt/c/workspace`.
-- Running Python (WSL): `~/miniconda3/envs/ihpcm/bin/python <script>` (Matrix-Free/MPI); PINN uses the `soptx-gpu` env.
+## Workspace & execution
+- Workspace spans three roots: docs (`C:\workspace`, Windows), R&D code (WSL Ubuntu-24.04 `~/workspace`), and project code (WSL Ubuntu-22.04 `~/workspace`). Follow `C:\workspace\workstation\workspace\responsibilities.md` for routing, source-of-truth, remotes, and SuanHai boundaries.
+- Use WSL TUI for WSL repositories: `git -C /home/brighthe/workspace/<repo>` and the Linux conda/MPI toolchain. Use Windows Desktop with its local backend for docs repositories under `C:\workspace`; do not open `\\wsl$\` paths there.
+- Running Python in WSL: `~/miniconda3/envs/ihpcm/bin/python <script>` (Matrix-Free/MPI); PINN uses the `soptx-gpu` env. Use the repository-local Windows environment for docs tasks.
 - Tee long-running output into `logs/run.log`; save figures to `figs/`.
-
-## Git staging hygiene
-- Inspect working tree before committing; stage only files related to current task. Avoid broad staging (`git add -A`). Do not commit/push without explicit request.
+- Inspect working tree and verify `origin` before committing; stage only files related to current task. Avoid broad staging (`git add -A`). Do not commit/push without explicit request.
+- Write commit messages in 简体中文 by default; repository-local conventions override.

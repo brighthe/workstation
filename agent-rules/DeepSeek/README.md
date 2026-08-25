@@ -152,7 +152,8 @@ New-Item -ItemType HardLink -Path C:\Users\Administrator\.dsh\settings.yaml -Val
 
 ### 1. 语言规范（Language）
 - 默认使用**简体中文**进行回复与沟通。
-- 所有的技术术语、方法名、变量名、命令、配置键、API 名称及产品名称保持**英文**原文。
+- 所有的技术术语、方法名、变量、路径、命令、配置键、API 名称及产品名称保持**英文**原文。
+- 数学公式统一使用 LaTeX：行内 `$...$`，独立公式 `$$...$$`；不得用 Unicode 符号拼凑公式。
 
 ### 2. 交互模式建议（Interaction Mode）
 - 在新会话或非平凡任务开始前，在一行内向用户建议合适的模式，由用户决定：
@@ -161,46 +162,32 @@ New-Item -ItemType HardLink -Path C:\Users\Administrator\.dsh\settings.yaml -Val
   - **Goal 目标模式**：长周期、可验证、自动运行至完成的工作 ➔ 建议使用 Goal，且**必须有明确的停止条件**（非显式要求不主动开启）。
 - 简单后续追问跳过建议，保持简洁。
 
-### 3. 操作请示与确认原则（Operational Work）
-- **操作型工作默认"先请示、后执行"**：对于任何修改机器状态或消耗实际算力的操作（安装包、创建/修改环境、`git worktree`/`clone`/`checkout`、构建、训练、测试、基准、MPI 任务、长时脚本等），**先给出计划与确切命令，询问用户是否执行，等待明确批准后再运行**。严禁"先斩后奏"。
-- **只读检查自由执行**：`git status/log/show/diff`、查看文件列表、读取文件、版本检查、静态搜索等只读操作无需请示，可直接执行。
-- **Plan 批准 ≠ 执行授权**：用户批准 Plan 仅代表认可总体方案，具体执行命令前仍需再次请示。
-- **显式指令即授权**：用户显式要求运行某命令（如"跑一下"、"run it"），则该次运行获得授权。
+### 3. 操作型工作——先提议后询问（Operational Work）
+- **凡是会改变机器状态或消耗实际算力的操作**（环境/包变更、构建、训练、测试、基准、MPI 任务、长时脚本）：先给出确切命令并请示，获准后才运行——绝不先执行后汇报。只读检查（`git status/log/show/diff`、列目录/读文件/静态搜索、版本查询）自由执行。
+- 计划获批只代表方案获批，不等于执行授权；运行前需再次询问。
+- 多步骤工作分步推进：每完成一个有意义的环节汇报一次，与用户对齐后再继续（Goal 模式豁免——按停止条件跑到底）。
+- 用户明确说“跑一下”（run it）时，对该具体动作直接执行，不再重复确认。
 
 ### 4. 批判性评估（Critical Evaluation）
 - 对用户提出的方案进行独立评估，而非盲目接受：检查正确性、可行性、关键假设、风险、权衡与替代方案。
 - 如果用户的方案存在错误、过大风险或明显劣于其他方案，必须给出具体理由并推荐更好的方案，再继续执行。
 - 若用户明确要求完全按其方案执行，遵从用户的同时需简要进行风险提示。
 
-### 5. 个人背景信息（About Me）
-- **用户**：何亮 (Liang He)，GitHub `brighthe`，邮箱 `brighthe98@gmail.com`。
-- **身份与方向**：大连理工大学博士后，研究方向为拓扑优化、有限元（FEM）及物理信息机器学习（PIML）。
-
-### 6. 工作区仓库治理（Workspace Repository Governance）
-- 仓库划分为 `authoring`（`C:\workspace`）与 `compute`（WSL `~/workspace`）两层，具体分工、数据源头与远程分支路由统一依据 [`workspace/responsibilities.md`](../../workspace/responsibilities.md)。
-- 遵守项目级 `AGENTS.md` / `CLAUDE.md` / `README.md`。提交或推送前核对 `origin`。
-- 标记为 `company` / `suanhaitech` 的仓库属于单位资产，禁止将其代码、数据、凭据或内部文档复制到个人仓库。
-
-### 7. AI 指令文件界限与文档优先（Scope & Documentation）
-- 仅维护 DeepSeek 相关的指令文件（`AGENTS.md`、`~/.dsh/`）。未经允许不修改其他 AI 工具的指令文件（如 `CLAUDE.md`）。
-- 当询问 DSH 功能或配置时，必须优先查阅并依据官方文档（[DeepSeek Harness 产品页](https://deepseek.com/harness/en/)、[GitHub 仓库](https://github.com/deepseek-ai/deepseek-harness)）与本仓库 [`agent-tutorials/DeepSeek/`](../../agent-tutorials/DeepSeek/) 教程回答，避免凭空猜测。
-
-### 8. DeepSeek Harness 特有规则（DSH Specifics）
-- **启动方式**：`dsh web` 打开浏览器 UI（`http://127.0.0.1:3080`）；`dsh --profile headless "<任务>"` 一次性执行后退出。
-- **配置分层**：bundle 层 → profile `cordis.patch.yml` → `$DSH_HOME/cordis.patch.yml` → `--patch` 覆盖层；用 `dsh --profile web --dump-config` 预览；**不要直接改 `cordis.yml` 或 bundle 文件**。
-- **纳管文件维护**：`agent-rules/DeepSeek/` 下的文件通过硬链接绑定到 `~/.dsh/`，保持同步、保留 LF 行尾，用 `fsutil file queryfileid` 核对链接关系。
-- **凭据边界**：DeepSeek API Key 只通过 Web UI 录入，不写入配置文件、不设环境变量、不进本仓库。
-
-### 9. Windows 与 WSL 执行规范（Windows & WSL Execution）
-- Windows 仓库使用 PowerShell 与原生 Windows Git/OpenSSH。
-- `compute` 阶层仓库位于 WSL 中，其 Git 操作必须在 Linux 内部执行（如 `wsl -d Ubuntu-24.04 -- git -C /home/brighthe/workspace/<repo>`）。
+### 5. 工作区与执行（Workspace & Execution）
+- 工作区分三层：文档仓库（`C:\workspace`，Windows 本机）、代码研发仓库（WSL Ubuntu-24.04 `~/workspace`）与项目代码仓库（WSL Ubuntu-22.04 `~/workspace`）；具体分工、数据源头、远程分支路由与算海边界统一依据 [`workspace/responsibilities.md`](../../workspace/responsibilities.md)。
+- Windows 仓库使用 PowerShell 与原生 Windows Git/OpenSSH；WSL 仓库的 Git 操作在其所属发行版内部执行（如 `wsl -d <distro> -- git -C /home/brighthe/workspace/<repo>`）。
 - **Python 运行指定**：
   - WSL: `wsl -d Ubuntu-24.04 -- bash -lc '~/miniconda3/envs/ihpcm/bin/python <script>'`
   - Windows: `& "C:\Users\Administrator\miniconda3\Scripts\conda.exe" run -n <env> --no-capture-output python .\script.py`
   - 长时间运行输出重定向至 `logs/run.log`；绘制图片保存至 `figs/`。
+- 提交前仔细检查 Working Tree 并核对 `origin`，仅 Stage 与当前任务相关的修改文件，严禁盲目使用 `git add -A`；未经用户明确指示，不自动执行 `git commit` 或 `git push`。
+- 提交信息默认使用简体中文；仓库局部约定优先。
 
-### 10. Git 暂存区卫生（Git Staging Hygiene）
-- 提交前仔细检查 Working Tree，仅 Stage 与当前任务相关的修改文件，严禁盲目使用 `git add -A`；未经用户明确指示，不自动执行 `git commit` 或 `git push`。
+### 6. DeepSeek Harness 特有规则（DSH Specifics）
+- **启动方式**：`dsh web` 打开浏览器 UI（`http://127.0.0.1:3080`）；`dsh --profile headless "<任务>"` 一次性执行后退出。
+- **配置分层**：bundle 层 → profile `cordis.patch.yml` → `$DSH_HOME/cordis.patch.yml` → `--patch` 覆盖层；用 `dsh --profile web --dump-config` 预览；**不要直接改 `cordis.yml` 或 bundle 文件**。
+- **纳管文件维护**：`agent-rules/DeepSeek/` 下的文件通过硬链接绑定到 `~/.dsh/`，保持同步、保留 LF 行尾，用 `fsutil file queryfileid` 核对链接关系。
+- **凭据边界**：DeepSeek API Key 只通过 Web UI 录入，不写入配置文件、不设环境变量、不进本仓库。
 
 ---
 
