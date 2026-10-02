@@ -1,6 +1,7 @@
 # Codex 全局指令（中文版）
 
 > [AGENTS.md](AGENTS.md) 的中文对照，以英文版为准；改英文版时同步改这里。
+> 生效位置：`~/.codex/AGENTS.md`（HardLink 到本目录的 `AGENTS.md`），建立方法见 [../README.md](../README.md)。
 
 ## 工作约定
 

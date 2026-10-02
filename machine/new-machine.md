@@ -101,6 +101,12 @@ Windows 上用 PowerShell 里的原生 git，远程一律 SSH，走 443 端口�
 
 - 验证：Windows 和 WSL 里 `ssh -T git@github.com` 都回显 `Hi brighthe!`
 
+## 4. Agent 全局指令
+
+克隆本仓库到 `C:\workspace\workstation` 后，把 `agent-rules/<工具>/` 下的指令文件链接到各工具的用户目录（Windows 用 HardLink，WSL 用符号链接）。对照表和命令见 [agent-rules/README.md](../agent-rules/README.md)。不链接的话，工具读不到全局指令。
+
+- 验证：`fsutil hardlink list C:\workspace\workstation\agent-rules\Claude\CLAUDE.md` 列出两个路径；新开 Claude Code 会话，回复为中文
+
 ## 尚未覆盖
 
 - conda 环境（`ihpcm`、`soptx-gpu`）的创建步骤
