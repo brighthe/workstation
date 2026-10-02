@@ -1,3 +1,15 @@
+---
+title: "台式主机清灰：完整流程与注意事项"
+type: module
+tags:
+  - machine
+  - hardware
+  - maintenance
+status: in-progress
+date_added: 2026-07-21
+date_update: 2026-08-25
+---
+
 # 台式主机清灰：完整流程与注意事项
 
 整理自 be quiet! 官方视频 [《PC Cleaning 101》](https://www.youtube.com/watch?v=MzeA68RMoF0)（时长 5:29，截图标注了视频时间点），并合并了针对自己 RTX 5070 Ti 主机的「小白安全版」清灰方案。
