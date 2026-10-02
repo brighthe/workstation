@@ -23,15 +23,34 @@ TUN 不用开，前两项已覆盖浏览器和命令行。
 
 ## 2. WSL 配置
 
+**安装**
+
+```powershell
+wsl --install --no-distribution   # 管理员 PowerShell：装 WSL、启用虚拟机平台，完成后重启
+wsl --install -d Ubuntu-24.04     # 重启后执行；首次启动按提示建用户 brighthe
+```
+
+报 `REGDB_E_CLASSNOTREG` 时：`Get-AppxPackage *WindowsSubsystemForLinux | Remove-AppxPackage` 删掉残留的商店版，从 [Releases](https://github.com/microsoft/WSL/releases) 下载 MSI 装上，再重跑第一条。
+
 **用户**
 
 | 项    | 值                           |
 | ---- | --------------------------- |
 | 发行版  | `Ubuntu-24.04`（默认发行版，WSL 2） |
 | 默认用户 | `brighthe`，在 `sudo` 组       |
-| 密码   | 无                           |
+| 密码   | 无（建用户时 Ubuntu 不接受空密码，先设临时密码，再按下方命令删掉） |
 | sudo | 免密                          |
 | 内存上限 | `%USERPROFILE%\.wslconfig` 写 `[wsl2]` 下 `memory=48GB`（宿主 64 GB，默认只给一半），改完 `wsl --shutdown` |
+
+免密 sudo 并删除密码（在 Ubuntu 里执行，`visudo` 校验通过才落盘）：
+
+```bash
+echo 'brighthe ALL=(ALL) NOPASSWD:ALL' | sudo tee /tmp/brighthe >/dev/null
+sudo visudo -cf /tmp/brighthe && sudo install -m 440 -o root -g root /tmp/brighthe /etc/sudoers.d/brighthe
+sudo rm -f /tmp/brighthe && sudo passwd -d brighthe
+```
+
+验证：`sudo -k; sudo -n true` 成功，`sudo passwd -S brighthe` 第二列为 `NP`
 
 **网络**
 
