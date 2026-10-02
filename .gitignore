@@ -1,23 +1,15 @@
-# never commit chat data or local backups
-projects/
-*.bak
-*.manualbak
-.DS_Store
-
-# Obsidian auto-generated editor state
+# Obsidian 编辑器状态
 .obsidian/
 
-# remote-access local state and credentials (the repository is public)
-remote-access/inventory.local.psd1
-remote-access/state/
-remote-access/backups/
-remote-access/**/id_ed25519*
-remote-access/**/authorized_keys
-remote-access/**/*.key
-remote-access/**/*.pem
-
-# workspace tier→root 映射是机器特定的（本仓库 Public）
-workspace/roots.local.json
-
-# Claude Code 会话隔离用的 worktree 副本
+# Claude Code worktree 副本
 .claude/worktrees/
+
+# 凭据兜底（仓库 Public）
+id_ed25519*
+id_rsa*
+id_ecdsa*
+*.key
+*.pem
+*.ppk
+authorized_keys
+known_hosts
