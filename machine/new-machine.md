@@ -102,7 +102,7 @@ Windows 上用 PowerShell 里的原生 git，远程一律 SSH，走 443 端口�
        ProxyCommand "C:/Program Files/Git/mingw64/bin/connect.exe" -H 127.0.0.1:7897 %h %p
    ```
 
-   最后一行让 ssh 经 Clash，只在 Windows 用。
+   最后一行让 ssh 经 Clash；WSL 里要换成经网关的写法（见第 4 项）。
 
 3. **提交身份**：
 
@@ -111,11 +111,18 @@ Windows 上用 PowerShell 里的原生 git，远程一律 SSH，走 443 端口�
    git config --global user.email "brighthe98@gmail.com"
    ```
 
-4. **WSL**：复用 Windows 的密钥和 config（删掉 `ProxyCommand` 行），再执行一遍第 3 项：
+4. **WSL**：复用 Windows 的密钥和 config，再执行一遍第 3 项：
 
    ```bash
-   mkdir -p ~/.ssh && cp /mnt/c/Users/<用户>/.ssh/{id_ed25519,id_ed25519.pub,config} ~/.ssh/
-   chmod 600 ~/.ssh/id_ed25519 && sed -i '/ProxyCommand/d' ~/.ssh/config
+   mkdir -p ~/.ssh && chmod 700 ~/.ssh
+   cp /mnt/c/Users/<用户>/.ssh/{id_ed25519,id_ed25519.pub,config} ~/.ssh/
+   chmod 600 ~/.ssh/id_ed25519 ~/.ssh/config
+   ```
+
+   WSL 直连 `ssh.github.com:443` 不通，`ProxyCommand` 要改成经默认网关（即 Windows）连 Clash：
+
+   ```
+   ProxyCommand nc -X connect -x $(ip route show default | awk '{print $3; exit}'):7897 %h %p
    ```
 
 - 验证：Windows 和 WSL 里 `ssh -T git@github.com` 都回显 `Hi brighthe!`
