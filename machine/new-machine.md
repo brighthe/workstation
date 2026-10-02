@@ -40,7 +40,15 @@ wsl --install -d Ubuntu-24.04     # 重启后执行；首次启动按提示建�
 | 默认用户 | `brighthe`，在 `sudo` 组       |
 | 密码   | 无（建用户时 Ubuntu 不接受空密码，先设临时密码，再按下方命令删掉） |
 | sudo | 免密                          |
-| 内存上限 | `%USERPROFILE%\.wslconfig` 写 `[wsl2]` 下 `memory=48GB`（宿主 64 GB，默认只给一半），改完 `wsl --shutdown` |
+| 内存上限 | `memory=48GB`（宿主 64 GB，默认只给一半），写在 `.wslconfig`，见下方 |
+
+`%USERPROFILE%\.wslconfig`，改完 `wsl --shutdown`：
+
+```ini
+[wsl2]
+memory=48GB
+networkingMode=mirrored
+```
 
 免密 sudo 并删除密码（在 Ubuntu 里执行，`visudo` 校验通过才落盘）：
 
@@ -54,17 +62,11 @@ sudo rm -f /tmp/brighthe && sudo passwd -d brighthe
 
 **网络**
 
-用 WSL 默认网络，`wsl.conf` 不写网络项。只需在 `~/.bashrc` 的"非交互则 return"之前加代理块：
+`.wslconfig` 里的 `networkingMode=mirrored` 让 WSL 与 Windows 共用网络，`autoProxy`（默认开启）把 Windows 系统代理同步为 WSL 里所有进程的 `HTTP(S)_PROXY`，包括 Claude Code 这类不经交互 shell 启动的程序。`.bashrc` 不写代理。
 
-```bash
-# WSL 代理：经默认网关（即 Windows）连 Clash；放在 .bashrc 的"非交互则 return"之前
-__h=$(ip route show default | awk '{print $3; exit}')
-export HTTP_PROXY="http://$__h:7897" HTTPS_PROXY="http://$__h:7897" NO_PROXY="localhost,127.0.0.1,::1,.local,<内网域名>"
-export http_proxy="$HTTP_PROXY" https_proxy="$HTTPS_PROXY" no_proxy="$NO_PROXY"
-unset __h
-```
+不用 NAT 模式 + `.bashrc` 代理块：非交互启动的进程拿不到代理，直连 Anthropic 返回 403。
 
-验证：`curl -sI https://github.com | head -1`
+验证：`wsl -- bash -c 'echo $HTTPS_PROXY'` 输出 `http://127.0.0.1:7897`；`curl -sI https://github.com | head -1`
 
 **apt 源**
 
@@ -104,7 +106,7 @@ Windows 上用 PowerShell 里的原生 git，远程一律 SSH，走 443 端口�
        ProxyCommand "C:/Program Files/Git/mingw64/bin/connect.exe" -H 127.0.0.1:7897 %h %p
    ```
 
-   最后一行让 ssh 经 Clash；WSL 里要换成经网关的写法（见第 4 项）。
+   最后一行让 ssh 经 Clash；WSL 里换成 `nc` 写法（见第 4 项）。
 
 3. **提交身份**：
 
@@ -121,10 +123,10 @@ Windows 上用 PowerShell 里的原生 git，远程一律 SSH，走 443 端口�
    chmod 600 ~/.ssh/id_ed25519 ~/.ssh/config
    ```
 
-   WSL 直连 `ssh.github.com:443` 不通，`ProxyCommand` 要改成经默认网关（即 Windows）连 Clash：
+   ssh 不读代理变量，WSL 直连 `ssh.github.com:443` 不通，`ProxyCommand` 改为：
 
    ```
-   ProxyCommand nc -X connect -x $(ip route show default | awk '{print $3; exit}'):7897 %h %p
+   ProxyCommand nc -X connect -x 127.0.0.1:7897 %h %p
    ```
 
 - 验证：Windows 和 WSL 里 `ssh -T git@github.com` 都回显 `Hi brighthe!`
