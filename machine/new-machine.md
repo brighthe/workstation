@@ -84,8 +84,10 @@ Windows 上用 PowerShell 里的原生 git，远程一律 SSH，走 443 端口�
 1. **密钥**：
 
    ```powershell
-   ssh-keygen -t ed25519 -C "<设备名>" -f "$HOME\.ssh\id_ed25519" -N ""
+   ssh-keygen -t ed25519 -C "<设备名>" -f "$HOME\.ssh\id_ed25519" --% -N ""
    ```
+
+   `--%` 让 `-N ""` 原样传给 ssh-keygen；Windows PowerShell 5.1 会丢掉空字符串参数，导致报错。
 
    【手动】把 `id_ed25519.pub` 加到 GitHub 的 SSH keys。
 
