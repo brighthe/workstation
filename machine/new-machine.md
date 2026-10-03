@@ -137,7 +137,19 @@ Windows 上用 PowerShell 里的原生 git，远程一律 SSH，走 443 端口�
 
 - 验证：`fsutil hardlink list C:\workspace\workstation\agent-rules\Claude\CLAUDE.md` 列出两个路径；新开 Claude Code 会话，回复为中文
 
+## 5. conda 环境（WSL）
+
+conda 只装在 WSL（`~/miniconda3`），Windows 不装 conda。fealpy 和 soptx 都必须在 `ihpcm` 环境下以 editable 方式安装，不要装进 `base`：
+
+```bash
+conda create -n ihpcm python=3.12.13 -c conda-forge --override-channels -y
+conda activate ihpcm
+pip install -e ~/workspace/fealpy   # 必须先装：soptx 依赖 fealpy>=4,<5，否则会从 PyPI 拉正式版
+pip install -e ~/workspace/soptx
+```
+
+- 验证：`python -c "import fealpy, soptx; print(fealpy.__file__, soptx.__file__)"` 两个路径都在 `~/workspace/` 下
+
 ## 尚未覆盖
 
-- conda 环境（`ihpcm`、`soptx-gpu`）的创建步骤
 - 编辑器（VS Code）配置
