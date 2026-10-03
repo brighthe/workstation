@@ -1,6 +1,7 @@
 # Antigravity 全局指令（中文版）
 
 > [GEMINI.md](GEMINI.md) 的中文对照，以英文版为准；改英文版时同步改这里。
+> 生效位置：Windows `%USERPROFILE%\.gemini\GEMINI.md` 与 WSL `~/.gemini/GEMINI.md`，均为指向本目录 `GEMINI.md` 的符号链接，建立方法见 [../README.md](../README.md)。
 
 ## 工作约定
 
