@@ -139,16 +139,29 @@ Windows 上用 PowerShell 里的原生 git，远程一律 SSH，走 443 端口�
 
 ## 5. conda 环境（WSL）
 
-conda 只装在 WSL（`~/miniconda3`），Windows 不装 conda。fealpy 和 soptx 都必须在 `ihpcm` 环境下以 editable 方式安装，不要装进 `base`：
+conda 只装在 WSL（`~/miniconda3`），Windows 不装 conda。
+
+```bash
+curl -fLO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sha256sum Miniconda3-latest-Linux-x86_64.sh   # 对照 https://repo.anaconda.com/miniconda/ 上的值
+bash Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda3
+~/miniconda3/bin/conda init bash
+~/miniconda3/bin/conda config --set auto_activate false   # 不自动进 base
+```
+
+fealpy 和 soptx 都必须在 `ihpcm` 环境下以 editable 方式安装，不要装进 `base`。两个仓库克隆到 `~/codespace/` 同一目录下（soptx 用 `../fealpy` 引用 fealpy）：
 
 ```bash
 conda create -n ihpcm python=3.12.13 -c conda-forge --override-channels -y
 conda activate ihpcm
-pip install -e ~/workspace/fealpy   # 必须先装：soptx 依赖 fealpy>=4,<5，否则会从 PyPI 拉正式版
-pip install -e ~/workspace/soptx
+pip install -e ~/codespace/fealpy   # 必须先装：soptx 依赖 fealpy>=4,<5，否则会从 PyPI 拉正式版
+pip install -e ~/codespace/soptx
+sudo apt-get install -y libglu1-mesa libxft2   # gmsh 的 wheel 运行时需要
 ```
 
-- 验证：`python -c "import fealpy, soptx; print(fealpy.__file__, soptx.__file__)"` 两个路径都在 `~/workspace/` 下
+`--override-channels` 不能省：`.condarc` 默认频道是 `defaults`，会触发 Anaconda 服务条款确认。
+
+- 验证：`python -c "import fealpy, soptx; print(fealpy.__file__, soptx.__file__)"` 两个路径都在 `~/codespace/` 下；`python -c "import gmsh"` 不报错
 
 ## 尚未覆盖
 
